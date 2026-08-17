@@ -27,8 +27,12 @@ const limiter = rateLimit({
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+  next();
+});
 app.get(/^\/(\w+)\.html$/, (req, res) => res.redirect(301, '/' + req.params[0]));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { etag: true, lastModified: true, maxAge: 0 }));
 app.use('/swagger-ui', express.static(SWAGGER_DIST));
 
 function baseUrl(req) {
