@@ -7,12 +7,15 @@ const { buildOpenApiSpec } = require('./openapi');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const RATE_LIMIT_PER_MIN = Number(process.env.RATE_LIMIT_PER_MIN) || 60;
+
+app.set('trust proxy', 1);
 
 const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'));
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 20,
+  limit: RATE_LIMIT_PER_MIN,
   standardHeaders: true,
   legacyHeaders: false,
   message: { status: 'error', error: { code: 'rate_limited', message: 'Terlalu banyak request, tunggu sebentar.' } },
