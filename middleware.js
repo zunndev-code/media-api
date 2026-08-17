@@ -10,12 +10,14 @@ function isSecure(req) {
   return req.secure || req.get('x-forwarded-proto') === 'https' || config.FORCE_SECURE;
 }
 
+const TOKEN_MAXAGE = 1000 * 60 * 60 * 24 * 90;
+
 function setAuthCookie(req, res, token) {
   res.cookie(config.COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: isSecure(req),
-    maxAge: 1000 * 60 * 60 * 24 * 30,
+    maxAge: TOKEN_MAXAGE,
   });
 }
 
@@ -41,6 +43,7 @@ async function loadUser(req) {
 function auth(required) {
   return async (req, res, next) => {
     req.user = await loadUser(req);
+    if (req.user) setAuthCookie(req, res, signToken(req.user.id));
     if (required && !req.user) {
       return res.status(401).json({ status: 'error', error: { code: 'unauthorized', message: 'Login dulu.' } });
     }

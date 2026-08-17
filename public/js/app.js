@@ -96,7 +96,7 @@ function buildNav() {
 }
 
 function setNavAuth() {
-  api('/api/me').then(({ res }) => {
+  api('/api/me').then(({ res, body }) => {
     const fill = (uid) => {
       const elm = $(uid);
       if (!elm) return;
@@ -117,7 +117,23 @@ function setNavAuth() {
     };
     fill('nav-auth');
     fill('nav-auth-m');
+    if (res.ok && body.data && body.data.name) welcomeToast(body.data.name);
   });
+}
+
+function welcomeToast(name) {
+  if (sessionStorage.getItem('zd_welcomed')) return;
+  sessionStorage.setItem('zd_welcomed', '1');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML =
+    '<span class="toast-ava">' + esc(name.charAt(0).toUpperCase()) + '</span>' +
+    '<span class="toast-txt"><b>Masuk sebagai ' + esc(name) + '</b><br>Akun kamu tetap aktif, nggak perlu login ulang.</span>' +
+    '<button class="toast-x" aria-label="Tutup">✕</button>';
+  document.body.appendChild(t);
+  const hide = () => { t.classList.add('out'); setTimeout(() => t.remove(), 350); };
+  t.querySelector('.toast-x').addEventListener('click', hide);
+  setTimeout(hide, 4500);
 }
 
 function detectPlatform(url) {
