@@ -498,7 +498,6 @@ pre.curl {
   position: relative;
 }
 .price-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
-.price-card.featured { border-color: var(--green); background: linear-gradient(180deg, rgba(27,217,106,0.08), var(--panel)); }
 .price-card .rp { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; }
 .price-card .rp { text-transform: uppercase; }
 .price-card .pr { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
@@ -519,8 +518,6 @@ pre.curl {
   cursor: not-allowed;
 }
 .price-card .buy.soon { border-color: var(--border); color: var(--muted-2); }
-.price-card.featured .buy { background: var(--green); color: #06130b; cursor: pointer; }
-.price-card.featured .buy:hover { background: #16b95b; }
 
 .alertbox {
   border: 1px solid var(--border);

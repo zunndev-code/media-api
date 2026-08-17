@@ -241,11 +241,10 @@ function initPricing() {
     box.innerHTML = order.map((k, i) => {
       const r = roles[k];
       if (!r) return '';
-      const featured = k === 'vip' ? ' featured' : '';
       const btn = k === 'free'
         ? '<div class="buy">Gratis selamanya</div>'
         : '<div class="buy soon">Segera hadir</div>';
-      return '<div class="price-card' + featured + '">' +
+      return '<div class="price-card">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
         '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
