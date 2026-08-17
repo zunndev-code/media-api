@@ -94,6 +94,7 @@ const PAGE_ALIASES = {
   register: 'register.html',
   endpoints: 'endpoints.html',
   docs: 'docs.html',
+  beli: 'buy.html',
 };
 
 app.get('/:page', (req, res, next) => {

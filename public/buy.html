@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beli Role — Zunndev API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .cur-plan {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: var(--green-dark);
+      border: 1px solid var(--green);
+      border-radius: var(--radius);
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0 2.5rem;
+    }
+    .cur-plan .lbl { font-size: 0.78rem; color: var(--muted); }
+    .cur-plan .val { font-size: 1.05rem; font-weight: 800; margin-top: 0.15rem; }
+    .cur-plan .cred { font-size: 0.82rem; color: var(--green-bright); font-weight: 600; }
+    .price-card.current { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 10px 30px rgba(27, 217, 106, 0.08); }
+    .now-badge {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--green-bright);
+      background: var(--green-dark);
+      border: 1px solid var(--green);
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem;
+    }
+    .note {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-top: 2.5rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+    .note b { color: var(--text); }
+  </style>
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main class="wrap wide">
+    <section class="hero" style="padding-bottom:0.5rem">
+      <p class="kicker">Harga &amp; Role</p>
+      <h1>Pilih role kamu.</h1>
+      <p>Role nentuin jatah credit harian. Semakin tinggi role, makin banyak request yang bisa kamu kirim tiap hari.</p>
+    </section>
+
+    <div class="cur-plan" id="cur-plan" style="display:none">
+      <div>
+        <div class="lbl">Plan kamu saat ini</div>
+        <div class="val" id="cur-name">—</div>
+      </div>
+      <div class="cred" id="cur-cred"></div>
+    </div>
+
+    <div class="pricing" id="pricing"></div>
+
+    <div class="note">
+      <b>Pembayaran manual segera hadir.</b><br>
+      Beli lewat Transfer Bank / DANA / QRIS — role aktif otomatis setelah pembayaran terverifikasi. Sambil nunggu, akun gratis tetap dapat <b>1000 credit</b> setiap hari.
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">Blog</a> &middot; <a href="/endpoints">Endpoint</a> &middot; <a href="/stats">Stats</a> &middot; <a href="/api/docs">API Docs</a></p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const order = ['free', 'vip', 'gars', 'vilions', 'verus'];
+
+    (async () => {
+      const rolesRes = await api('/api/roles');
+      const meReq = await api('/api/me');
+      const meRes = meReq.res, meBody = meReq.body;
+      const roles = rolesRes.body.data;
+      const box = el('pricing');
+      if (!rolesRes.res.ok || !roles) return;
+
+      if (meRes.ok) {
+        const me = meBody.data;
+        el('cur-plan').style.display = 'flex';
+        el('cur-name').textContent = roles[me.role] ? roles[me.role].label : me.role;
+        el('cur-cred').textContent = fmtNum(me.credits) + ' credit tersisa';
+      }
+
+      box.innerHTML = order.map(k => {
+        const r = roles[k];
+        if (!r) return '';
+        const current = meRes.ok && meBody.data.role === k;
+        const btn = k === 'free'
+          ? '<div class="buy">Gratis selamanya</div>'
+          : '<div class="buy soon">Segera hadir</div>';
+        return '<div class="price-card' + (current ? ' current' : '') + '">' +
+          '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
+          '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
+          '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
+          (current ? '<div class="now-badge">Plan kamu</div>' : '') +
+          btn + '</div>';
+      }).join('');
+    })();
+  </script>
+</body>
+</html>
