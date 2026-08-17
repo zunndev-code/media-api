@@ -56,7 +56,7 @@ function navLink(l) {
     l.label + '</a>';
 }
 
-const LOGO_MARK = '<span class="wm"><span class="wmt">zunndev<span class="dot">.</span></span><svg class="wiggle" viewBox="0 0 40 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 6c4-4.5 8 4.5 12 0s8 4.5 12 0 8 4.5 12 0"/></svg></span>';
+const LOGO_MARK = '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>';
 
 function buildNav() {
   const nav = $('nav');
