@@ -113,8 +113,7 @@ function buildFooter() {
     '<div><h4>Layanan</h4><a href="/#demo">Media Downloader</a><a href="/#harga">Harga</a><a href="/beli">Upgrade credit</a><a href="/api/docs">Cara pakai</a></div>' +
     '</div>' +
     '<div class="foot-bottom">' +
-    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API &mdash; dibuat manual, bukan template.</span>' +
-    '<span>v3.1</span>' +
+    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API &mdash; v3.1</span>' +
     '</div>';
 }
 
