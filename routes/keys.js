@@ -1,0 +1,51 @@
+const crypto = require('crypto');
+const { pool } = require('../db');
+const { auth } = require('../middleware');
+
+function fail(res, status, code, message) {
+  return res.status(status).json({ status: 'error', error: { code, message } });
+}
+
+function ok(res, status, data) {
+  return res.status(status).json({ status: 'success', data });
+}
+
+const router = require('express').Router();
+
+router.get('/', auth(true), async (req, res) => {
+  const { rows } = await pool.query(
+    'SELECT id, name, key, active, hits, last_used, created_at FROM api_keys WHERE user_id = $1 ORDER BY id',
+    [req.user.id]
+  );
+  return ok(res, 200, rows);
+});
+
+router.post('/', auth(true), async (req, res) => {
+  const name = (req.body && req.body.name ? String(req.body.name).trim() : 'default').slice(0, 40);
+  const key = 'md_' + crypto.randomBytes(24).toString('hex');
+  const { rows } = await pool.query(
+    'INSERT INTO api_keys (user_id, name, key) VALUES ($1, $2, $3) RETURNING id, name, key, active, hits, created_at',
+    [req.user.id, name, key]
+  );
+  return ok(res, 201, rows[0]);
+});
+
+router.post('/:id/toggle', auth(true), async (req, res) => {
+  const { rows } = await pool.query(
+    'UPDATE api_keys SET active = NOT active WHERE id = $1 AND user_id = $2 RETURNING id, active',
+    [req.params.id, req.user.id]
+  );
+  if (!rows.length) return fail(res, 404, 'not_found', 'Key tidak ditemukan.');
+  return ok(res, 200, rows[0]);
+});
+
+router.delete('/:id', auth(true), async (req, res) => {
+  const { rows } = await pool.query(
+    'DELETE FROM api_keys WHERE id = $1 AND user_id = $2 RETURNING id',
+    [req.params.id, req.user.id]
+  );
+  if (!rows.length) return fail(res, 404, 'not_found', 'Key tidak ditemukan.');
+  return ok(res, 200, { deleted: rows[0].id });
+});
+
+module.exports = router;

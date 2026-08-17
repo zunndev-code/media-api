@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Media Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a class="logo" href="/">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </span>
+      Media Downloader
+    </a>
+    <div class="links">
+      <a href="/#api">API</a>
+      <a href="/#harga">Harga</a>
+      <span id="nav-auth"></span>
+    </div>
+  </nav>
+
+  <main class="wrap wide">
+    <section class="hero" style="padding-bottom:0">
+      <p class="kicker" id="greet">Dashboard</p>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.2rem)"><span class="hl" id="user-name">-</span> <span class="dim" id="user-role">-</span></h1>
+      <p id="user-email" style="color:var(--muted-2);margin-bottom:0"></p>
+    </section>
+
+    <div class="dash-grid">
+      <div class="dash-card green">
+        <div class="num" id="stat-credits">-</div>
+        <div class="lbl">Credit tersisa</div>
+      </div>
+      <div class="dash-card green">
+        <div class="num" id="stat-today">-</div>
+        <div class="lbl">Hits hari ini</div>
+      </div>
+      <div class="dash-card">
+        <div class="num" id="stat-total">-</div>
+        <div class="lbl">Total hits</div>
+      </div>
+      <div class="dash-card red">
+        <div class="num" id="stat-failed">-</div>
+        <div class="lbl">Gagal</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="toolbar">
+        <h2 style="margin-bottom:0">API Keys</h2>
+        <div style="display:flex;gap:.5rem">
+          <input type="text" id="key-name" placeholder="nama key (opsional)">
+          <button class="ghost-btn" id="btn-new-key">Buat key</button>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:.75rem">Pakai key ini lewat header <code class="inline">X-API-Key</code> atau parameter <code class="inline">key</code>. 1 request sukses = 1 credit.</p>
+      <div class="tbl-wrap" style="overflow-x:auto">
+        <table class="tbl" id="keys-table"></table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Riwayat Pemakaian</h2>
+      <div class="tbl-wrap" style="overflow-x:auto">
+        <table class="tbl" id="history-table"></table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Media Downloader &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/">Blog</a></p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const el = (id) => document.getElementById(id);
+
+    function renderKeys(keys) {
+      const t = el('keys-table');
+      t.innerHTML =
+        '<tr><th>Nama</th><th>Key</th><th>Hits</th><th>Terakhir dipakai</th><th>Status</th><th></th></tr>' +
+        keys.map(k =>
+          '<tr>' +
+          '<td>' + esc(k.name) + '</td>' +
+          '<td><code>' + esc(k.key) + '</code></td>' +
+          '<td>' + fmtNum(k.hits) + '</td>' +
+          '<td>' + (k.last_used ? fmtDate(k.last_used) : 'belum') + '</td>' +
+          '<td>' + (k.active ? '<span class="ok">aktif</span>' : '<span class="no">mati</span>') + '</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="sm-btn okc" data-act="copy" data-key="' + esc(k.key) + '">Salin</button> ' +
+            '<button class="sm-btn" data-act="toggle" data-id="' + k.id + '">' + (k.active ? 'Nonaktifkan' : 'Aktifkan') + '</button> ' +
+            '<button class="sm-btn danger" data-act="del" data-id="' + k.id + '">Hapus</button>' +
+          '</td>' +
+          '</tr>'
+        ).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted-2)">Belum ada key. Buat key pertama kamu.</td></tr>';
+    }
+
+    function renderHistory(rows) {
+      const t = el('history-table');
+      t.innerHTML =
+        '<tr><th>Waktu</th><th>Endpoint</th><th>Key</th><th>Hasil</th></tr>' +
+        (rows.length ? rows.map(h =>
+          '<tr>' +
+          '<td>' + fmtDate(h.created_at) + '</td>' +
+          '<td><code>' + esc(h.endpoint) + '</code></td>' +
+          '<td>' + esc(h.key_name || '-') + '</td>' +
+          '<td>' + (h.success ? '<span class="ok">sukses</span>' : '<span class="no">gagal</span>') + '</td>' +
+          '</tr>'
+        ).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted-2)">Belum ada pemakaian.</td></tr>');
+    }
+
+    function bindKeys() {
+      document.querySelectorAll('#keys-table button[data-act]').forEach(b => {
+        b.addEventListener('click', async () => {
+          const act = b.dataset.act;
+          b.disabled = true;
+          if (act === 'copy') {
+            const okCopy = await copyText(b.dataset.key);
+            b.textContent = okCopy ? 'Tersalin!' : 'Gagal';
+            setTimeout(() => { b.textContent = 'Salin'; b.disabled = false; }, 1200);
+            return;
+          }
+          if (act === 'toggle') await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
+          if (act === 'del') {
+            if (!confirm('Hapus key ini?')) { b.disabled = false; return; }
+            await api('/api/keys/' + b.dataset.id, { method: 'DELETE' });
+          }
+          load();
+        });
+      });
+    }
+
+    async function load() {
+      const { res, body } = await api('/api/dashboard');
+      if (!res.ok) {
+        location.href = '/login.html';
+        return;
+      }
+      const d = body.data;
+      el('user-name').textContent = d.user.name;
+      el('user-email').textContent = d.user.email;
+      const r = d.roleInfo || {};
+      el('user-role').innerHTML =
+        '<span class="role-pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
+      el('greet').textContent = 'Dashboard — jatah hari ini ' + fmtNum(r.daily || 0) + ' credit';
+      el('stat-credits').textContent = fmtNum(d.user.credits);
+      el('stat-today').textContent = fmtNum(d.stats.today);
+      el('stat-total').textContent = fmtNum(d.stats.total);
+      el('stat-failed').textContent = fmtNum(d.stats.failed);
+      renderKeys(d.keys);
+      renderHistory(d.history);
+      bindKeys();
+    }
+
+    el('btn-new-key').addEventListener('click', async () => {
+      const name = el('key-name').value.trim();
+      el('btn-new-key').disabled = true;
+      const { res } = await api('/api/keys', { method: 'POST', body: JSON.stringify({ name }) });
+      if (res.ok) {
+        el('key-name').value = '';
+        el('btn-new-key').textContent = 'Buat key';
+      }
+      el('btn-new-key').disabled = false;
+      load();
+    });
+
+    load();
+  </script>
+</body>
+</html>

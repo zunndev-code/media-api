@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Downloader — Blog, API, Credit, Role</title>
+  <meta name="description" content="Download video dan audio dari YouTube, Instagram, Facebook, TikTok, dan X (Twitter). Gratis 1000 credit setiap hari.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231bd96a' stroke-width='2'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>">
+</head>
+<body>
+  <nav>
+    <a class="logo" href="/">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </span>
+      Media Downloader
+      <span class="tag">v3.0</span>
+    </a>
+    <div class="links">
+      <a href="#api">API</a>
+      <a href="#credit">Credit</a>
+      <a href="#harga">Harga</a>
+      <a href="#update">Update</a>
+      <span id="nav-auth"></span>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="kicker">Gratis &middot; Tanpa login &middot; 1000 credit gratis setiap hari</p>
+      <h1>Download video &amp; musik <span class="dim">dari</span> <span class="hl">semua platform.</span></h1>
+      <p>YouTube, Instagram, Facebook, TikTok, X (Twitter). Coba langsung di bawah, atau daftar untuk dapat key API.</p>
+
+      <form id="dl-form" class="search">
+        <input type="url" id="url" placeholder="Tempel link video di sini..." required autocomplete="off">
+        <button type="button" class="paste-btn" id="btn-paste" title="Tempel dari clipboard">⧉</button>
+        <button type="submit" id="btn-submit"><span id="btn-label">Download</span></button>
+      </form>
+
+      <div class="actions">
+        <button type="button" class="ghost-btn" id="btn-mp3">Konversi ke MP3</button>
+        <span class="hint">60 request/menit per IP tanpa key</span>
+      </div>
+
+      <div class="statsbar" id="global-stats">
+        <div class="stat"><div class="num">-</div><div class="lbl">Hits hari ini</div></div>
+        <div class="stat"><div class="num">-</div><div class="lbl">Total hits</div></div>
+        <div class="stat"><div class="num">-</div><div class="lbl">Pengguna terdaftar</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="api">
+      <h2 class="sec-title">API untuk bot kamu</h2>
+      <p class="sec-sub">Daftar request dipakai bot kamu: 1 request sukses = 1 credit. Tanpa key tetap bisa, tapi dapat 1000 credit gratis per hari setelah daftar.</p>
+      <div class="card">
+        <div class="eprow"><span><span class="m post">POST</span><code>/api/download</code></span><span class="d">deteksi otomatis</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/yt?url=...</code></span><span class="d">YouTube</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/ig?url=...</code></span><span class="d">Instagram</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/fb?url=...</code></span><span class="d">Facebook</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/tt?url=...</code></span><span class="d">TikTok</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/x?url=...</code></span><span class="d">X / Twitter</span></div>
+        <div class="eprow"><span><span class="m get">GET</span><code>/api/mp3?url=...</code></span><span class="d">audio MP3</span></div>
+        <div style="margin-top:1.25rem">
+          <p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.5rem">Pakai key kamu (kode <code class="inline">md_...</code> dari dashboard):</p>
+          <pre class="curl">curl -X POST https://zunndev.my.id/api/download \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: md_xxx" \
+  -d '{"url": "https://youtube.com/watch?v=..."}'</pre>
+          <p style="color:var(--muted-2);font-size:0.8rem">Dokumentasi lengkap: <a href="/api/docs" style="color:var(--green)">Swagger UI</a> &middot; <a href="/api/redoc" style="color:var(--green)">ReDoc</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="credit">
+      <h2 class="sec-title">Credit</h2>
+      <p class="sec-sub">Pemakaian diukur per hit: 1 request yang berhasil = 1 credit.</p>
+      <div class="alertbox">
+        <b>Setiap akun baru langsung dapat 1000 credit.</b> Setiap hari, akun yang belum membeli role mendapat tambahan 1000 credit gratis secara otomatis. Credit tidak menumpuk melebihi jatah harianmu.
+      </div>
+    </section>
+
+    <section class="section" id="harga">
+      <h2 class="sec-title">Harga Role</h2>
+      <p class="sec-sub">Role menentukan jatah credit harian kamu. Pembayaran manual (transfer/DANA/QRIS) — info pembayaran segera hadir.</p>
+      <div class="pricing" id="pricing"></div>
+    </section>
+
+    <section class="section" id="update">
+      <h2 class="sec-title">Update</h2>
+      <p class="sec-sub">Perubahan sistem, dicatat di sini.</p>
+      <div class="card">
+        <div class="updates">
+          <div class="upd"><span class="date">17 Agu 2026</span><span class="txt"><b>Rilis v3.0</b> — sistem akun, key API, credit harian, dan dashboard pemakaian.</span></div>
+          <div class="upd"><span class="date">17 Agu 2026</span><span class="txt">Penambahan halaman <b>Login &amp; Register</b> (email + password).</span></div>
+          <div class="upd"><span class="date">17 Agu 2026</span><span class="txt">Google &amp; GitHub login akan menyusul.</span></div>
+          <div class="upd"><span class="date">16 Agu 2026</span><span class="txt">Endpoint <b>MP3</b> ditambahkan.</span></div>
+          <div class="upd"><span class="date">15 Agu 2026</span><span class="txt">Anti-bot &amp; queue satu request per waktu ditambahkan.</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Media Downloader &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/api/stats">Stats</a> &middot; <a href="/api/openapi.json">OpenAPI</a></p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
