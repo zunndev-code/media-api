@@ -157,7 +157,7 @@
     async function load() {
       const { res, body } = await api('/api/dashboard');
       if (!res.ok) {
-        location.href = '/login.html';
+        location.href = '/login';
         return;
       }
       const d = body.data;

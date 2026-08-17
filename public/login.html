@@ -47,11 +47,11 @@
     </form>
     <div id="msg"></div>
 
-    <p class="auth-foot">Belum punya akun? <a href="/register.html">Daftar gratis</a></p>
+    <p class="auth-foot">Belum punya akun? <a href="/register">Daftar gratis</a></p>
   </div>
 
   <script>
-    fetch('/api/me').then(r => { if (r.ok) location.href = '/dashboard.html'; });
+    fetch('/api/me').then(r => { if (r.ok) location.href = '/dashboard'; });
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
@@ -67,7 +67,7 @@
         });
         const body = await res.json();
         if (res.ok) {
-          location.href = '/dashboard.html';
+          location.href = '/dashboard';
         } else {
           msg.innerHTML = '<div class="alertbox err" style="margin-top:1rem">' + esc((body.error && body.error.message) || 'Gagal masuk.') + '</div>';
         }

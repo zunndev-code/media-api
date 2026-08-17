@@ -43,8 +43,8 @@ async function copyText(text) {
 
 const NAV_LINKS = [
   { href: '/', label: 'Blog' },
-  { href: '/endpoints.html', label: 'Endpoint' },
-  { href: '/stats.html', label: 'Stats' },
+  { href: '/endpoints', label: 'Endpoint' },
+  { href: '/stats', label: 'Stats' },
   { href: '/api/docs', label: 'API Docs' },
 ];
 
@@ -95,7 +95,7 @@ function setNavAuth() {
       if (!elm) return;
       if (res.ok) {
         elm.innerHTML =
-          '<a href="/dashboard.html" class="primary">Dashboard</a>' +
+          '<a href="/dashboard" class="primary">Dashboard</a>' +
           '<a href="#" data-logout="1">Keluar</a>';
         elm.querySelector('[data-logout]').addEventListener('click', async (e) => {
           e.preventDefault();
@@ -104,8 +104,8 @@ function setNavAuth() {
         });
       } else {
         elm.innerHTML =
-          '<a href="/login.html">Masuk</a>' +
-          '<a href="/register.html" class="primary">Daftar</a>';
+          '<a href="/login">Masuk</a>' +
+          '<a href="/register" class="primary">Daftar</a>';
       }
     };
     fill('nav-auth');
@@ -225,7 +225,7 @@ function initCTA() {
   if (!cta) return;
   api('/api/me').then(({ res }) => {
     if (res.ok) {
-      cta.href = '/dashboard.html';
+      cta.href = '/dashboard';
       cta.textContent = 'Ke Dashboard';
     }
   });

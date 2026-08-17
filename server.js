@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/swagger-ui', express.static(SWAGGER_DIST));
+app.get(/^\/(\w+)\.html$/, (req, res) => res.redirect(301, '/' + req.params[0]));
 
 function baseUrl(req) {
   const proto = req.get('x-forwarded-proto') || req.protocol;
@@ -84,6 +85,21 @@ app.get('/api/redoc', (req, res) => {
 <script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0/bundles/redoc.standalone.js"></script>
 </body>
 </html>`);
+});
+
+const PAGE_ALIASES = {
+  stats: 'stats.html',
+  dashboard: 'dashboard.html',
+  login: 'login.html',
+  register: 'register.html',
+  endpoints: 'endpoints.html',
+  docs: 'docs.html',
+};
+
+app.get('/:page', (req, res, next) => {
+  const file = PAGE_ALIASES[req.params.page];
+  if (file) return res.sendFile(path.join(__dirname, 'public', file));
+  next();
 });
 
 app.get('/api/docs', (req, res) => {
