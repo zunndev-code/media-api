@@ -27,9 +27,9 @@ const limiter = rateLimit({
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.get(/^\/(\w+)\.html$/, (req, res) => res.redirect(301, '/' + req.params[0]));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/swagger-ui', express.static(SWAGGER_DIST));
-app.get(/^\/(\w+)\.html$/, (req, res) => res.redirect(301, '/' + req.params[0]));
 
 function baseUrl(req) {
   const proto = req.get('x-forwarded-proto') || req.protocol;
