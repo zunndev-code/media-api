@@ -458,6 +458,7 @@ nav .nav-links a.primary:hover { background: #16b95b; }
 }
 .m.post { background: #4ade80; }
 .m.get { background: #60a5fa; }
+.m.del { background: #f87171; }
 
 code.inline {
   background: var(--panel-2);

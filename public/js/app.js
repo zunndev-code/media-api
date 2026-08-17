@@ -43,6 +43,7 @@ async function copyText(text) {
 
 const NAV_LINKS = [
   { href: '/', label: 'Blog' },
+  { href: '/endpoints.html', label: 'Endpoint' },
   { href: '/stats.html', label: 'Stats' },
   { href: '/api/docs', label: 'API Docs' },
 ];

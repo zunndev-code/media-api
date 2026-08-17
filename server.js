@@ -87,34 +87,7 @@ app.get('/api/redoc', (req, res) => {
 });
 
 app.get('/api/docs', (req, res) => {
-  const host = baseUrl(req);
-  res.send(`<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Media Downloader API - Dokumentasi</title>
-<link rel="stylesheet" href="/swagger-ui/swagger-ui.css"/>
-<style>body { margin: 0; } .swagger-ui .topbar { display: none; }</style>
-</head>
-<body>
-<div id="swagger-ui"></div>
-<script src="/swagger-ui/swagger-ui-bundle.js"></script>
-<script src="/swagger-ui/swagger-ui-standalone-preset.js"></script>
-<script>
-window.onload = function () {
-  window.ui = SwaggerUIBundle({
-    url: '${host}/api/openapi.json',
-    dom_id: '#swagger-ui',
-    presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-    layout: 'StandaloneLayout',
-    deepLinking: true,
-    docExpansion: 'list',
-  });
-};
-</script>
-</body>
-</html>`);
+  res.sendFile(path.join(__dirname, 'public', 'docs.html'));
 });
 
 app.use((req, res) => {

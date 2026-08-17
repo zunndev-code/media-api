@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumentasi — Zunndev API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .doc h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .doc h2 { font-size: 1.05rem; font-weight: 700; margin: 2rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+    .doc p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.9rem; line-height: 1.65; }
+    .doc ol, .doc ul { color: var(--muted); font-size: 0.92rem; padding-left: 1.4rem; margin-bottom: 1rem; line-height: 1.7; }
+    .doc li { margin-bottom: 0.4rem; }
+    .doc li b { color: var(--text); }
+    .doc code.inline { font-size: 0.8rem; }
+    .doc .warn {
+      background: var(--green-dark);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      color: var(--green-bright);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main class="wrap wide doc">
+    <section class="hero" style="padding-bottom:1rem">
+      <p class="kicker">Dokumentasi &middot; Zunndev API</p>
+      <h1>Cara pakai API.</h1>
+      <p>Dari daftar sampai request pertama, kurang dari 1 menit. Semua layanan pakai cara yang sama.</p>
+    </section>
+
+    <h2>1. Daftar akun</h2>
+    <p>Buka <a href="/register.html" style="color:var(--green)">halaman daftar</a>, isi nama, email, dan password. Akun baru langsung dapat <b style="color:var(--text)">1000 credit</b>. Setiap hari, akun yang belum membeli role mendapat tambahan <b style="color:var(--text)">1000 credit gratis</b>.</p>
+
+    <h2>2. Buat API key</h2>
+    <p>Masuk ke <a href="/dashboard.html" style="color:var(--green)">Dashboard</a>, tekan tombol "Buat key". Key berbentuk <code class="inline">md_...</code>. Simpan baik-baik — key hanya ditampilkan sekali.</p>
+    <p>Key dipakai lewat header <code class="inline">X-API-Key</code> atau parameter <code class="inline">key</code>.</p>
+
+    <h2>3. Kirim request</h2>
+    <p>Setiap request yang berhasil memotong <b style="color:var(--text)">1 credit</b>. Kalau credit habis, dapat <code class="inline">402 insufficient_credits</code> — tunggu jatah harian berikutnya.</p>
+    <pre class="curl">curl -X POST https://zunndev.my.id/api/download \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: md_xxx" \
+  -d '{"url": "https://youtube.com/watch?v=..."}'</pre>
+
+    <h2>4. Format response</h2>
+    <p>Sukses:</p>
+    <pre class="curl">{
+  "status": "success",
+  "data": {
+    "platform": "Youtube",
+    "title": "...",
+    "thumbnail": "https://...",
+    "duration": 213,
+    "uploader": "...",
+    "formats": [{ "quality": "1080p", "ext": "mp4", "url": "https://...", "filesize": 11832459 }],
+    "audio": [{ "quality": "128 kbps", "ext": "m4a", "url": "https://...", "filesize": 3051204 }]
+  }
+}</pre>
+    <p>Gagal:</p>
+    <pre class="curl">{
+  "status": "error",
+  "error": { "code": "invalid_request", "message": "Field \"url\" wajib diisi." }
+}</pre>
+
+    <h2>5. Kode error</h2>
+    <ul>
+      <li><code class="inline">400 invalid_request</code> — parameter salah / domain tidak diizinkan</li>
+      <li><code class="inline">401 unauthorized</code> — belum login</li>
+      <li><code class="inline">401 invalid_key</code> — API key tidak dikenal</li>
+      <li><code class="inline">402 insufficient_credits</code> — credit habis</li>
+      <li><code class="inline">403 key_disabled</code> — key dinonaktifkan</li>
+      <li><code class="inline">404 not_found</code> — format tidak ditemukan</li>
+      <li><code class="inline">409 email_taken</code> — email sudah terdaftar</li>
+      <li><code class="inline">429 rate_limited</code> — terlalu banyak request (60/menit per IP)</li>
+      <li><code class="inline">502 scrape_failed</code> — gagal ambil data dari platform</li>
+    </ul>
+
+    <h2>6. Credit &amp; role</h2>
+    <p>1 request sukses = 1 credit. Akun gratis: 1000 credit per hari. Role berbayar menaikkan jatah harian — daftar harga di <a href="/#harga" style="color:var(--green)">halaman blog</a>.</p>
+
+    <h2>7. Tanpa key?</h2>
+    <p>Request tanpa key tetap bisa dipakai (coba-coba / demo), dibatasi <code class="inline">60 request/menit per IP</code>. Untuk pemakaian bot yang serius, daftar dan pakai key kamu — biar credit &amp; statistik tercatat.</p>
+
+    <div class="warn">Daftar endpoint lengkap ada di halaman <a href="/endpoints.html" style="color:var(--green-bright)">Endpoint</a>. Daftar layanan &amp; harga ada di halaman utama.</div>
+  </main>
+
+  <footer>
+    <p><a href="/">Blog</a> &middot; <a href="/stats.html">Stats</a> &middot; <a href="/dashboard.html">Dashboard</a></p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
