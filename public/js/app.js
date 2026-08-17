@@ -96,6 +96,28 @@ function buildNav() {
   window.addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
 }
 
+function buildFooter() {
+  const f = document.querySelector('footer');
+  if (!f || f.dataset.built) return;
+  f.dataset.built = '1';
+  f.innerHTML =
+    '<div class="foot-grid">' +
+    '<div class="foot-brand">' +
+    '<a class="logo" href="/">' +
+    '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>' +
+    'Zunndev API</a>' +
+    '<p>API platform buatan anak Indonesia. Mulai dari media downloader, nyusul tools lainnya.</p>' +
+    '</div>' +
+    '<div><h4>Menu</h4><a href="/">Blog</a><a href="/endpoints">Endpoint</a><a href="/stats">Stats</a><a href="/api/docs">API Docs</a></div>' +
+    '<div><h4>Akun</h4><a href="/login">Masuk</a><a href="/register">Daftar gratis</a><a href="/dashboard">Dashboard</a><a href="/beli">Beli Role</a></div>' +
+    '<div><h4>Layanan</h4><a href="/#demo">Media Downloader</a><a href="/#harga">Harga</a><a href="/beli">Upgrade credit</a><a href="/api/docs">Cara pakai</a></div>' +
+    '</div>' +
+    '<div class="foot-bottom">' +
+    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API &mdash; dibuat manual, bukan template.</span>' +
+    '<span>v3.1</span>' +
+    '</div>';
+}
+
 function setNavAuth() {
   api('/api/me').then(({ res, body }) => {
     const fill = (uid) => {
@@ -280,7 +302,7 @@ function initPricing() {
       const btn = k === 'free'
         ? '<div class="buy">Gratis selamanya</div>'
         : '<div class="buy soon">Segera hadir</div>';
-      return '<div class="price-card">' +
+      return '<div class="price-card" style="--role-color:' + r.color + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
         '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
@@ -306,6 +328,7 @@ function initApiList() {
 
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();
+  buildFooter();
   setNavAuth();
   initDownloader();
   initGlobalStats();

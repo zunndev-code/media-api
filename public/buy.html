@@ -23,7 +23,7 @@
     .cur-plan .lbl { font-size: 0.78rem; color: var(--muted); }
     .cur-plan .val { font-size: 1.05rem; font-weight: 800; margin-top: 0.15rem; }
     .cur-plan .cred { font-size: 0.82rem; color: var(--green-bright); font-weight: 600; }
-    .price-card.current { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 10px 30px rgba(27, 217, 106, 0.08); }
+    .price-card.current { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 10px 30px rgba(240, 181, 72, 0.1); }
     .now-badge {
       display: inline-block;
       margin-top: 0.6rem;
@@ -106,7 +106,7 @@
         const btn = k === 'free'
           ? '<div class="buy">Gratis selamanya</div>'
           : '<div class="buy soon">Segera hadir</div>';
-        return '<div class="price-card' + (current ? ' current' : '') + '">' +
+        return '<div class="price-card' + (current ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
           '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
           '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
           '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
