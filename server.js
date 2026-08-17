@@ -58,12 +58,19 @@ function enqueue(task) {
   return run;
 }
 
+function baseUrl(req) {
+  const proto = req.get('x-forwarded-proto') || req.protocol;
+  return proto + '://' + req.get('host');
+}
+
 app.get('/', (req, res) => {
+  if (req.accepts('html')) return res.redirect('/api/docs');
+  const host = baseUrl(req);
   res.json({
     name: 'Media Downloader API',
     version: '2.0.0',
-    docs: 'https://' + req.get('host') + '/api/docs',
-    openapi: 'https://' + req.get('host') + '/api/openapi.json',
+    docs: host + '/api/docs',
+    openapi: host + '/api/openapi.json',
     endpoints: {
       'POST /api/download': { desc: 'Download dari platform mana pun (deteksi otomatis)', body: { url: 'https://...', type: 'mp3|video (opsional)' }, example: 'curl -X POST https://host/api/download -H "Content-Type: application/json" -d \'{"url": "https://youtube.com/watch?v=..."}\'' },
       'GET /api/download?url=...': 'Sama seperti POST, via query param',
@@ -121,11 +128,11 @@ app.get('/api/x', makeHandler('x'));
 app.get('/api/mp3', makeHandler(null, true));
 
 app.get('/api/openapi.json', (req, res) => {
-  res.json(buildOpenApiSpec('https://' + req.get('host')));
+  res.json(buildOpenApiSpec(baseUrl(req)));
 });
 
 app.get('/api/docs', (req, res) => {
-  res.send(docsHtml('https://' + req.get('host')));
+  res.send(docsHtml(baseUrl(req)));
 });
 
 app.use('/swagger-ui', express.static(SWAGGER_DIST));
