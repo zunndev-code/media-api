@@ -810,6 +810,6 @@ footer a:hover { color: var(--green); }
   .result-top img { width: 100%; height: auto; }
   .statsbar, .dash-grid { grid-template-columns: 1fr 1fr; }
   .dash-grid { grid-template-columns: repeat(2, 1fr); }
-  .pricing { grid-template-columns: 1fr 1fr; }
+  .pricing { grid-template-columns: 1fr; }
   .oauth-row { grid-template-columns: 1fr; }
 }
