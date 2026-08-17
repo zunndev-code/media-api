@@ -6,18 +6,21 @@ function signToken(userId) {
   return jwt.sign({ uid: userId }, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRES });
 }
 
-function setAuthCookie(res, token) {
-  const secure = config.FORCE_SECURE;
+function isSecure(req) {
+  return req.secure || req.get('x-forwarded-proto') === 'https' || config.FORCE_SECURE;
+}
+
+function setAuthCookie(req, res, token) {
   res.cookie(config.COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure,
+    secure: isSecure(req),
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
 }
 
-function clearAuthCookie(res) {
-  res.clearCookie(config.COOKIE_NAME, { httpOnly: true, sameSite: 'lax', secure: config.FORCE_SECURE });
+function clearAuthCookie(req, res) {
+  res.clearCookie(config.COOKIE_NAME, { httpOnly: true, sameSite: 'lax', secure: isSecure(req) });
 }
 
 async function loadUser(req) {

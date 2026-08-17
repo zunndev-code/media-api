@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
   await grantDaily(user.id, user.role);
   const fresh = await pool.query('SELECT credits FROM users WHERE id = $1', [user.id]);
   user.credits = fresh.rows[0].credits;
-  setAuthCookie(res, signToken(user.id));
+  setAuthCookie(req, res, signToken(user.id));
   return ok(res, 201, publicUser(user));
 });
 
@@ -50,12 +50,12 @@ router.post('/login', async (req, res) => {
   if (!user || !user.password_hash || !bcrypt.compareSync(String(password), user.password_hash)) {
     return fail(res, 401, 'invalid_credentials', 'Email atau password salah.');
   }
-  setAuthCookie(res, signToken(user.id));
+  setAuthCookie(req, res, signToken(user.id));
   return ok(res, 200, publicUser(user));
 });
 
 router.post('/logout', (req, res) => {
-  clearAuthCookie(res);
+  clearAuthCookie(req, res);
   return ok(res, 200, { loggedOut: true });
 });
 
