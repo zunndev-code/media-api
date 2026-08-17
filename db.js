@@ -44,6 +44,20 @@ CREATE TABLE IF NOT EXISTS daily_free (
   granted INT NOT NULL DEFAULT 0,
   PRIMARY KEY (user_id, day)
 );
+
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  role TEXT NOT NULL,
+  amount INT NOT NULL,
+  trx_id TEXT UNIQUE,
+  qris_url TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  paid_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders (user_id, created_at DESC);
 `;
 
 async function initDb() {

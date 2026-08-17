@@ -162,6 +162,7 @@ function buildOpenApiSpec(host) {
       { name: 'Auth', description: 'Register, login, logout, info akun' },
       { name: 'Keys', description: 'Kelola API key' },
       { name: 'Stats', description: 'Statistik global & pemakaian' },
+      { name: 'Payment', description: 'Pesanan upgrade role via QRIS' },
       { name: 'Download', description: 'Ekstrak media dari URL (layanan Media Downloader)' },
     ],
     paths: {
@@ -234,6 +235,58 @@ function buildOpenApiSpec(host) {
           summary: 'Info akun + key + pemakaian hari ini (perlu login)',
           operationId: 'me',
           responses: { 200: okResp('Data akun.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/orders': {
+        get: {
+          tags: ['Payment'],
+          summary: 'Daftar pesanan role kamu',
+          operationId: 'ordersList',
+          responses: { 200: okResp('Daftar pesanan.'), ...ERROR_RESPONSES },
+        },
+        post: {
+          tags: ['Payment'],
+          summary: 'Buat pesanan + QRIS untuk upgrade role',
+          operationId: 'ordersCreate',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['role'],
+                  properties: { role: { type: 'string', enum: ['vip', 'gars', 'vilions', 'verus'], example: 'vip' } },
+                },
+              },
+            },
+          },
+          responses: { 201: okResp('Pesanan dibuat, QRIS siap dibayar.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/orders/{id}': {
+        get: {
+          tags: ['Payment'],
+          summary: 'Cek status pesanan (otomatis cek ke QRIS.PW)',
+          operationId: 'ordersGet',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { 200: okResp('Status pesanan terbaru.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/orders/{id}/cancel': {
+        post: {
+          tags: ['Payment'],
+          summary: 'Batalkan pesanan yang masih pending',
+          operationId: 'ordersCancel',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { 200: okResp('Pesanan dibatalkan.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/webhook/qris': {
+        post: {
+          tags: ['Payment'],
+          summary: 'Webhook notifikasi pembayaran dari QRIS.PW',
+          operationId: 'qrisWebhook',
+          responses: { 200: okResp('Acknowledged.'), 401: okResp('Signature tidak valid.') },
         },
       },
       '/api/keys': {

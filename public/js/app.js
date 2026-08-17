@@ -160,6 +160,15 @@ function welcomeToast(name) {
   setTimeout(hide, 4500);
 }
 
+function toastMsg(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<span class="toast-txt"><b>' + esc(msg) + '</b></span>';
+  document.body.appendChild(t);
+  const hide = () => { t.classList.add('out'); setTimeout(() => t.remove(), 350); };
+  setTimeout(hide, 3200);
+}
+
 function detectPlatform(url) {
   try {
     const host = new URL(url).hostname.replace(/^www\./, '');
@@ -290,25 +299,233 @@ function initGlobalStats() {
   });
 }
 
-function initPricing() {
+const PAY_STATUS = {
+  pending: 'Menunggu pembayaran',
+  paid: 'Berhasil',
+  expired: 'Kadaluarsa',
+  failed: 'Gagal',
+  cancelled: 'Dibatalkan',
+};
+
+function payStatusClass(s) {
+  return { pending: 'pend', paid: 'ok', expired: 'bad', failed: 'bad', cancelled: 'mute' }[s] || 'mute';
+}
+
+function payStatusBadge(s) {
+  return '<span class="pay-badge ' + payStatusClass(s) + '">' + (PAY_STATUS[s] || s) + '</span>';
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return '00:00';
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function openPayModal(order, opts) {
+  opts = opts || {};
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg show';
+  bg.innerHTML = '<div class="modal pay-modal"><div id="pay-body"></div></div>';
+  document.body.appendChild(bg);
+  let stopped = false;
+  let timer = null;
+  const close = () => {
+    stopped = true;
+    clearInterval(timer);
+    bg.remove();
+  };
+  bg.addEventListener('click', (e) => { if (e.target === bg && !bg.querySelector('.pay-hold')) close(); });
+
+  function render(state) {
+    const body = bg.querySelector('#pay-body');
+    if (state === 'create') {
+      body.innerHTML =
+        '<h3>Buat pembayaran</h3>' +
+        '<p>Membuat QRIS ' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '...</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+    } else if (state === 'qr') {
+      body.innerHTML =
+        '<h3>Scan &amp; bayar</h3>' +
+        '<div class="pay-amount"><b>Rp ' + fmtNum(order.amount) + '</b>' +
+        '<span>' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</span></div>' +
+        '<img class="pay-qr" src="' + esc(order.qrisUrl) + '" alt="QRIS">' +
+        '<p class="pay-hint">Scan pakai GoPay, OVO, DANA, ShopeePay, atau m-banking mana aja. Pembayaran ke-deteksi otomatis.</p>' +
+        '<p class="pay-cd">QR valid <b id="pay-count">--:--</b> · status <b>Menunggu...</b></p>' +
+        '<div class="modal-actions"><button class="modal-btn danger" id="pay-cancel">Batal</button>' +
+        '<button class="modal-btn" id="pay-close">Tutup</button></div>';
+      bg.querySelector('#pay-close').addEventListener('click', close);
+      bg.querySelector('#pay-cancel').addEventListener('click', async () => {
+        const { res, body: b } = await api('/api/orders/' + order.id + '/cancel', { method: 'POST' });
+        if (res.ok) { close(); opts.onChange && opts.onChange(); }
+        else if (b && b.error) toastMsg(b.error.message);
+      });
+    } else if (state === 'paid') {
+      body.innerHTML =
+        '<h3>Pembayaran berhasil!</h3>' +
+        '<p>Role <b style="color:var(--green-bright)">' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</b> aktif sekarang. Jatah credit harian kamu sudah naik.</p>' +
+        '<div class="modal-actions"><button class="modal-btn primary" id="pay-close">Mantap</button></div>';
+      bg.querySelector('#pay-close').addEventListener('click', close);
+    } else if (state === 'expired') {
+      body.innerHTML =
+        '<h3>QR kadaluarsa</h3>' +
+        '<p>QR berlaku 10 menit dan udah lewat. Buat ulang QR buat bayar role <b>' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</b>.</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Nanti</button>' +
+        '<button class="modal-btn primary" id="pay-retry">Buat ulang</button></div>';
+      bg.querySelector('#pay-close').addEventListener('click', close);
+      bg.querySelector('#pay-retry').addEventListener('click', () => createOrder(order.role));
+    } else if (state === 'disabled') {
+      body.innerHTML =
+        '<h3>Pembayaran QRIS belum aktif</h3>' +
+        '<p>' + esc(order.errMsg || 'Hubungi admin Zunndev API.') + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+      bg.querySelector('#pay-close').addEventListener('click', close);
+    } else if (state === 'fail') {
+      body.innerHTML =
+        '<h3>Gagal buat pembayaran</h3>' +
+        '<p>' + esc(order.errMsg || 'Coba lagi sebentar ya.') + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+      bg.querySelector('#pay-close').addEventListener('click', close);
+    }
+  }
+
+  function tick(orderData) {
+    const elm = bg.querySelector('#pay-count');
+    if (!elm || !orderData.expiresAt) return;
+    const left = new Date(orderData.expiresAt).getTime() - Date.now();
+    elm.textContent = formatCountdown(left);
+    if (left <= 0 && !stopped) {
+      clearInterval(timer);
+      render('expired');
+    }
+  }
+
+  function poll() {
+    api('/api/orders/' + order.id).then(({ res, body }) => {
+      if (stopped) return;
+      if (!res.ok || !body || body.status !== 'success') return;
+      const o = body.data;
+      order.status = o.status;
+      order.expiresAt = o.expiresAt;
+      if (o.status === 'paid') {
+        clearInterval(timer);
+        render('paid');
+        opts.onPaid && opts.onPaid(o);
+        opts.onChange && opts.onChange();
+      } else if (['expired', 'failed', 'cancelled'].includes(o.status)) {
+        clearInterval(timer);
+        render('expired');
+        opts.onChange && opts.onChange();
+      } else {
+        tick(o);
+      }
+    });
+  }
+
+  function createOrder(role) {
+    render('create');
+    api('/api/orders', { method: 'POST', body: JSON.stringify({ role: role }) }).then(({ res, body }) => {
+      if (stopped) return;
+      if (!res.ok || !body || body.status !== 'success') {
+        const e = (body && body.error) || {};
+        order.errMsg = e.message || 'Coba lagi ya.';
+        render(e.code === 'payment_disabled' ? 'disabled' : 'fail');
+        return;
+      }
+      order.id = body.data.id;
+      order.qrisUrl = body.data.qrisUrl;
+      order.expiresAt = body.data.expiresAt;
+      render('qr');
+      tick(order);
+      clearInterval(timer);
+      timer = setInterval(poll, 5000);
+    });
+  }
+
+  createOrder(order.role);
+}
+
+function initBuy() {
   const box = $('pricing');
   if (!box) return;
-  api('/api/roles').then(({ res, body }) => {
+  const order = ['free', 'vip', 'gars', 'vilions', 'verus'];
+  api('/api/roles').then(async ({ res, body }) => {
     if (!res.ok || !body) return;
     const roles = body.data;
-    const order = ['free', 'vip', 'gars', 'vilions', 'verus'];
-    box.innerHTML = order.map((k, i) => {
+    const meReq = await api('/api/me');
+    const me = meReq.res.ok ? meReq.body.data : null;
+    const cur = $('cur-plan');
+    if (cur && me) {
+      cur.style.display = 'flex';
+      $('cur-name').textContent = roles[me.role] ? roles[me.role].label : me.role;
+      $('cur-cred').textContent = fmtNum(me.credits) + ' credit tersisa';
+    }
+    box.innerHTML = order.map((k) => {
       const r = roles[k];
       if (!r) return '';
-      const btn = k === 'free'
-        ? '<div class="buy">Gratis selamanya</div>'
-        : '<div class="buy soon">Segera hadir</div>';
-      return '<div class="price-card" style="--role-color:' + r.color + '">' +
+      const isCurrent = me && me.role === k;
+      let btn;
+      if (k === 'free') btn = '<div class="buy">Gratis selamanya</div>';
+      else if (!me) btn = '<a class="buy soon" href="/login">Masuk dulu</a>';
+      else if (isCurrent) btn = '<div class="buy">Plan kamu</div>';
+      else btn = '<button class="buy" data-buy="' + k + '">Beli sekarang</button>';
+      return '<div class="price-card' + (isCurrent ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
         '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
+        (isCurrent ? '<div class="now-badge">Plan kamu</div>' : '') +
         btn + '</div>';
     }).join('');
+    box.querySelectorAll('[data-buy]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const role = b.dataset.buy;
+        openPayModal({ role: role, roleInfo: roles[role], amount: roles[role].price }, {
+          onPaid: () => { location.reload(); },
+        });
+      });
+    });
+  });
+}
+
+function initOrders() {
+  const box = $('orders-list');
+  if (!box) return;
+  api('/api/orders').then(async ({ res, body }) => {
+    const wrap = $('orders-wrap');
+    if (!res.ok || !body || body.status !== 'success') {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+    const list = body.data;
+    const rolesReq = await api('/api/roles');
+    const roles = rolesReq.res.ok ? rolesReq.body.data : {};
+    if (!list.length) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+    box.innerHTML = list.map((o) =>
+      '<div class="order-row">' +
+      '<div class="order-main"><span class="order-role" style="color:' + ((roles[o.role] && roles[o.role].color) || 'var(--text)') + '">' + esc((roles[o.role] && roles[o.role].label) || o.role) + '</span>' +
+      '<span class="order-meta">Rp ' + fmtNum(o.amount) + ' · ' + fmtDate(o.createdAt) + '</span></div>' +
+      payStatusBadge(o.status) +
+      (o.status === 'pending'
+        ? '<button class="order-btn" data-view="' + o.id + '">Lihat QR</button><button class="order-btn ghost" data-cancel="' + o.id + '">Batal</button>'
+        : '') +
+      '</div>'
+    ).join('');
+    box.querySelectorAll('[data-view]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const o = list.find((x) => x.id === Number(b.dataset.view));
+        if (!o) return;
+        openPayModal(Object.assign({}, o, { roleInfo: roles[o.role] }), { onChange: initOrders });
+      });
+    });
+    box.querySelectorAll('[data-cancel]').forEach((b) => {
+      b.addEventListener('click', async () => {
+        await api('/api/orders/' + b.dataset.cancel + '/cancel', { method: 'POST' });
+        initOrders();
+      });
+    });
   });
 }
 
@@ -333,7 +550,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setNavAuth();
   initDownloader();
   initGlobalStats();
-  initPricing();
+  initBuy();
+  initOrders();
   initApiList();
   initCTA();
 });

@@ -6,7 +6,7 @@
   <title>Dashboard — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=22">
+  <link rel="stylesheet" href="/css/style.css?v=23">
 </head>
 <body>
   <nav id="nav"></nav>
@@ -57,6 +57,11 @@
         <table class="tbl" id="history-table"></table>
       </div>
     </section>
+
+    <section class="card" id="orders-wrap" style="display:none">
+      <h2>Pesanan Role</h2>
+      <div id="orders-list"></div>
+    </section>
   </main>
 
   <div class="modal-bg" id="modal-bg">
@@ -74,7 +79,7 @@
     <p>Zunndev API &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/">Blog</a></p>
   </footer>
 
-  <script src="/js/app.js?v=22"></script>
+  <script src="/js/app.js?v=23"></script>
   <script>
     const el = (id) => document.getElementById(id);
 
@@ -189,6 +194,7 @@
     });
 
     load();
+    initOrders();
   </script>
 </body>
 </html>

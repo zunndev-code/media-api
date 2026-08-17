@@ -10,6 +10,7 @@ const { router: authRouter, publicUser } = require('./routes/auth');
 const keysRouter = require('./routes/keys');
 const statsRouter = require('./routes/stats');
 const downloadRouter = require('./routes/download');
+const paymentsRouter = require('./routes/payments');
 
 const app = express();
 const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'));
@@ -61,6 +62,10 @@ app.get('/api', (req, res) => {
     },
     auth_header: 'X-API-Key: md_... (1 credit per request sukses)',
     credits: 'Akun gratis: 1000 credit setiap hari. Top-up dengan upgrade role.',
+    payment: {
+      orders: { create: 'POST /api/orders', list: 'GET /api/orders', detail: 'GET /api/orders/:id', cancel: 'POST /api/orders/:id/cancel' },
+      webhook: 'POST /api/webhook/qris',
+    },
   });
 });
 
@@ -69,6 +74,7 @@ app.use('/api', authRouter);
 app.use('/api/keys', keysRouter);
 app.use('/api', statsRouter);
 app.use('/api', downloadRouter.router);
+app.use('/api', paymentsRouter.router);
 
 app.get('/api/openapi.json', (req, res) => {
   res.json(buildOpenApiSpec(baseUrl(req)));

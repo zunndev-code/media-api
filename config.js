@@ -47,6 +47,14 @@ module.exports = {
   JWT_EXPIRES: process.env.JWT_EXPIRES || '30d',
   COOKIE_NAME: 'md_token',
   FORCE_SECURE: process.env.FORCE_SECURE === 'true',
+  QRIS: {
+    base: 'https://qris.pw/api',
+    key: process.env.QRIS_API_KEY || '',
+    secret: process.env.QRIS_API_SECRET || '',
+    webhookSecret: process.env.QRIS_WEBHOOK_SECRET || '',
+    callbackUrl: process.env.QRIS_CALLBACK_URL || 'https://zunndev.my.id/api/webhook/qris',
+    enabled: !!(process.env.QRIS_API_KEY && process.env.QRIS_API_SECRET),
+  },
   ROLES,
   APIS,
 };

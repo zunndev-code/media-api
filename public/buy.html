@@ -6,7 +6,7 @@
   <title>Beli Role — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=22">
+  <link rel="stylesheet" href="/css/style.css?v=23">
   <style>
     .cur-plan {
       display: flex;
@@ -70,9 +70,9 @@
 
     <div class="pricing" id="pricing"></div>
 
-    <div class="note">
-      <b>Pembayaran manual segera hadir.</b><br>
-      Beli lewat Transfer Bank / DANA / QRIS — role aktif otomatis setelah pembayaran terverifikasi. Sambil nunggu, akun gratis tetap dapat <b>1000 credit</b> setiap hari.
+    <div class="note" id="pay-note">
+      <b>Pembayaran QRIS.</b><br>
+      Setelah kamu klik <b>Beli sekarang</b>, muncul QR untuk scan — bayar pakai e-wallet (GoPay, OVO, DANA, ShopeePay) atau m-banking mana aja. Role langsung aktif otomatis begitu pembayaran ke-detect. QR valid <b>10 menit</b>.
     </div>
   </main>
 
@@ -80,40 +80,7 @@
     <p><a href="/">Blog</a> &middot; <a href="/endpoints">Endpoint</a> &middot; <a href="/stats">Stats</a> &middot; <a href="/api/docs">API Docs</a></p>
   </footer>
 
-  <script src="/js/app.js?v=22"></script>
-  <script>
-    const order = ['free', 'vip', 'gars', 'vilions', 'verus'];
-
-    (async () => {
-      const rolesRes = await api('/api/roles');
-      const meReq = await api('/api/me');
-      const meRes = meReq.res, meBody = meReq.body;
-      const roles = rolesRes.body.data;
-      const box = el('pricing');
-      if (!rolesRes.res.ok || !roles) return;
-
-      if (meRes.ok) {
-        const me = meBody.data;
-        el('cur-plan').style.display = 'flex';
-        el('cur-name').textContent = roles[me.role] ? roles[me.role].label : me.role;
-        el('cur-cred').textContent = fmtNum(me.credits) + ' credit tersisa';
-      }
-
-      box.innerHTML = order.map(k => {
-        const r = roles[k];
-        if (!r) return '';
-        const current = meRes.ok && meBody.data.role === k;
-        const btn = k === 'free'
-          ? '<div class="buy">Gratis selamanya</div>'
-          : '<div class="buy soon">Segera hadir</div>';
-        return '<div class="price-card' + (current ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
-          '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
-          '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
-          '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
-          (current ? '<div class="now-badge">Plan kamu</div>' : '') +
-          btn + '</div>';
-      }).join('');
-    })();
-  </script>
+  <script src="/js/app.js?v=23"></script>
+  <script>initBuy();</script>
 </body>
 </html>
