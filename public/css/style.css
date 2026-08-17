@@ -61,26 +61,18 @@ nav {
 
 .logo {
   font-family: var(--brand);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   display: flex;
   align-items: center;
-  gap: 1rem;
   text-decoration: none;
   color: var(--text);
 }
-.logo .mark {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #f7c35c, #e07b39);
-  box-shadow: 0 4px 14px rgba(240, 181, 72, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.logo .mark svg { width: 15px; height: 15px; color: #241505; }
+.logo .wm { display: inline-flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.logo .wm .wmt { font-family: var(--brand); font-size: inherit; letter-spacing: 0.01em; }
+.logo .wm .dot { color: var(--green); }
+.logo .wiggle { width: 2.5em; height: auto; margin-top: 0.3em; color: var(--green); }
 
 .logo .tag {
   color: var(--muted);
@@ -1006,18 +998,10 @@ footer {
 .foot-brand .logo {
   display: block;
   margin-bottom: 1.25rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
 }
-.foot-brand .logo .mark {
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  margin-bottom: 2.5rem;
-  background: linear-gradient(135deg, #f7c35c, #e07b39);
-  box-shadow: 0 6px 20px rgba(240, 181, 72, 0.4);
-}
-.foot-brand .logo .mark svg { width: 22px; height: 22px; color: #241505; }
+.foot-brand .logo .wm .wmt { font-size: inherit; }
+.foot-brand .logo .wiggle { width: 2.8em; margin-top: 0.4em; }
 .foot-bottom {
   max-width: 1100px;
   margin: 3rem auto 0;
