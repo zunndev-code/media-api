@@ -22,8 +22,60 @@ router.get('/stats', async (req, res) => {
   });
 });
 
+router.get('/stats/daily', auth(false), async (req, res) => {
+  const { rows: days } = await pool.query(
+    `SELECT to_char(day, 'YYYY-MM-DD') AS day, hits
+     FROM generate_series(CURRENT_DATE - 13, CURRENT_DATE, interval '1 day') AS day
+     LEFT JOIN (
+       SELECT date_trunc('day', created_at) AS d, count(*) AS hits
+       FROM hits WHERE created_at >= CURRENT_DATE - 13
+       GROUP BY d
+     ) h ON h.d = day
+     ORDER BY day`
+  );
+  const data = {
+    days: days.map(r => ({ date: r.day, hits: Number(r.hits || 0) })),
+  };
+  if (req.user) {
+    const { rows: mine } = await pool.query(
+      `SELECT to_char(day, 'YYYY-MM-DD') AS day, hits
+       FROM generate_series(CURRENT_DATE - 13, CURRENT_DATE, interval '1 day') AS day
+       LEFT JOIN (
+         SELECT date_trunc('day', created_at) AS d, count(*) AS hits
+         FROM hits WHERE user_id = $1 AND created_at >= CURRENT_DATE - 13
+         GROUP BY d
+       ) h ON h.d = day
+       ORDER BY day`,
+      [req.user.id]
+    );
+    const { rows: today } = await pool.query(
+      'SELECT count(*) AS hits FROM hits WHERE user_id = $1 AND created_at >= CURRENT_DATE',
+      [req.user.id]
+    );
+    const { rows: total } = await pool.query(
+      'SELECT count(*) AS hits FROM hits WHERE user_id = $1',
+      [req.user.id]
+    );
+    const { rows: credits } = await pool.query(
+      'SELECT credits FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    data.me = {
+      days: mine.map(r => ({ date: r.day, hits: Number(r.hits || 0) })),
+      today: Number(today[0].hits),
+      total: Number(total[0].hits),
+      credits: Number(credits[0].credits),
+    };
+  }
+  return ok(res, 200, data);
+});
+
 router.get('/roles', (req, res) => {
   return ok(res, 200, config.ROLES);
+});
+
+router.get('/apis', (req, res) => {
+  return ok(res, 200, config.APIS);
 });
 
 router.get('/dashboard', auth(true), async (req, res) => {

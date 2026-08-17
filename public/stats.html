@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats — Media Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main class="wrap wide">
+    <section class="hero" style="padding-bottom:0">
+      <p class="kicker">Statistik &middot; update real-time</p>
+      <h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Hit seluruh <span class="hl">platform.</span></h1>
+      <p style="margin-bottom:0">Berapa kali bot &amp; aplikasi nembak API tiap hari.</p>
+    </section>
+
+    <div class="dash-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="dash-card green">
+        <div class="num" id="g-today">-</div>
+        <div class="lbl">Hits hari ini</div>
+      </div>
+      <div class="dash-card green">
+        <div class="num" id="g-total">-</div>
+        <div class="lbl">Total hits</div>
+      </div>
+      <div class="dash-card">
+        <div class="num" id="g-users">-</div>
+        <div class="lbl">Pengguna</div>
+      </div>
+      <div class="dash-card">
+        <div class="num" id="g-7d">-</div>
+        <div class="lbl">7 hari terakhir</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem">
+        <h2 style="margin-bottom:0">Hits 14 hari terakhir</h2>
+        <span class="live-badge">LIVE</span>
+      </div>
+      <div class="chart" id="chart-global"></div>
+      <div class="chart-labels" id="chart-labels"></div>
+    </section>
+
+    <section class="card hidden" id="me-box">
+      <h2>Pemakaian kamu <span class="live-badge" style="margin-left:.5rem">LIVE</span></h2>
+      <div class="dash-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="dash-card green"><div class="num" id="m-today">-</div><div class="lbl">Hits kamu hari ini</div></div>
+        <div class="dash-card green"><div class="num" id="m-total">-</div><div class="lbl">Total hits kamu</div></div>
+        <div class="dash-card green"><div class="num" id="m-credits">-</div><div class="lbl">Credit tersisa</div></div>
+      </div>
+      <div class="chart" id="chart-me"></div>
+      <div class="chart-labels" id="chart-me-labels"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="/">Blog</a> &middot; <a href="/dashboard.html">Dashboard</a> &middot; <a href="/api/docs">API Docs</a></p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const el = (id) => document.getElementById(id);
+
+    function renderChart(container, labelsContainer, days) {
+      const max = Math.max.apply(null, days.map(d => d.hits)) || 1;
+      el(container).innerHTML = days.map(d =>
+        '<div class="bar" style="height:' + Math.max(2, Math.round((d.hits / max) * 100)) + '%" title="' + d.date + ': ' + d.hits + '">' +
+        '<span class="tip">' + fmtNum(d.hits) + '</span></div>'
+      ).join('');
+      el(labelsContainer).innerHTML = days.map(d => {
+        const t = new Date(d.date);
+        return '<span>' + t.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) + '</span>';
+      }).join('');
+    }
+
+    async function load() {
+      const { res, body } = await api('/api/stats');
+      if (res.ok) {
+        el('g-today').textContent = fmtNum(body.data.hitsToday);
+        el('g-total').textContent = fmtNum(body.data.hitsTotal);
+        el('g-users').textContent = fmtNum(body.data.users);
+      }
+      const { res: resD, body: bodyD } = await api('/api/stats/daily');
+      if (resD.ok) {
+        renderChart('chart-global', 'chart-labels', bodyD.data.days);
+        const week = bodyD.data.days.slice(-7).reduce((a, d) => a + d.hits, 0);
+        el('g-7d').textContent = fmtNum(week);
+        if (bodyD.data.me) {
+          el('me-box').classList.remove('hidden');
+          el('m-today').textContent = fmtNum(bodyD.data.me.today);
+          el('m-total').textContent = fmtNum(bodyD.data.me.total);
+          el('m-credits').textContent = fmtNum(bodyD.data.me.credits);
+          renderChart('chart-me', 'chart-me-labels', bodyD.data.me.days);
+        }
+      }
+    }
+
+    load();
+    setInterval(load, 30000);
+  </script>
+</body>
+</html>

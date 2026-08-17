@@ -41,24 +41,63 @@ async function copyText(text) {
   }
 }
 
+const NAV_LINKS = [
+  { href: '/', label: 'Blog' },
+  { href: '/stats.html', label: 'Stats' },
+  { href: '/api/docs', label: 'API Docs' },
+];
+
+function buildNav() {
+  const nav = $('nav');
+  if (!nav) return;
+  const linksHtml = NAV_LINKS.map(l => '<a href="' + l.href + '">' + l.label + '</a>').join('');
+  nav.innerHTML =
+    '<a class="logo" href="/">' +
+    '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>' +
+    'Media Downloader</a>' +
+    '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
+    '<button class="burger" id="burger" aria-label="Menu">☰</button>' +
+    '<div class="drawer-bg" id="drawer-bg"></div>' +
+    '<div class="drawer" id="drawer">' +
+    '<div class="drawer-head"><span class="drawer-title">Menu</span><button class="burger" id="drawer-close" aria-label="Tutup">✕</button></div>' +
+    '<div class="drawer-links">' + linksHtml + '<div class="nav-auth" id="nav-auth-m"></div></div>' +
+    '</div>';
+
+  const burger = $('burger');
+  const close = $('drawer-close');
+  const drawer = $('drawer');
+  const bg = $('drawer-bg');
+  const open = () => { drawer.classList.add('open'); bg.classList.add('show'); document.body.style.overflow = 'hidden'; };
+  const shut = () => { drawer.classList.remove('open'); bg.classList.remove('show'); document.body.style.overflow = ''; };
+  burger.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  bg.addEventListener('click', shut);
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', shut));
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+}
+
 function setNavAuth() {
-  const wrap = $('nav-auth');
-  if (!wrap) return;
   api('/api/me').then(({ res }) => {
-    if (res.ok) {
-      wrap.innerHTML =
-        '<a href="/dashboard.html">Dashboard</a>' +
-        '<a href="#" id="nav-logout" class="primary">Keluar</a>';
-      $('nav-logout').addEventListener('click', async (e) => {
-        e.preventDefault();
-        await api('/api/logout', { method: 'POST' });
-        location.reload();
-      });
-    } else {
-      wrap.innerHTML =
-        '<a href="/login.html">Masuk</a>' +
-        '<a href="/register.html" class="primary">Daftar</a>';
-    }
+    const fill = (uid) => {
+      const el = $(uid);
+      if (!el) return;
+      if (res.ok) {
+        el.innerHTML =
+          '<a href="/dashboard.html">Dashboard</a>' +
+          '<a href="#" class="primary" data-logout="1">Keluar</a>';
+        el.querySelector('[data-logout]').addEventListener('click', async (e) => {
+          e.preventDefault();
+          await api('/api/logout', { method: 'POST' });
+          location.reload();
+        });
+      } else {
+        el.innerHTML =
+          '<a href="/login.html">Masuk</a>' +
+          '<a href="/register.html" class="primary">Daftar</a>';
+      }
+    };
+    fill('nav-auth');
+    fill('nav-auth-m');
   });
 }
 
@@ -198,15 +237,33 @@ function initPricing() {
       return '<div class="price-card' + featured + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
-        '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua platform</li><li>Tanpa batas key</li></ul>' +
+        '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
         btn + '</div>';
     }).join('');
   });
 }
 
+function initApiList() {
+  const box = $('api-list');
+  if (!box) return;
+  api('/api/apis').then(({ res, body }) => {
+    if (!res.ok || !body) return;
+    box.innerHTML = body.data.map(a =>
+      '<div class="api-card' + (a.status === 'soon' ? ' soon' : '') + '">' +
+      '<div class="api-head"><span class="api-name">' + esc(a.name) + '</span>' +
+      '<span class="api-status ' + (a.status === 'live' ? 'live' : 'soon') + '">' + (a.status === 'live' ? 'LIVE' : 'SEGERA') + '</span></div>' +
+      '<p class="api-desc">' + esc(a.desc) + '</p>' +
+      '<div class="api-paths">' + a.paths.map(p => '<code>' + esc(p) + '</code>').join('') + '</div>' +
+      '</div>'
+    ).join('');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  buildNav();
   setNavAuth();
   initDownloader();
   initGlobalStats();
   initPricing();
+  initApiList();
 });
