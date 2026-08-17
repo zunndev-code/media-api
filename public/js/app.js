@@ -56,7 +56,7 @@ function navLink(l) {
     l.label + '</a>';
 }
 
-const LOGO_MARK = '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter"><path d="M5 4h14L5 20h14"/></svg></span>';
+const LOGO_MARK = '<span class="mark"><span class="zglyph">人</span></span>';
 
 function buildNav() {
   const nav = $('nav');
