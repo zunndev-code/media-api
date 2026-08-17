@@ -1004,10 +1004,10 @@ footer {
 .foot-grid a:hover { color: var(--green-bright); }
 .foot-brand p { color: var(--muted-2); font-size: 0.85rem; line-height: 1.6; max-width: 300px; margin-top: 0; }
 .foot-brand .logo {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 2.5rem;
   font-size: 0.95rem;
 }
 .foot-brand .logo .mark {
