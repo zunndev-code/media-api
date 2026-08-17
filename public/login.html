@@ -51,6 +51,7 @@
   </div>
 
   <script>
+    fetch('/api/me').then(r => { if (r.ok) location.href = '/dashboard.html'; });
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');

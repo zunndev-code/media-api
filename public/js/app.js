@@ -219,6 +219,17 @@ function initDownloader() {
   });
 }
 
+function initCTA() {
+  const cta = $('cta-main');
+  if (!cta) return;
+  api('/api/me').then(({ res }) => {
+    if (res.ok) {
+      cta.href = '/dashboard.html';
+      cta.textContent = 'Ke Dashboard';
+    }
+  });
+}
+
 function initGlobalStats() {
   const box = $('global-stats');
   if (!box) return;
@@ -275,4 +286,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlobalStats();
   initPricing();
   initApiList();
+  initCTA();
 });
