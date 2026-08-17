@@ -2,6 +2,28 @@ const { execFile } = require('child_process');
 
 const YTDLP = process.env.YTDLP_PATH || 'yt-dlp';
 
+const PLATFORM_HOSTS = {
+  yt: ['youtube.com', 'youtu.be', 'music.youtube.com', 'm.youtube.com'],
+  ig: ['instagram.com', 'instagr.am'],
+  fb: ['facebook.com', 'fb.watch', 'fb.com'],
+  tt: ['tiktok.com', 'vm.tiktok.com'],
+  x: ['x.com', 'twitter.com'],
+};
+
+function detectPlatform(url) {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    for (const [key, hosts] of Object.entries(PLATFORM_HOSTS)) {
+      if (hosts.some(h => host === h || host.endsWith('.' + h))) return key;
+    }
+  } catch {}
+  return null;
+}
+
+function isAllowedHost(url) {
+  return detectPlatform(url) !== null;
+}
+
 function extract(url, options = {}) {
   return new Promise((resolve, reject) => {
     const args = [
@@ -29,27 +51,39 @@ function extract(url, options = {}) {
   });
 }
 
+function formatVideo(f) {
+  return {
+    quality: f.height ? f.height + 'p' : 'auto',
+    ext: f.ext || null,
+    url: f.url || null,
+    filesize: f.filesize || f.filesize_approx || null,
+    container: f.container || null,
+  };
+}
+
 function pickBestVideo(info) {
-  const formats = (info.formats || []).filter(f => f.vcodec && f.vcodec !== 'none' && f.acodec && f.acodec !== 'none' && f.url);
-  formats.sort((a, b) => (b.height || 0) - (a.height || 0) || (b.filesize || b.filesize_approx || 0) - (a.filesize || a.filesize_approx || 0));
-  return formats.slice(0, 3);
+  const formats = (info.formats || [])
+    .filter(f => f.vcodec && f.vcodec !== 'none' && f.acodec && f.acodec !== 'none' && f.url)
+    .sort((a, b) => (b.height || 0) - (a.height || 0) || (b.filesize || b.filesize_approx || 0) - (a.filesize || a.filesize_approx || 0));
+  return formats.slice(0, 3).map(formatVideo);
 }
 
 function pickAudio(info) {
-  const audios = (info.formats || []).filter(f => f.acodec && f.acodec !== 'none' && (!f.vcodec || f.vcodec === 'none') && f.url);
-  audios.sort((a, b) => (b.abr || 0) - (a.abr || 0));
-  return audios.slice(0, 3);
+  const audios = (info.formats || [])
+    .filter(f => f.acodec && f.acodec !== 'none' && (!f.vcodec || f.vcodec === 'none') && f.url)
+    .sort((a, b) => (b.abr || 0) - (a.abr || 0));
+  return audios.slice(0, 3).map(f => ({ quality: f.abr ? f.abr.toFixed(0) + ' kbps' : 'auto', ext: f.ext || null, url: f.url || null, filesize: f.filesize || f.filesize_approx || null }));
 }
 
 function summarize(info, audioOnly = false) {
   const base = {
-    title: info.title,
-    id: info.id,
-    platform: info.extractor_key,
-    thumbnail: info.thumbnail,
-    duration: info.duration,
+    id: info.id || null,
+    platform: info.extractor_key || null,
+    title: info.title || null,
+    thumbnail: info.thumbnail || null,
+    duration: info.duration || null,
     uploader: info.uploader || info.channel || null,
-    webpage_url: info.webpage_url
+    webpage_url: info.webpage_url || null,
   };
   if (audioOnly) {
     base.audio = pickAudio(info);
@@ -62,4 +96,4 @@ function summarize(info, audioOnly = false) {
   return base;
 }
 
-module.exports = { extract, summarize, pickBestVideo, pickAudio };
+module.exports = { extract, summarize, detectPlatform, isAllowedHost };
