@@ -1,10 +1,14 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { extract, summarize, detectPlatform, isAllowedHost } = require('./scraper');
+const { buildOpenApiSpec } = require('./openapi');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'));
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
@@ -49,7 +53,8 @@ app.get('/', (req, res) => {
   res.json({
     name: 'Media Downloader API',
     version: '2.0.0',
-    base_url: 'https://' + req.get('host'),
+    docs: 'https://' + req.get('host') + '/api/docs',
+    openapi: 'https://' + req.get('host') + '/api/openapi.json',
     endpoints: {
       'POST /api/download': { desc: 'Download dari platform mana pun (deteksi otomatis)', body: { url: 'https://...', type: 'mp3|video (opsional)' }, example: 'curl -X POST https://host/api/download -H "Content-Type: application/json" -d \'{"url": "https://youtube.com/watch?v=..."}\'' },
       'GET /api/download?url=...': 'Sama seperti POST, via query param',
@@ -105,6 +110,49 @@ app.get('/api/fb', makeHandler('fb'));
 app.get('/api/tt', makeHandler('tt'));
 app.get('/api/x', makeHandler('x'));
 app.get('/api/mp3', makeHandler(null, true));
+
+app.get('/api/openapi.json', (req, res) => {
+  res.json(buildOpenApiSpec('https://' + req.get('host')));
+});
+
+app.get('/api/docs', (req, res) => {
+  res.send(docsHtml('https://' + req.get('host')));
+});
+
+app.use('/swagger-ui', express.static(SWAGGER_DIST));
+
+function docsHtml(baseUrl) {
+  return `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Media Downloader API - Dokumentasi</title>
+<link rel="stylesheet" href="/swagger-ui/swagger-ui.css"/>
+<style>
+  body { margin: 0; }
+  .swagger-ui .topbar { display: none; }
+</style>
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script src="/swagger-ui/swagger-ui-bundle.js"></script>
+<script src="/swagger-ui/swagger-ui-standalone-preset.js"></script>
+<script>
+window.onload = function () {
+  window.ui = SwaggerUIBundle({
+    url: '${baseUrl}/api/openapi.json',
+    dom_id: '#swagger-ui',
+    presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+    layout: 'StandaloneLayout',
+    deepLinking: true,
+    docExpansion: 'list',
+  });
+};
+</script>
+</body>
+</html>`;
+}
 
 app.use((req, res) => fail(res, 404, 'not_found', 'Endpoint tidak ditemukan'));
 
