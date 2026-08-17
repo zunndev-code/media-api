@@ -122,13 +122,13 @@ nav .nav-links a.primary:hover { background: #16b95b; }
 .drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   width: min(300px, 85vw);
   height: 100vh;
   background: var(--panel);
-  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   z-index: 120;
-  transform: translateX(100%);
+  transform: translateX(-100%);
   transition: transform 0.22s ease;
   display: flex;
   flex-direction: column;
