@@ -50,7 +50,7 @@ const NAV_LINKS = [
 function buildNav() {
   const nav = $('nav');
   if (!nav) return;
-  const linksHtml = NAV_LINKS.map(l => '<a href="' + l.href + '">' + l.label + '</a>').join('');
+  const linksHtml = NAV_LINKS.map(l => '<a class="drawer-link" href="' + l.href + '">' + l.label + '</a>').join('');
   nav.innerHTML =
     '<a class="logo" href="/">' +
     '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>' +
@@ -58,10 +58,21 @@ function buildNav() {
     '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
     '<button class="burger" id="burger" aria-label="Menu">☰</button>' +
     '<div class="drawer-bg" id="drawer-bg"></div>' +
-    '<div class="drawer" id="drawer">' +
-    '<div class="drawer-head"><span class="drawer-title">Menu</span><button class="burger" id="drawer-close" aria-label="Tutup">✕</button></div>' +
-    '<div class="drawer-links">' + linksHtml + '<div class="nav-auth" id="nav-auth-m"></div></div>' +
-    '</div>';
+    '<aside class="drawer" id="drawer">' +
+    '<div class="drawer-head">' +
+    '<span class="drawer-logo">' +
+    '<span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>' +
+    'Media Downloader</span>' +
+    '<button class="burger" id="drawer-close" aria-label="Tutup">✕</button>' +
+    '</div>' +
+    '<div class="drawer-body">' +
+    '<p class="drawer-label">Menu</p>' +
+    '<div class="drawer-links">' + linksHtml + '</div>' +
+    '<p class="drawer-label">Akun</p>' +
+    '<div class="drawer-auth" id="nav-auth-m"></div>' +
+    '</div>' +
+    '<div class="drawer-foot">Media Downloader v3.0</div>' +
+    '</aside>';
 
   const burger = $('burger');
   const close = $('drawer-close');
@@ -79,19 +90,19 @@ function buildNav() {
 function setNavAuth() {
   api('/api/me').then(({ res }) => {
     const fill = (uid) => {
-      const el = $(uid);
-      if (!el) return;
+      const elm = $(uid);
+      if (!elm) return;
       if (res.ok) {
-        el.innerHTML =
-          '<a href="/dashboard.html">Dashboard</a>' +
-          '<a href="#" class="primary" data-logout="1">Keluar</a>';
-        el.querySelector('[data-logout]').addEventListener('click', async (e) => {
+        elm.innerHTML =
+          '<a href="/dashboard.html" class="primary">Dashboard</a>' +
+          '<a href="#" data-logout="1">Keluar</a>';
+        elm.querySelector('[data-logout]').addEventListener('click', async (e) => {
           e.preventDefault();
           await api('/api/logout', { method: 'POST' });
           location.reload();
         });
       } else {
-        el.innerHTML =
+        elm.innerHTML =
           '<a href="/login.html">Masuk</a>' +
           '<a href="/register.html" class="primary">Daftar</a>';
       }

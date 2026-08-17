@@ -120,7 +120,7 @@ nav .nav-links a.primary:hover { background: #16b95b; }
   position: fixed;
   top: 0;
   right: 0;
-  width: min(280px, 82vw);
+  width: min(300px, 85vw);
   height: 100vh;
   background: var(--panel);
   border-left: 1px solid var(--border);
@@ -138,19 +138,68 @@ nav .nav-links a.primary:hover { background: #16b95b; }
   padding: 1rem 1.1rem;
   border-bottom: 1px solid var(--border);
 }
-.drawer-title { font-weight: 700; font-size: 0.95rem; }
-.drawer-links { display: flex; flex-direction: column; padding: 0.75rem; gap: 0.25rem; }
-.drawer-links a {
+.drawer-logo {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.drawer-logo .mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1bd96a, #0f9e4f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawer-logo .mark svg { width: 14px; height: 14px; color: #06130b; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 1rem 0.85rem; }
+.drawer-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  padding: 0.6rem 0.7rem 0.35rem;
+}
+.drawer-links { display: flex; flex-direction: column; gap: 0.15rem; }
+.drawer-links a.drawer-link {
   color: var(--muted);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 600;
-  padding: 0.85rem 0.9rem;
+  padding: 0.8rem 0.9rem;
   border-radius: 10px;
   transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
-.drawer-links a:hover { color: var(--text); background: var(--panel-2); }
-.drawer-links a.primary { background: var(--green); color: #06130b; text-align: center; }
+.drawer-links a.drawer-link:hover { color: var(--text); background: var(--panel-2); }
+.drawer-auth { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.2rem 0.7rem 0.8rem; }
+.drawer-auth a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.8rem 0.9rem;
+  border-radius: 10px;
+  transition: all 0.15s;
+  text-align: center;
+}
+.drawer-auth a:hover { color: var(--text); background: var(--panel-2); }
+.drawer-auth a.primary { background: var(--green); color: #06130b; }
+.drawer-auth a.primary:hover { background: #16b95b; }
+.drawer-foot {
+  padding: 1rem 1.1rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-2);
+  font-size: 0.72rem;
+}
 .drawer-bg {
   position: fixed;
   inset: 0;
