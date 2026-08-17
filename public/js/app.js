@@ -56,7 +56,7 @@ function navLink(l) {
     l.label + '</a>';
 }
 
-const LOGO_MARK = '<span class="mark"><span class="zglyph">✧</span></span>';
+const LOGO_MARK = '<span class="mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.6 5.2 2.3 9.9 10.5 10.5-8.2.6-9.9 5.3-10.5 10.5-.6-5.2-2.3-9.9-10.5-10.5C9.7 11.4 11.4 6.7 12 1.5z"/></svg></span>';
 
 function buildNav() {
   const nav = $('nav');
