@@ -38,15 +38,24 @@ async function processDownload(req, res, { audioOnly, create }) {
   if (!isAllowedHost(url)) {
     return fail(res, 400, 'unsupported_domain', 'URL tidak dikenali. Domain tidak diizinkan.');
   }
-  try {
-    const info = await extract(url, { audioOnly });
-    const data = summarize(info, audioOnly);
-    if (audioOnly && !data.audio.length) return fail(res, 404, 'not_found', 'Audio tidak ditemukan untuk URL ini.');
-    if (!audioOnly && !data.formats.length) return fail(res, 404, 'not_found', 'Format video tidak ditemukan untuk URL ini.');
-    return ok(res, create ? 201 : 200, data);
-  } catch (e) {
-    return fail(res, 502, 'scrape_failed', e.message);
-  }
+  return enqueue(async () => {
+    try {
+      const info = await extract(url, { audioOnly });
+      const data = summarize(info, audioOnly);
+      if (audioOnly && !data.audio.length) return fail(res, 404, 'not_found', 'Audio tidak ditemukan untuk URL ini.');
+      if (!audioOnly && !data.formats.length) return fail(res, 404, 'not_found', 'Format video tidak ditemukan untuk URL ini.');
+      return ok(res, create ? 201 : 200, data);
+    } catch (e) {
+      return fail(res, 502, 'scrape_failed', e.message);
+    }
+  });
+}
+
+let queue = Promise.resolve();
+function enqueue(task) {
+  const run = queue.then(task, task);
+  queue = run.catch(() => {});
+  return run;
 }
 
 app.get('/', (req, res) => {
