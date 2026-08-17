@@ -263,7 +263,6 @@ function initApiList() {
       '<div class="api-head"><span class="api-name">' + esc(a.name) + '</span>' +
       '<span class="api-status ' + (a.status === 'live' ? 'live' : 'soon') + '">' + (a.status === 'live' ? 'LIVE' : 'SEGERA') + '</span></div>' +
       '<p class="api-desc">' + esc(a.desc) + '</p>' +
-      '<div class="api-paths">' + a.paths.map(p => '<code>' + esc(p) + '</code>').join('') + '</div>' +
       '</div>'
     ).join('');
   });

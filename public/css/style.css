@@ -676,6 +676,19 @@ table.tbl td .no { color: var(--error); }
 .sm-btn.okc:hover { color: var(--green); border-color: var(--green); }
 .sm-btn:disabled { opacity: 0.5; cursor: wait; }
 
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.step {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.25rem;
+  transition: all 0.15s;
+}
+.step:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.step .n { color: var(--green); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; }
+.step h3 { font-size: 1rem; font-weight: 700; margin-top: 0.6rem; }
+.step p { color: var(--muted); font-size: 0.85rem; margin-top: 0.4rem; }
+
 .api-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
 .api-card {
   background: var(--panel);
@@ -808,5 +821,6 @@ footer a:hover { color: var(--green); }
   .statsbar, .dash-grid { grid-template-columns: 1fr 1fr; }
   .dash-grid { grid-template-columns: repeat(2, 1fr); }
   .pricing { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
   .oauth-row { grid-template-columns: 1fr; }
 }
