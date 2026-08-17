@@ -31,11 +31,42 @@ const SCHEMAS = {
       audio: { type: 'array', items: { $ref: '#/components/schemas/AudioItem' } },
     },
   },
+  User: {
+    type: 'object',
+    properties: {
+      id: { type: 'integer' },
+      name: { type: 'string' },
+      email: { type: 'string' },
+      role: { type: 'string', example: 'free' },
+      roleInfo: { type: 'object', properties: { label: { type: 'string' }, daily: { type: 'integer' }, price: { type: 'integer' } } },
+      credits: { type: 'integer' },
+      createdAt: { type: 'string', format: 'date-time' },
+    },
+  },
+  ApiKey: {
+    type: 'object',
+    properties: {
+      id: { type: 'integer' },
+      name: { type: 'string' },
+      key: { type: 'string', example: 'md_...' },
+      active: { type: 'boolean' },
+      hits: { type: 'integer' },
+      created_at: { type: 'string', format: 'date-time' },
+      last_used: { type: 'string', format: 'date-time', nullable: true },
+    },
+  },
+  DayStat: {
+    type: 'object',
+    properties: {
+      date: { type: 'string', example: '2026-08-17' },
+      hits: { type: 'integer' },
+    },
+  },
   SuccessBody: {
     type: 'object',
     properties: {
       status: { type: 'string', example: 'success' },
-      data: { $ref: '#/components/schemas/MediaData' },
+      data: { type: 'object' },
     },
   },
   ErrorBody: {
@@ -55,10 +86,22 @@ const SCHEMAS = {
 
 const ERROR_RESPONSES = {
   400: { description: 'Parameter invalid / domain tidak diizinkan', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
+  401: { description: 'Belum login / API key tidak valid', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
+  402: { description: 'Credit habis', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
+  403: { description: 'API key dinonaktifkan / akses ditolak', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
   404: { description: 'Format tidak ditemukan / endpoint tidak ada', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
-  429: { description: 'Rate limit tercapai (20 req/menit/IP)', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
+  409: { description: 'Email sudah terdaftar', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
+  429: { description: 'Rate limit tercapai (60 req/menit/IP)', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
   502: { description: 'Gagal scrape dari platform', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorBody' } } } },
 };
+
+function okResp(desc, extra) {
+  return {
+    description: desc,
+    content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } },
+    ...(extra || {}),
+  };
+}
 
 function queryUrlParam(desc) {
   return {
@@ -70,23 +113,206 @@ function queryUrlParam(desc) {
   };
 }
 
+function withKey(operation) {
+  return {
+    ...operation,
+    parameters: [
+      ...(operation.parameters || []),
+      {
+        name: 'X-API-Key',
+        in: 'header',
+        required: false,
+        description: 'API key kamu (md_...). Kalau dipakai: 1 request sukses = 1 credit.',
+        schema: { type: 'string', example: 'md_xxx' },
+      },
+    ],
+  };
+}
+
+function mediaPath(platform, summary, paramDesc, opId) {
+  return {
+    get: withKey({
+      tags: ['Download'],
+      summary,
+      operationId: opId,
+      parameters: [queryUrlParam(paramDesc)],
+      responses: { 200: okResp('Berhasil. Data media + daftar format.'), ...ERROR_RESPONSES },
+    }),
+  };
+}
+
 function buildOpenApiSpec(host) {
   return {
     openapi: '3.0.3',
     info: {
-      title: 'Media Downloader API',
-      description: 'Download video & audio dari YouTube, Instagram, Facebook, TikTok, dan X/Twitter. Gratis, tanpa login.\n\n**Base URL:** `' + host + '`\n\n**Batas:** 20 request/menit per IP.',
-      version: '2.0.0',
-      contact: { name: 'Media Downloader', url: host },
+      title: 'Zunndev API',
+      description:
+        'Platform API Indonesia: media downloader, music tools, image tools — dan terus bertambah.\n\n' +
+        '**Base URL:** `' + host + '`\n\n' +
+        '**Cara pakai:**\n' +
+        '1. Daftar gratis di `/register.html` (langsung dapat 1000 credit, tambah 1000 tiap hari)\n' +
+        '2. Buat API key di `/dashboard.html`\n' +
+        '3. Kirim key lewat header `X-API-Key`\n\n' +
+        '**Credit:** 1 request sukses = 1 credit. Tanpa key tetap bisa (dibatasi rate limit IP).',
+      version: '3.0.0',
+      contact: { name: 'Zunndev API', url: host },
     },
     servers: [{ url: host }],
     tags: [
-      { name: 'Download', description: 'Ekstrak media dari URL' },
-      { name: 'Platform', description: 'Endpoint spesifik platform' },
+      { name: 'Auth', description: 'Register, login, logout, info akun' },
+      { name: 'Keys', description: 'Kelola API key' },
+      { name: 'Stats', description: 'Statistik global & pemakaian' },
+      { name: 'Download', description: 'Ekstrak media dari URL (layanan Media Downloader)' },
     ],
     paths: {
-      '/api/download': {
+      '/api': {
+        get: {
+          tags: ['Auth'],
+          summary: 'Info API & daftar endpoint',
+          operationId: 'apiInfo',
+          responses: { 200: okResp('Info platform.') },
+        },
+      },
+      '/api/register': {
         post: {
+          tags: ['Auth'],
+          summary: 'Daftar akun baru (langsung dapat 1000 credit)',
+          operationId: 'register',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['name', 'email', 'password'],
+                  properties: {
+                    name: { type: 'string', example: 'Budi' },
+                    email: { type: 'string', format: 'email', example: 'budi@mail.com' },
+                    password: { type: 'string', minLength: 6, example: 'rahasia123' },
+                  },
+                },
+              },
+            },
+          },
+          responses: { 201: okResp('Terdaftar + cookie login diset.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/login': {
+        post: {
+          tags: ['Auth'],
+          summary: 'Login (email + password)',
+          operationId: 'login',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['email', 'password'],
+                  properties: {
+                    email: { type: 'string', format: 'email', example: 'budi@mail.com' },
+                    password: { type: 'string', example: 'rahasia123' },
+                  },
+                },
+              },
+            },
+          },
+          responses: { 200: okResp('Login sukses, cookie diset.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/logout': {
+        post: {
+          tags: ['Auth'],
+          summary: 'Logout',
+          operationId: 'logout',
+          responses: { 200: okResp('Cookie dihapus.') },
+        },
+      },
+      '/api/me': {
+        get: {
+          tags: ['Auth'],
+          summary: 'Info akun + key + pemakaian hari ini (perlu login)',
+          operationId: 'me',
+          responses: { 200: okResp('Data akun.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/keys': {
+        get: {
+          tags: ['Keys'],
+          summary: 'Daftar API key milik kamu',
+          operationId: 'keysList',
+          responses: { 200: okResp('Daftar key.'), ...ERROR_RESPONSES },
+        },
+        post: {
+          tags: ['Keys'],
+          summary: 'Buat API key baru',
+          operationId: 'keysCreate',
+          requestBody: {
+            required: false,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { name: { type: 'string', example: 'bot-wa' } },
+                },
+              },
+            },
+          },
+          responses: { 201: okResp('Key dibuat. Simpan key-nya — tidak bisa dilihat lagi.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/keys/{id}/toggle': {
+        post: {
+          tags: ['Keys'],
+          summary: 'Aktifkan / nonaktifkan key',
+          operationId: 'keysToggle',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { 200: okResp('Status key diubah.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/keys/{id}': {
+        delete: {
+          tags: ['Keys'],
+          summary: 'Hapus key',
+          operationId: 'keysDelete',
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { 200: okResp('Key dihapus.'), ...ERROR_RESPONSES },
+        },
+      },
+      '/api/stats': {
+        get: {
+          tags: ['Stats'],
+          summary: 'Statistik global (publik)',
+          operationId: 'stats',
+          responses: { 200: okResp('hitsToday, hitsTotal, users.') },
+        },
+      },
+      '/api/stats/daily': {
+        get: {
+          tags: ['Stats'],
+          summary: 'Hits per hari 14 hari terakhir. Kalau login, ikut data kamu.',
+          operationId: 'statsDaily',
+          responses: { 200: okResp('days[].data + me (jika login).') },
+        },
+      },
+      '/api/roles': {
+        get: {
+          tags: ['Stats'],
+          summary: 'Daftar role & harga',
+          operationId: 'roles',
+          responses: { 200: okResp('Role: free, vip, gars, vilions, verus.') },
+        },
+      },
+      '/api/apis': {
+        get: {
+          tags: ['Stats'],
+          summary: 'Daftar layanan API',
+          operationId: 'apis',
+          responses: { 200: okResp('Daftar layanan (live / segera).') },
+        },
+      },
+      '/api/download': {
+        post: withKey({
           tags: ['Download'],
           summary: 'Download media (deteksi platform otomatis)',
           operationId: 'downloadCreate',
@@ -105,32 +331,33 @@ function buildOpenApiSpec(host) {
               },
             },
           },
-          responses: {
-            201: { description: 'Berhasil. Data media + daftar format.', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } },
-            ...ERROR_RESPONSES,
-          },
-        },
-        get: {
+          responses: { 201: okResp('Berhasil. Data media + daftar format.'), ...ERROR_RESPONSES },
+        }),
+        get: withKey({
           tags: ['Download'],
           summary: 'Download media via query param',
           operationId: 'downloadGet',
           parameters: [queryUrlParam('Link video/audio yang mau di-download'), { name: 'type', in: 'query', schema: { type: 'string', enum: ['video', 'mp3'] } }],
-          responses: {
-            200: { description: 'Berhasil. Data media + daftar format.', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } },
-            ...ERROR_RESPONSES,
-          },
-        },
+          responses: { 200: okResp('Berhasil. Data media + daftar format.'), ...ERROR_RESPONSES },
+        }),
       },
-      '/api/yt': { get: { tags: ['Platform'], summary: 'YouTube', operationId: 'yt', parameters: [queryUrlParam('Link YouTube (watch, youtu.be, shorts)')], responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
-      '/api/ig': { get: { tags: ['Platform'], summary: 'Instagram', operationId: 'ig', parameters: [queryUrlParam('Link post/reel Instagram')], responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
-      '/api/fb': { get: { tags: ['Platform'], summary: 'Facebook', operationId: 'fb', parameters: [queryUrlParam('Link video Facebook')], responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
-      '/api/tt': { get: { tags: ['Platform'], summary: 'TikTok', operationId: 'tt', parameters: [queryUrlParam('Link video TikTok')], responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
-      '/api/x': { get: { tags: ['Platform'], summary: 'X / Twitter', operationId: 'x', parameters: [queryUrlParam('Link tweet berisi video')], responses: { 200: { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
-      '/api/mp3': { get: { tags: ['Platform'], summary: 'Ekstrak audio (MP3)', operationId: 'mp3', parameters: [queryUrlParam('Link video apa pun')], responses: { 200: { description: 'OK. Hanya berisi audio.', content: { 'application/json': { schema: { $ref: '#/components/schemas/SuccessBody' } } } }, ...ERROR_RESPONSES } } },
+      '/api/yt': mediaPath('yt', 'YouTube (watch, youtu.be, shorts)', 'Link YouTube', 'yt'),
+      '/api/ig': mediaPath('ig', 'Instagram (post/reel)', 'Link Instagram', 'ig'),
+      '/api/fb': mediaPath('fb', 'Facebook (video)', 'Link Facebook', 'fb'),
+      '/api/tt': mediaPath('tt', 'TikTok (video)', 'Link TikTok', 'tt'),
+      '/api/x': mediaPath('x', 'X / Twitter (tweet berisi video)', 'Link X/Twitter', 'x'),
+      '/api/mp3': mediaPath('mp3', 'Ekstrak audio (MP3) dari platform mana pun', 'Link video apa pun', 'mp3'),
     },
     components: {
       schemas: SCHEMAS,
-      securitySchemes: {},
+      securitySchemes: {
+        ApiKeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'X-API-Key',
+          description: 'API key dari dashboard. 1 request sukses = 1 credit.',
+        },
+      },
     },
   };
 }
