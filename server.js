@@ -90,8 +90,8 @@ app.get('/', (req, res) => {
 <body>
   <h1>Media <span>Downloader</span> API</h1>
   <p>API publik dan gratis untuk ekstraksi video &amp; audio dari <strong>YouTube, Instagram, Facebook, TikTok, dan X (Twitter)</strong>. Tanpa login, tanpa aplikasi.</p>
-  <a class="btn" href="/api/docs">Buka Dokumentasi API</a>
-  <a class="btn" style="background:#131a2e;border:1px solid rgba(255,255,255,.2)" href="/api/openapi.json">OpenAPI Spec</a>
+  <a class="btn" href="/api/docs">Dokumentasi API (Swagger)</a>
+  <a class="btn" style="background:#131a2e;border:1px solid rgba(255,255,255,.2)" href="/api/redoc">Dokumentasi API (ReDoc)</a>
   <div class="card">
     <h2>Contoh penggunaan</h2>
     <p>Deteksi platform otomatis:</p>
@@ -172,6 +172,23 @@ app.get('/api/mp3', makeHandler(null, true));
 
 app.get('/api/openapi.json', (req, res) => {
   res.json(buildOpenApiSpec(baseUrl(req)));
+});
+
+app.get('/api/redoc', (req, res) => {
+  const host = baseUrl(req);
+  res.send(`<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Media Downloader API - Dokumentasi</title>
+<style>body { margin: 0; padding: 0; }</style>
+</head>
+<body>
+<redoc spec-url="${host}/api/openapi.json"></redoc>
+<script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0/bundles/redoc.standalone.js"></script>
+</body>
+</html>`);
 });
 
 app.get('/api/docs', (req, res) => {
