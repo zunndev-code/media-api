@@ -59,6 +59,17 @@
     </section>
   </main>
 
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal">
+      <h3>Hapus API key?</h3>
+      <p id="modal-text">Key ini akan dihapus permanen dan tidak bisa dipakai lagi.</p>
+      <div class="modal-actions">
+        <button class="modal-btn" id="modal-cancel">Batal</button>
+        <button class="modal-btn danger" id="modal-ok">Hapus</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <p>Zunndev API &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/">Blog</a></p>
   </footer>
@@ -81,7 +92,7 @@
           '<td style="white-space:nowrap">' +
             '<button class="sm-btn okc" data-act="copy" data-key="' + esc(k.key) + '">Salin</button> ' +
             '<button class="sm-btn" data-act="toggle" data-id="' + k.id + '">' + (k.active ? 'Nonaktifkan' : 'Aktifkan') + '</button> ' +
-            '<button class="sm-btn danger" data-act="del" data-id="' + k.id + '">Hapus</button>' +
+            '<button class="sm-btn danger" data-act="del" data-id="' + k.id + ' data-name="' + esc(k.name) + '">Hapus</button>' +
           '</td>' +
           '</tr>'
         ).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted-2)">Belum ada key. Buat key pertama kamu.</td></tr>';
@@ -114,12 +125,33 @@
           }
           if (act === 'toggle') await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
           if (act === 'del') {
-            if (!confirm('Hapus key ini?')) { b.disabled = false; return; }
+            if (!(await askDelete(b.dataset.id, b.dataset.name))) { b.disabled = false; return; }
             await api('/api/keys/' + b.dataset.id, { method: 'DELETE' });
           }
           load();
         });
       });
+    }
+
+    const modalBg = el('modal-bg');
+    let modalResolve = null;
+
+    function askDelete(id, name) {
+      el('modal-text').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> akan dihapus permanen dan tidak bisa dipakai lagi.';
+      modalBg.classList.add('show');
+      return new Promise((resolve) => {
+        modalResolve = resolve;
+        el('modal-ok').onclick = () => { closeModal(); resolve(true); };
+        el('modal-cancel').onclick = () => { closeModal(); resolve(false); };
+        modalBg.onclick = (e) => { if (e.target === modalBg) { closeModal(); resolve(false); } };
+      });
+    }
+
+    function closeModal() {
+      modalBg.classList.remove('show');
+      el('modal-ok').onclick = null;
+      el('modal-cancel').onclick = null;
+      modalBg.onclick = null;
     }
 
     async function load() {
