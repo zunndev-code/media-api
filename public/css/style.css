@@ -1005,7 +1005,7 @@ footer {
 .foot-brand p { color: var(--muted-2); font-size: 0.85rem; line-height: 1.6; max-width: 300px; margin-top: 0.8rem; }
 .foot-brand .logo {
   margin-bottom: 0.6rem;
-  gap: 1.6rem;
+  gap: 2rem;
   font-size: 0.95rem;
 }
 .foot-brand .logo .mark {
