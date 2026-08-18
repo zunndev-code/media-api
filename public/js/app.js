@@ -133,6 +133,7 @@ function buildAppShell() {
   shell.dataset.built = '1';
   const title = shell.dataset.title || 'Dashboard';
   const page = location.pathname;
+  const content = shell.querySelector('.app-content');
   shell.innerHTML =
     '<header class="app-top">' +
     '<button class="app-burger" id="app-burger" aria-label="Menu">☰</button>' +
@@ -193,8 +194,7 @@ function buildAppShell() {
     $('cred-chip').title = 'Sisa credit — klik buat top-up';
   });
 
-  const main = document.querySelector('.app-main');
-  const content = document.querySelector('.app-content');
+  const main = shell.querySelector('.app-main');
   if (content) main.appendChild(content);
 }
 
