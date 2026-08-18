@@ -44,7 +44,13 @@ body.console {
   padding: 2px 7px; border-radius: 999px;
 }
 
-.side-nav { flex: 1; overflow-y: auto; padding: 8px 12px; }
+.side-nav {
+  flex: 1; overflow-y: auto; padding: 8px 12px;
+  display: flex; flex-direction: column;
+  position: static; z-index: auto;
+  justify-content: flex-start; align-items: stretch;
+  max-width: none; width: auto;
+}
 .nav-lbl {
   font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--dim);
