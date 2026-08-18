@@ -10,7 +10,11 @@
     '/keys': ['keys.title', 'keys.sub'],
     '/history': ['hist.title', 'hist.sub'],
     '/beli': ['buy.title', 'buy.sub'],
+    '/stats': ['stats.title', 'stats.sub'],
+    '/endpoints': ['endpoints.title', 'endpoints.sub'],
+    '/api/docs': ['docs.title', 'docs.sub'],
   };
+  const PRIVATE = ['/dashboard', '/keys', '/history', '/beli'];
 
   const NAV_PRIMARY = [
     { href: '/dashboard', key: 'nav.dash', icon: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>' },
@@ -95,6 +99,14 @@
   }
 
   function setUser(u) {
+    if (!u) {
+      document.getElementById('u-name').textContent = tr('nav.login');
+      document.getElementById('u-email').textContent = tr('nav.register');
+      document.getElementById('avatar').textContent = '✧';
+      const cred = document.getElementById('cred-n');
+      if (cred) cred.textContent = tr('nav.register');
+      return;
+    }
     document.getElementById('u-name').textContent = u.name;
     document.getElementById('u-email').textContent = u.email;
     document.getElementById('avatar').textContent = (u.name || 'U').slice(0, 1).toUpperCase();
@@ -107,7 +119,11 @@
   /* ===== API helper ===== */
   async function loadMe() {
     const { res, body } = await api('/api/dashboard');
-    if (!res.ok) { location.href = '/login'; return null; }
+    if (!res.ok) {
+      if (PRIVATE.includes(PAGE)) { location.href = '/login'; return null; }
+      setUser(null);
+      return null;
+    }
     setUser(body.data.user);
     return body.data.user;
   }
