@@ -6,82 +6,115 @@
   <title>Dashboard — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=34">
-  <link rel="stylesheet" href="/css/console.css?v=34">
+  <link rel="stylesheet" href="/css/style.css?v=35">
+  <link rel="stylesheet" href="/css/console.css?v=35">
 </head>
 <body data-title="Dashboard">
   <main class="page" id="dash">
-    <header class="head">
-      <div>
-        <h1><span id="greet-w">Halo</span> <span class="nm" id="un">-</span>.</h1>
-        <p class="headsub">
-          <span id="email">-</span><span class="sep">·</span><span id="urole"></span><span class="sep">·</span><span id="quota">Memuat…</span>
-        </p>
-      </div>
-      <a class="btn solid" href="/beli">+ Credit</a>
-    </header>
 
-    <div class="tiles">
-      <div class="tile">
-        <p class="tl">Sisa credit</p>
-        <p class="tn" id="s-credit">—</p>
+    <div class="tabpanel on" data-panel="overview">
+      <header class="head">
+        <div>
+          <h1><span id="greet-w">Hello</span>, <span class="nm" id="un">-</span>.</h1>
+          <p class="headsub">
+            <span id="email">-</span><span class="sep">·</span><span id="urole"></span><span class="sep">·</span><span id="quota"></span>
+          </p>
+        </div>
+        <a class="btn solid" href="#" id="go-buy" data-i18n="ov.addCredit">Add credits</a>
+      </header>
+
+      <div class="tiles">
+        <div class="tile">
+          <p class="tl" data-i18n="ov.credits">Credit balance</p>
+          <p class="tn" id="s-credit">—</p>
+        </div>
+        <div class="tile">
+          <p class="tl" data-i18n="ov.today">Hits today</p>
+          <p class="tn" id="s-today">—</p>
+        </div>
+        <div class="tile">
+          <p class="tl" data-i18n="ov.total">Total hits</p>
+          <p class="tn plain" id="s-total">—</p>
+        </div>
+        <div class="tile">
+          <p class="tl" data-i18n="ov.failed">Failed requests</p>
+          <p class="tn err" id="s-fail">—</p>
+        </div>
       </div>
-      <div class="tile">
-        <p class="tl">Hits hari ini</p>
-        <p class="tn" id="s-today">—</p>
-      </div>
-      <div class="tile">
-        <p class="tl">Total hits</p>
-        <p class="tn plain" id="s-total">—</p>
-      </div>
-      <div class="tile">
-        <p class="tl">Request gagal</p>
-        <p class="tn err" id="s-fail">—</p>
-      </div>
+
+      <section class="sec">
+        <div class="sech">
+          <div>
+            <h2 data-i18n="ov.usage">Usage — last 7 days</h2>
+          </div>
+        </div>
+        <div class="mchart" id="mchart"></div>
+        <div class="mchart-labels" id="mchart-labels"></div>
+      </section>
     </div>
 
-    <section class="sec">
-      <div class="sech">
-        <div>
-          <h2>API Keys</h2>
-          <p class="sub">1 request sukses = 1 credit. Jangan share key ke siapa pun.</p>
+    <div class="tabpanel" data-panel="keys">
+      <section class="sec">
+        <div class="sech">
+          <div>
+            <h2 data-i18n="keys.title">API Keys</h2>
+            <p class="sub" data-i18n="keys.sub">1 successful request = 1 credit. Never share your key.</p>
+          </div>
+          <div class="sech-a" style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <input class="inp" id="kname" data-i18n-ph="keys.name" placeholder="key name (optional)">
+            <button class="btn solid" id="newkey" data-i18n="keys.create">Create key</button>
+          </div>
         </div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-          <input class="inp" id="kname" placeholder="nama key (opsional)">
-          <button class="btn solid" id="newkey">Buat key</button>
-        </div>
-      </div>
-      <div id="keys" class="rows"></div>
-    </section>
+        <div id="keys" class="rows"></div>
+      </section>
+    </div>
 
-    <section class="sec">
-      <div class="sech">
-        <div>
-          <h2>Riwayat Pemakaian</h2>
-          <p class="sub">25 request terakhir dari semua key kamu.</p>
+    <div class="tabpanel" data-panel="history">
+      <section class="sec">
+        <div class="sech">
+          <div>
+            <h2 data-i18n="hist.title">Usage History</h2>
+            <p class="sub" data-i18n="hist.sub">Last 25 requests across all your keys.</p>
+          </div>
         </div>
-      </div>
-      <div id="hist" class="rows"></div>
-    </section>
+        <div id="hist" class="rows"></div>
+      </section>
+    </div>
 
-    <section class="sec" id="orders">
-      <h2>Pesanan Role</h2>
-      <div id="orders-list"></div>
-    </section>
+    <div class="tabpanel" data-panel="buy">
+      <div class="cur-plan" id="cur-plan" style="display:none">
+        <div>
+          <div class="lbl" data-i18n="buy.plan">Your plan</div>
+          <div class="val" id="cur-name">-</div>
+        </div>
+        <div class="cred" id="cur-cred"></div>
+      </div>
+
+      <div class="pricing" id="pricing"></div>
+
+      <section class="sec" id="orders-wrap" style="display:none">
+        <h2 data-i18n="buy.orders">Role Orders</h2>
+        <div id="orders-list"></div>
+      </section>
+
+      <div class="note" id="pay-note" data-i18n="buy.note">After you click Buy now, a QR code appears — scan it with any e-wallet (GoPay, OVO, DANA, ShopeePay) or mobile banking. Your role activates automatically once payment is detected. QR is valid for 10 minutes.</div>
+    </div>
+
   </main>
 
   <div class="modal-bg" id="mbg">
     <div class="modal">
-      <h3>Hapus API key?</h3>
-      <p id="mtext">Key ini akan dihapus permanen dan tidak bisa dipakai lagi.</p>
+      <h3 data-i18n="keys.delTitle">Delete API key?</h3>
+      <p id="mtext"></p>
       <div class="mact">
-        <button class="btn" id="mc">Batal</button>
-        <button class="btn danger" id="mk">Hapus</button>
+        <button class="btn" id="mc" data-i18n="common.cancel">Cancel</button>
+        <button class="btn danger" id="mk" data-i18n="keys.delete">Delete</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/app.js?v=34"></script>
-  <script src="/js/console.js?v=34"></script>
+  <script src="/js/i18n.js?v=35"></script>
+  <script src="/js/app.js?v=35"></script>
+  <script src="/js/console.js?v=35"></script>
 </body>
 </html>

@@ -48,23 +48,23 @@
     </section>
 
     <section class="section" id="cara">
-      <h2 class="sec-title">Cara Pakai</h2>
-      <p class="sec-sub">Dari daftar sampai request pertama, gak sampai 1 menit.</p>
+      <h2 class="sec-title" data-i18n="land.cara">How it works</h2>
+      <p class="sec-sub" data-i18n="land.carasub">From signup to your first request — under a minute.</p>
       <div class="steps">
         <div class="step">
-          <p class="n">LANGKAH 1</p>
-          <h3>Daftar gratis</h3>
-          <p>Langsung dapat 1000 credit. Besoknya dapat lagi 1000. Tiap hari, gak putus.</p>
+          <p class="n" data-i18n="land.s1">STEP 1</p>
+          <h3 data-i18n="land.s1t">Sign up free</h3>
+          <p data-i18n="land.s1d">Instantly get 1000 credits. Another 1000 tomorrow. Every single day.</p>
         </div>
         <div class="step">
-          <p class="n">LANGKAH 2</p>
-          <h3>Buat API key</h3>
-          <p>Dari Dashboard, buat key satu klik. Bentuknya <code class="inline">md_...</code>, simpen baik-baik.</p>
+          <p class="n" data-i18n="land.s2">STEP 2</p>
+          <h3 data-i18n="land.s2t">Create an API key</h3>
+          <p data-i18n="land.s2d">One click from your dashboard. Keys look like <code class="inline">md_...</code> — keep them safe.</p>
         </div>
         <div class="step">
-          <p class="n">LANGKAH 3</p>
-          <h3>Kirim request</h3>
-          <p>Tempel key di header <code class="inline">X-API-Key</code>. 1 request sukses = 1 credit.</p>
+          <p class="n" data-i18n="land.s3">STEP 3</p>
+          <h3 data-i18n="land.s3t">Send a request</h3>
+          <p data-i18n="land.s3d">Pass your key in the <code class="inline">X-API-Key</code> header. 1 successful request = 1 credit.</p>
         </div>
       </div>
       <pre class="curl" style="margin-top:1.25rem">curl -X POST https://zunndev.my.id/api/download \
@@ -127,6 +127,7 @@
     <p><a href="/">Blog</a> &middot; <a href="/stats">Stats</a> &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/login">Masuk</a></p>
   </footer>
 
-  <script src="/js/app.js?v=24"></script>
+  <script src="/js/i18n.js?v=35"></script>
+  <script src="/js/app.js?v=35"></script>
 </body>
 </html>

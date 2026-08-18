@@ -6,7 +6,7 @@
   <title>Endpoint — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=34">
+  <link rel="stylesheet" href="/css/style.css?v=35">
   <style>
     .ep-group h2 { font-size: 1.02rem; font-weight: 700; margin: 2rem 0 0.75rem; }
     .ep-group .card { overflow: hidden; }
@@ -24,8 +24,8 @@
       <main class="page">
     <header class="head">
       <div>
-        <h1>Semua endpoint.</h1>
-        <p class="headsub">Klik baris untuk menyalin path-nya. Base URL: <code class="inline">https://zunndev.my.id</code> — cara pakai lengkap di <a href="/api/docs" style="color:var(--green)">API Docs</a>.</p>
+        <h1 data-i18n="endpoints.title">All endpoints.</h1>
+        <p class="headsub"><span data-i18n="endpoints.sub">Click a row to copy its path.</span> Base URL: <code class="inline">https://zunndev.my.id</code> — cara pakai lengkap di <a href="/api/docs" style="color:var(--green)">API Docs</a>.</p>
       </div>
     </header>
 
@@ -76,8 +76,8 @@
     </section>
   </main>
 
-  <script src="/js/app.js?v=34"></script>
-  <script src="/js/console.js?v=34"></script>
+  <script src="/js/app.js?v=35"></script>
+  <script src="/js/console.js?v=35"></script>
   <script>
     document.querySelectorAll('.eprow').forEach(row => {
       row.addEventListener('click', async () => {

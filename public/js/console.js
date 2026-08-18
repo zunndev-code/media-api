@@ -1,4 +1,4 @@
-/* ===== Zunndev Console v2 — ditulis ulang dari nol ===== */
+/* ===== Zunndev Console v3 — tabs + i18n ===== */
 (function () {
   'use strict';
 
@@ -31,60 +31,56 @@
     }
   };
 
-  const NAV = [
-    { href: '/dashboard', label: 'Dashboard', icon: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>' },
-    { href: '/beli', label: 'Beli Role', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/>' },
-    { href: '/stats', label: 'Stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
-    { href: '/endpoints', label: 'Endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
-    { href: '/api/docs', label: 'Docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+  const TABS = [
+    { id: 'overview', key: 'dash.overview' },
+    { id: 'keys', key: 'dash.keys' },
+    { id: 'history', key: 'dash.history' },
+    { id: 'buy', key: 'dash.buy' },
   ];
 
   const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
   const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
+  function greetWord() {
+    const h = new Date().getHours();
+    if (h < 11) return tr('greet.morning');
+    if (h < 15) return tr('greet.afternoon');
+    if (h < 19) return tr('greet.evening');
+    return tr('greet.night');
+  }
+
   function buildShell() {
-    const page = location.pathname;
-    const title = document.body.dataset.title || 'Dashboard';
     document.body.classList.add('console');
 
     const top = document.createElement('header');
     top.className = 'topbar';
     top.innerHTML =
       '<a class="logo" href="/dashboard"><span class="mark">✧</span>Zunndev API</a>' +
-      '<span class="tpage">' + esc(title) + '</span>' +
       '<div class="tr">' +
-      '<a class="cred" href="/beli" title="Sisa credit"><span class="zglyph">✧</span> <span id="cred-n">—</span></a>' +
-      '<button class="tbtn" id="tbtn" aria-label="Ganti tema"></button>' +
+      '<button class="langbtn" id="langbtn" data-i18n-lang="1">EN</button>' +
+      '<button class="tbtn" id="tbtn" aria-label="Theme"></button>' +
+      '<a class="cred" href="/beli"><span class="zglyph">✧</span> <span id="cred-n">—</span></a>' +
       '<div class="usr" id="usr">' +
       '<span class="ava" id="ava">?</span><span class="unm" id="unm">—</span><span class="uarr">▾</span>' +
       '<div class="umenu" id="umenu">' +
-      '<a href="/dashboard">Dashboard</a>' +
-      '<a href="/beli">Beli Role</a>' +
+      '<a href="/dashboard" data-i18n="dash.overview">Overview</a>' +
+      '<a href="/beli" data-i18n="nav.buy">Buy Role</a>' +
       '<div class="usep"></div>' +
-      '<button class="danger" id="logout">Keluar</button>' +
-      '<p class="uver">Zunndev API · v34</p>' +
+      '<button class="danger" id="logout" data-i18n="common.logout">Log out</button>' +
+      '<p class="uver">Zunndev API · v35</p>' +
       '</div></div></div>';
     document.body.prepend(top);
 
-    const side = document.createElement('aside');
-    side.className = 'side';
-    side.innerHTML =
-      '<div class="slabel">Menu</div>' +
-      NAV.map((n) =>
-        '<a href="' + n.href + '"' + (page.startsWith(n.href) ? ' class="on"' : '') + '>' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + n.icon + '</svg>' +
-        n.label + '</a>'
-      ).join('');
-    document.body.appendChild(side);
-
-    const navb = document.createElement('nav');
-    navb.className = 'navb';
-    navb.innerHTML = NAV.map((n) =>
-      '<a href="' + n.href + '"' + (page.startsWith(n.href) ? ' class="on"' : '') + '>' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + n.icon + '</svg>' +
-      n.label + '</a>'
+    const tabs = document.createElement('nav');
+    tabs.className = 'tabs';
+    tabs.innerHTML = TABS.map((t) =>
+      '<button class="tabbtn' + (t.id === 'overview' ? ' on' : '') + '" data-tab="' + t.id + '" data-i18n="' + t.key + '">' + tr(t.key) + '</button>'
     ).join('');
-    document.body.appendChild(navb);
+    document.body.appendChild(tabs);
+    tabs.addEventListener('click', (e) => {
+      const b = e.target.closest('.tabbtn');
+      if (b) showTab(b.dataset.tab);
+    });
 
     const saved = localStorage.getItem('znd-theme');
     const tbtn = $('tbtn');
@@ -98,6 +94,8 @@
       localStorage.setItem('znd-theme', lite ? 'lite' : 'dark');
       paint(lite);
     });
+
+    $('langbtn').addEventListener('click', () => { toggleLang(); });
 
     const usr = $('usr'), umenu = $('umenu');
     usr.addEventListener('click', (e) => { e.stopPropagation(); umenu.classList.toggle('open'); });
@@ -116,39 +114,63 @@
     });
   }
 
-  /* ================= Dashboard ================= */
-  function greetWord() {
-    const h = new Date().getHours();
-    if (h < 11) return 'Pagi';
-    if (h < 15) return 'Siang';
-    if (h < 19) return 'Sore';
-    return 'Malam';
+  function showTab(id) {
+    document.querySelectorAll('.tabpanel').forEach((p) => p.classList.toggle('on', p.dataset.panel === id));
+    document.querySelectorAll('.tabbtn').forEach((b) => b.classList.toggle('on', b.dataset.tab === id));
+    if (id === 'overview') loadOverview();
+    if (id === 'keys') renderKeys();
+    if (id === 'history') renderHistory();
+    if (id === 'buy') { const w = $('orders-wrap'); if (w && $('orders-list') && $('orders-list').children.length) w.style.display = 'block'; }
   }
 
-  function rowKey(k) {
-    const status = k.active ? 'on' : 'off';
-    return (
-      '<div class="krow">' +
-      '<div><div class="kname">' + esc(k.name) + '</div><div class="kkey">' + esc(k.key) + '</div></div>' +
-      '<div class="kmeta">' +
-      '<span class="km">' + fmtNum(k.hits) + ' hit</span>' +
-      '<span class="dot ' + status + '" title="' + (k.active ? 'aktif' : 'mati') + '"></span>' +
-      '</div>' +
-      '<div class="kact">' +
-      '<button class="btn sm" data-act="copy" data-key="' + esc(k.key) + '">Salin</button>' +
-      '<button class="btn sm" data-act="toggle" data-id="' + k.id + '">' + (k.active ? 'Nonaktifkan' : 'Aktifkan') + '</button>' +
-      '<button class="btn sm danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '">Hapus</button>' +
-      '</div></div>'
-    );
+  /* ===== Overview ===== */
+  async function loadOverview() {
+    const { res, body } = await api('/api/dashboard');
+    if (!res.ok) { location.href = '/login'; return; }
+    const d = body.data;
+    const r = d.roleInfo || {};
+    $('un').textContent = d.user.name;
+    $('greet-w').textContent = greetWord() + ',';
+    $('email').textContent = d.user.email;
+    $('urole').innerHTML = '<span class="pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
+    $('quota').textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
+    $('s-credit').textContent = fmtNum(d.user.credits);
+    $('s-today').textContent = fmtNum(d.stats.today);
+    $('s-total').textContent = fmtNum(d.stats.total);
+    $('s-fail').textContent = fmtNum(d.stats.failed);
+
+    const sRes = await api('/api/stats');
+    const days = sRes.res.ok && sRes.body && sRes.body.data ? sRes.body.data.days : [];
+    const last = days.slice(-7);
+    const chart = $('mchart');
+    const labels = $('mchart-labels');
+    if (!last.length) { chart.innerHTML = '<div class="empty" style="width:100%">' + tr('hist.empty') + '</div>'; labels.innerHTML = ''; return; }
+    const max = Math.max.apply(null, last.map((d) => d.hits || 0)) || 1;
+    chart.innerHTML = last.map((d) => '<div class="mb' + (d.hits > 0 ? ' hi' : '') + '" style="height:' + Math.max(3, Math.round((d.hits / max) * 100)) + '%"></div>').join('');
+    labels.innerHTML = last.map((d) => '<span>' + (d.label || '') + '</span>').join('');
   }
 
-  function rowHist(h) {
-    return (
-      '<div class="hrow">' +
-      '<span class="hp"><code>' + esc(h.endpoint) + '</code> <span class="ht">· ' + esc(h.key_name || '-') + '</span></span>' +
-      '<span class="km">' + (h.success ? '<span class="pill ok">sukses</span>' : '<span class="pill err">gagal</span>') + ' · ' + fmtDate(h.created_at) + '</span>' +
-      '</div>'
-    );
+  /* ===== Keys ===== */
+  function renderKeys() {
+    api('/api/dashboard').then(({ res, body }) => {
+      if (!res.ok) return;
+      const keys = body.data.keys || [];
+      const box = $('keys');
+      box.innerHTML = keys.length
+        ? keys.map((k) =>
+            '<div class="krow">' +
+            '<div><div class="kname">' + esc(k.name) + '</div><div class="kkey">' + esc(k.key) + '</div></div>' +
+            '<div class="kmeta"><span class="km">' + fmtNum(k.hits) + ' hit</span>' +
+            '<span class="pill ' + (k.active ? 'ok' : 'off') + '">' + tr(k.active ? 'keys.on' : 'keys.off') + '</span></div>' +
+            '<div class="kact">' +
+            '<button class="btn sm" data-act="copy" data-key="' + esc(k.key) + '" data-i18n="keys.copy">Copy</button>' +
+            '<button class="btn sm" data-act="toggle" data-id="' + k.id + '" data-i18n="keys.' + (k.active ? 'disable' : 'enable') + '">' + (k.active ? 'Disable' : 'Enable') + '</button>' +
+            '<button class="btn sm danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '" data-i18n="keys.delete">Delete</button>' +
+            '</div></div>'
+          ).join('')
+        : '<div class="empty">' + tr('keys.empty') + '</div>';
+      bindRows();
+    });
   }
 
   function bindRows() {
@@ -158,8 +180,8 @@
         b.disabled = true;
         if (act === 'copy') {
           const ok = await copyText(b.dataset.key);
-          b.textContent = ok ? 'Tersalin!' : 'Gagal';
-          setTimeout(() => { b.textContent = 'Salin'; b.disabled = false; }, 1200);
+          b.textContent = ok ? tr('keys.copied') : '—';
+          setTimeout(() => { b.textContent = tr('keys.copy'); b.disabled = false; }, 1200);
           return;
         }
         if (act === 'toggle') await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
@@ -167,14 +189,14 @@
           if (!(await askDelete(b.dataset.id, b.dataset.name))) { b.disabled = false; return; }
           await api('/api/keys/' + b.dataset.id, { method: 'DELETE' });
         }
-        loadDash();
+        renderKeys();
       });
     });
   }
 
   let modalResolve = null;
   function askDelete(id, name) {
-    $('mtext').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> akan dihapus permanen dan tidak bisa dipakai lagi.';
+    $('mtext').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> — ' + tr('keys.delText');
     $('mbg').classList.add('show');
     return new Promise((resolve) => {
       modalResolve = resolve;
@@ -190,44 +212,42 @@
     $('mbg').onclick = null;
   }
 
-  async function loadDash() {
-    const { res, body } = await api('/api/dashboard');
-    if (!res.ok) { location.href = '/login'; return; }
-    const d = body.data;
-    const r = d.roleInfo || {};
-    $('un').textContent = d.user.name;
-    $('greet-w').textContent = greetWord() + ',';
-    $('email').textContent = d.user.email;
-    $('urole').innerHTML = '<span class="pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
-    $('quota').textContent = 'Jatah hari ini ' + fmtNum(r.daily || 0) + ' credit';
-    $('s-credit').textContent = fmtNum(d.user.credits);
-    $('s-today').textContent = fmtNum(d.stats.today);
-    $('s-total').textContent = fmtNum(d.stats.total);
-    $('s-fail').textContent = fmtNum(d.stats.failed);
-
-    const keys = $('keys');
-    keys.innerHTML = d.keys.length
-      ? d.keys.map(rowKey).join('')
-      : '<div class="empty">Belum ada key. Buat key pertama kamu — gratis.</div>';
-    bindRows();
-
-    const hist = $('hist');
-    hist.innerHTML = d.history.length
-      ? d.history.map(rowHist).join('')
-      : '<div class="empty">Belum ada pemakaian. Coba panggil API pakai key kamu.</div>';
+  /* ===== History ===== */
+  function renderHistory() {
+    api('/api/dashboard').then(({ res, body }) => {
+      if (!res.ok) return;
+      const rows = body.data.history || [];
+      const box = $('hist');
+      box.innerHTML = rows.length
+        ? rows.map((h) =>
+            '<div class="hrow">' +
+            '<span class="hp"><code>' + esc(h.endpoint) + '</code> <span class="ht">· ' + esc(h.key_name || '-') + '</span></span>' +
+            '<span class="km">' + (h.success ? '<span class="pill ok">' + tr('hist.ok') + '</span>' : '<span class="pill err">' + tr('hist.fail') + '</span>') + ' · ' + fmtDate(h.created_at) + '</span>' +
+            '</div>'
+          ).join('')
+        : '<div class="empty">' + tr('hist.empty') + '</div>';
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     buildShell();
+    applyLang();
     if ($('dash')) {
-      loadDash();
+      showTab('overview');
+      const goBuy = $('go-buy');
+      if (goBuy) goBuy.addEventListener('click', (e) => { e.preventDefault(); showTab('buy'); });
       $('newkey').addEventListener('click', async () => {
         const name = $('kname').value.trim();
         $('newkey').disabled = true;
         await api('/api/keys', { method: 'POST', body: JSON.stringify({ name }) });
         $('newkey').disabled = false;
         $('kname').value = '';
-        loadDash();
+        renderKeys();
+      });
+      document.addEventListener('langchange', () => {
+        loadOverview();
+        renderKeys();
+        renderHistory();
       });
     }
   });

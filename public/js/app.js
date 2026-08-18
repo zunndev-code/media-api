@@ -42,18 +42,18 @@ async function copyText(text) {
 }
 
 const NAV_LINKS = [
-  { href: '/', label: 'Blog', icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
-  { href: '/endpoints', label: 'Endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
-  { href: '/beli', label: 'Beli', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/>' },
-  { href: '/stats', label: 'Stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
-  { href: '/api/docs', label: 'API Docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+  { href: '/', label: 'nav.home', icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
+  { href: '/endpoints', label: 'nav.endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
+  { href: '/beli', label: 'nav.buy', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/>' },
+  { href: '/stats', label: 'nav.stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
+  { href: '/api/docs', label: 'nav.docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
 ];
 
 function navLink(l) {
   const active = l.href === '/' ? location.pathname === '/' : location.pathname.startsWith(l.href);
   return '<a class="drawer-link' + (active ? ' active' : '') + '" href="' + l.href + '">' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + l.icon + '</svg>' +
-    l.label + '</a>';
+    '<span data-i18n="' + l.label + '">' + tr(l.label) + '</span></a>';
 }
 
 const LOGO_MARK = '<span class="mark"><span class="zglyph">✧</span></span>';
@@ -61,6 +61,12 @@ const LOGO_MARK = '<span class="mark"><span class="zglyph">✧</span></span>';
 function buildNav() {
   const nav = $('nav');
   if (!nav) return;
+  const langBtn = document.createElement('button');
+  langBtn.className = 'langbtn nav-lang';
+  langBtn.dataset.i18nLang = '1';
+  langBtn.textContent = currentLang() === 'en' ? 'ID' : 'EN';
+  langBtn.addEventListener('click', () => { toggleLang(); });
+  nav.appendChild(langBtn);
   const linksHtml = NAV_LINKS.map(navLink).join('');
   nav.innerHTML =
     '<a class="logo" href="/">' +
@@ -122,9 +128,9 @@ function buildFooter() {
 const APP_LINKS = [
   { href: '/dashboard', label: 'Dashboard', icon: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>' },
   { href: '/beli', label: 'Beli Role', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/>' },
-  { href: '/stats', label: 'Stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
-  { href: '/endpoints', label: 'Endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
-  { href: '/api/docs', label: 'API Docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+  { href: '/stats', label: 'nav.stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
+  { href: '/endpoints', label: 'nav.endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
+  { href: '/api/docs', label: 'nav.docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
 ];
 
 function buildAppShell() {
