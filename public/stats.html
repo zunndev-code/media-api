@@ -6,17 +6,18 @@
   <title>Stats — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=32">
+  <link rel="stylesheet" href="/css/style.css?v=33">
 </head>
 <body>
       <main class="page">
-    <section class="hero" style="padding-bottom:0">
-      <p class="kicker">Statistik &middot; update real-time</p>
-      <h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Hit seluruh <span class="hl">platform.</span></h1>
-      <p style="margin-bottom:0">Berapa kali bot &amp; aplikasi nembak API tiap hari.</p>
-    </section>
+    <header class="head">
+      <div>
+        <h1>Hit seluruh platform.</h1>
+        <p class="headsub">Berapa kali bot &amp; aplikasi nembak API tiap hari. Update real-time.</p>
+      </div>
+    </header>
 
-    <div class="dash-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="dash-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
       <div class="dash-card green">
         <div class="num" id="g-today">-</div>
         <div class="lbl">Hits hari ini</div>
@@ -46,7 +47,7 @@
 
     <section class="card hidden" id="me-box">
       <h2>Pemakaian kamu <span class="live-badge" style="margin-left:.5rem">LIVE</span></h2>
-      <div class="dash-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="dash-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
         <div class="dash-card green"><div class="num" id="m-today">-</div><div class="lbl">Hits kamu hari ini</div></div>
         <div class="dash-card green"><div class="num" id="m-total">-</div><div class="lbl">Total hits kamu</div></div>
         <div class="dash-card green"><div class="num" id="m-credits">-</div><div class="lbl">Credit tersisa</div></div>
@@ -56,8 +57,8 @@
     </section>
   </main>
 
-  <script src="/js/app.js?v=32"></script>
-  <script src="/js/console.js?v=32"></script>
+  <script src="/js/app.js?v=33"></script>
+  <script src="/js/console.js?v=33"></script>
   <script>
     const el = (id) => document.getElementById(id);
 

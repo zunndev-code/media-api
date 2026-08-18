@@ -1270,3 +1270,11 @@ body.lite .app-nav-bottom a.active { background: #fdf3e3; color: #b45309; }
   .app-nav-bottom a.active { color: var(--green-bright); background: var(--green-dark); }
   .app-main { padding-bottom: 72px; }
 }
+
+/* ===== Responsive fix halaman dalam (HP) ===== */
+@media (max-width: 600px) {
+  .eprow { flex-wrap: wrap; gap: 0.4rem; }
+  .eprow .d { white-space: normal; word-break: break-word; text-align: left; }
+  .chart .bar .tip { white-space: normal; left: 0; transform: none; font-size: 0.6rem; }
+  .chart { overflow-x: auto; }
+}
