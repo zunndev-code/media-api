@@ -62,11 +62,8 @@ function buildNav() {
   const nav = $('nav');
   if (!nav) return;
   const linksHtml = NAV_LINKS.map(navLink).join('');
-  nav.innerHTML =
-    '<a class="logo" href="/">' +
-    LOGO_MARK +
-    'Zunndev API</a>' +
-    '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
+  const onLanding = location.pathname === '/';
+  const drawerHtml = onLanding ? '' :
     '<button class="burger" id="burger" aria-label="Menu">☰</button>' +
     '<div class="drawer-bg" id="drawer-bg"></div>' +
     '<aside class="drawer" id="drawer">' +
@@ -82,8 +79,14 @@ function buildNav() {
     '<p class="drawer-label">Akun</p>' +
     '<div class="drawer-auth" id="nav-auth-m"></div>' +
     '</div>' +
-    '<div class="drawer-foot">Zunndev API v35</div>' +
+    '<div class="drawer-foot">Zunndev API v39</div>' +
     '</aside>';
+  nav.innerHTML =
+    '<a class="logo" href="/">' +
+    LOGO_MARK +
+    'Zunndev API</a>' +
+    '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
+    drawerHtml;
 
   const langBtn = document.createElement('button');
   langBtn.className = 'langbtn nav-lang';
@@ -91,6 +94,8 @@ function buildNav() {
   langBtn.textContent = currentLang() === 'en' ? 'ID' : 'EN';
   langBtn.addEventListener('click', () => { toggleLang(); });
   nav.appendChild(langBtn);
+
+  if (onLanding) return;
 
   const burger = $('burger');
   const close = $('drawer-close');
@@ -663,12 +668,35 @@ function toggleTheme() {
   localStorage.setItem('znd-theme', document.body.classList.contains('lite') ? 'dark' : 'lite');
   applyTheme();
 }
+function initFAQ() {
+  const faq = document.querySelector('#faq');
+  if (!faq) return;
+  const items = faq.querySelectorAll('.faq-item');
+  items.forEach((it, i) => {
+    it.style.transitionDelay = (0.06 * i) + 's';
+    it.classList.add('pre');
+  });
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((it) => it.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach((it) => io.observe(it));
+}
 document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('.app')) {
     buildAppShell();
   } else {
     buildNav();
     buildFooter();
+    initFAQ();
   }
   setNavAuth();
   initDownloader();
