@@ -53,7 +53,7 @@
       '<a class="logo" href="/dashboard"><span class="mark">✧</span>Zunndev API</a>' +
       '<span class="tpage">' + esc(title) + '</span>' +
       '<div class="tr">' +
-      '<a class="cred" href="/beli" title="Sisa credit">⚡ <span id="cred-n">—</span></a>' +
+      '<a class="cred" href="/beli" title="Sisa credit"><span class="zglyph">✧</span> <span id="cred-n">—</span></a>' +
       '<button class="tbtn" id="tbtn" aria-label="Ganti tema"></button>' +
       '<div class="usr" id="usr">' +
       '<span class="ava" id="ava">?</span><span class="unm" id="unm">—</span><span class="uarr">▾</span>' +

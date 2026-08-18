@@ -117,8 +117,8 @@
   function renderOverview(d) {
     var cards = [
       ['users', 'Pengguna', d.users, '#35d0a8', 'rgba(53,208,168,0.1)'],
-      ['pending', 'Pesanan pending', d.ordersPending, '#f0b548', 'rgba(240,181,72,0.12)'],
-      ['coins', 'Pendapatan', 'Rp ' + fmtNum(d.revenue), '#ffd27a', 'rgba(255,210,122,0.12)'],
+      ['pending', 'Pesanan pending', d.ordersPending, '#7c5cff', 'rgba(124,92,255,0.12)'],
+      ['coins', 'Pendapatan', 'Rp ' + fmtNum(d.revenue), '#a79bff', 'rgba(255,210,122,0.12)'],
       ['activity', 'Hits hari ini', fmtNum(d.hitsToday), '#b98cff', 'rgba(185,140,255,0.12)'],
       ['bar', 'Hits total', fmtNum(d.hitsTotal), '#ff6b9d', 'rgba(255,107,157,0.12)'],
     ];

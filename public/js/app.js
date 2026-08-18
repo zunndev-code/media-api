@@ -140,7 +140,7 @@ function buildAppShell() {
     '<a class="logo" href="/dashboard">' + LOGO_MARK + 'Zunndev API</a>' +
     '<span class="app-top-title">' + esc(title) + '</span>' +
     '<div class="app-top-right">' +
-    '<a class="cred-chip" id="cred-chip" href="/beli">⚡ <span>—</span></a>' +
+    '<a class="cred-chip" id="cred-chip" href="/beli"><span class="zglyph">✧</span> <span>—</span></a>' +
     '<button class="theme-btn" id="theme-btn" aria-label="Ganti tema"></button>' +
     '<div class="user-chip" id="user-chip"><span class="ava">—</span><span class="nm">—</span><span class="caret">▾</span>' +
     '<div class="user-menu" id="user-menu">' +
@@ -214,7 +214,7 @@ function buildAppShell() {
     const nm = $('user-chip').querySelector('.nm');
     ava.textContent = (u.name || '?').charAt(0).toUpperCase();
     nm.textContent = u.name;
-    $('cred-chip').innerHTML = '⚡ <span>' + fmtNum(u.credits) + '</span>';
+    $('cred-chip').innerHTML = '<span class="zglyph">✧</span> <span>' + fmtNum(u.credits) + '</span>';
     $('cred-chip').title = 'Sisa credit — klik buat top-up';
   });
 

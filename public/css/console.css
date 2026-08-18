@@ -23,7 +23,7 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
 .tr { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; }
 .cred {
   display: flex; align-items: center; gap: 0.4rem;
-  background: var(--green-dark); border: 1px solid rgba(240, 181, 72, 0.35);
+  background: var(--green-dark); border: 1px solid rgba(124, 92, 255, 0.35);
   color: var(--green-bright); font-size: 0.78rem; font-weight: 800;
   padding: 0.42rem 0.85rem; border-radius: 999px; text-decoration: none; white-space: nowrap;
 }
@@ -41,7 +41,7 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
 }
 .usr .ava {
   width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, #ffd27a, #f0b548); color: #241505;
+  background: linear-gradient(135deg, #a79bff, #7c5cff); color: #0c0a1a;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.78rem; font-weight: 800;
 }
@@ -170,7 +170,7 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
 .dot.ok { background: #35d0a8; }
 .dot.err { background: var(--error); }
 .pill { display: inline-block; font-size: 0.7rem; font-weight: 800; padding: 0.22rem 0.65rem; border-radius: 999px; white-space: nowrap; }
-.pill.on { color: var(--green-bright); background: var(--green-dark); border: 1px solid rgba(240, 181, 72, 0.4); }
+.pill.on { color: var(--green-bright); background: var(--green-dark); border: 1px solid rgba(124, 92, 255, 0.4); }
 .pill.off { color: var(--muted-2); background: var(--panel-2); border: 1px solid var(--border-strong); }
 .pill.ok { color: #7ef0c9; background: rgba(30, 208, 144, 0.1); border: 1px solid rgba(30, 208, 144, 0.4); }
 .pill.err { color: var(--error); background: rgba(255, 107, 107, 0.08); border: 1px solid rgba(255, 107, 107, 0.4); }
@@ -184,7 +184,7 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
   transition: all 0.13s;
 }
 .btn:hover { border-color: var(--muted-2); }
-.btn.solid { background: var(--green); border-color: var(--green); color: #241505; }
+.btn.solid { background: var(--green); border-color: var(--green); color: #0c0a1a; }
 .btn.solid:hover { filter: brightness(1.08); }
 .btn.danger { color: var(--error); border-color: rgba(255, 107, 107, 0.4); background: rgba(255, 107, 107, 0.06); }
 .btn.danger:hover { background: var(--error); color: #1a0505; }
@@ -206,6 +206,9 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
 
 /* --- Tema terang --- */
 body.console.lite {
+  --green: #7c5cff;
+  --green-bright: #6d5ae0;
+  --green-dark: #efecff;
   --bg: #f5f6f8;
   --panel: #ffffff;
   --panel-2: #f2f4f6;
@@ -216,14 +219,14 @@ body.console.lite {
   --border-strong: #d4d9e0;
   --green: #b45309;
   --green-bright: #b45309;
-  --green-dark: #fdf3e3;
+  --green-dark: #efecff;
   --error: #dc2626;
 }
 body.console.lite .topbar { background: rgba(255, 255, 255, 0.92); }
 body.console.lite .side { background: #ffffff; }
-body.console.lite .side a.on { background: #fdf3e3; color: #b45309; }
+body.console.lite .side a.on { background: #efecff; color: #b45309; }
 body.console.lite .navb { background: rgba(255, 255, 255, 0.94); }
-body.console.lite .navb a.on { background: #fdf3e3; color: #b45309; }
+body.console.lite .navb a.on { background: #efecff; color: #b45309; }
 body.console.lite .tile, body.console.lite .sec { box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05); }
 body.console.lite .krow:hover, body.console.lite .hrow:hover { background: #fafbfc; }
 body.console.lite .modal { background: #ffffff; }
