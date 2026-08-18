@@ -5,7 +5,6 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const config = require('./config');
 const { initDb } = require('./db');
-const { buildOpenApiSpec } = require('./openapi');
 const { router: authRouter, publicUser } = require('./routes/auth');
 const keysRouter = require('./routes/keys');
 const statsRouter = require('./routes/stats');
@@ -46,11 +45,6 @@ app.get('/api', (req, res) => {
   res.json({
     name: 'Media Downloader API',
     version: '3.0.0',
-    docs: baseUrl(req) + '/api/docs',
-    openapi: baseUrl(req) + '/api/openapi.json',
-    stats: baseUrl(req) + '/api/stats',
-    auth: { register: 'POST /api/register', login: 'POST /api/login', logout: 'POST /api/logout', me: 'GET /api/me' },
-    keys: { list: 'GET /api/keys', create: 'POST /api/keys', toggle: 'POST /api/keys/:id/toggle', delete: 'DELETE /api/keys/:id' },
     download: {
       'POST /api/download': 'Deteksi otomatis (body: {"url": "..."})',
       'GET /api/download?url=...': 'Deteksi otomatis via query',
@@ -62,11 +56,6 @@ app.get('/api', (req, res) => {
       'GET /api/mp3?url=...': 'Ekstrak audio MP3',
     },
     auth_header: 'X-API-Key: md_... (1 credit per request sukses)',
-    credits: 'Akun gratis: 1000 credit setiap hari. Top-up dengan upgrade role.',
-    payment: {
-      orders: { create: 'POST /api/orders', list: 'GET /api/orders', detail: 'GET /api/orders/:id', cancel: 'POST /api/orders/:id/cancel' },
-      webhook: 'POST /api/webhook/qris',
-    },
   });
 });
 
@@ -79,6 +68,18 @@ const authLimiter = rateLimit({
 });
 
 app.use('/api', limiter);
+
+const WEB_ONLY = ['/register', '/login', '/logout', '/me', '/dashboard', '/keys', '/stats', '/roles', '/apis', '/orders'];
+app.use('/api', (req, res, next) => {
+  const p = req.path;
+  if (WEB_ONLY.some((x) => p === x || p.startsWith(x + '/'))) {
+    const o = (req.headers.origin || '') + ' ' + (req.headers.referer || '');
+    if (!/zunndev\.my\.id|38\.47\.85\.234|localhost/.test(o)) {
+      return res.status(403).json({ status: 'error', error: { code: 'forbidden', message: 'Forbidden' } });
+    }
+  }
+  next();
+});
 app.use('/api/login', authLimiter);
 app.use('/api/register', authLimiter);
 app.use('/api', authRouter);
@@ -87,27 +88,6 @@ app.use('/api', statsRouter);
 app.use('/api', downloadRouter.router);
 app.use('/api', paymentsRouter.router);
 app.use('/api/admin', adminRouter.router);
-
-app.get('/api/openapi.json', (req, res) => {
-  res.json(buildOpenApiSpec(baseUrl(req)));
-});
-
-app.get('/api/redoc', (req, res) => {
-  const host = baseUrl(req);
-  res.send(`<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Media Downloader API - Dokumentasi</title>
-<style>body { margin: 0; padding: 0; }</style>
-</head>
-<body>
-<redoc spec-url="${host}/api/openapi.json"></redoc>
-<script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0/bundles/redoc.standalone.js"></script>
-</body>
-</html>`);
-});
 
 const PAGE_ALIASES = {
   stats: 'stats.html',
