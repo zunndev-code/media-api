@@ -55,6 +55,8 @@ module.exports = {
     callbackUrl: process.env.QRIS_CALLBACK_URL || 'https://zunndev.my.id/api/webhook/qris',
     enabled: !!(process.env.QRIS_API_KEY && process.env.QRIS_API_SECRET),
   },
+  ADMIN_PATH: process.env.ADMIN_PATH || '',
+  ADMIN_EMAILS: (process.env.ADMIN_EMAILS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
   ROLES,
   APIS,
 };

@@ -31,7 +31,7 @@ async function loadUser(req) {
   try {
     const payload = jwt.verify(token, config.JWT_SECRET);
     const { rows } = await pool.query(
-      'SELECT id, email, name, role, credits, created_at FROM users WHERE id = $1',
+      'SELECT id, email, name, role, credits, is_admin, created_at FROM users WHERE id = $1',
       [payload.uid]
     );
     return rows.length ? rows[0] : null;
@@ -51,4 +51,15 @@ function auth(required) {
   };
 }
 
-module.exports = { signToken, setAuthCookie, clearAuthCookie, auth };
+function adminAuth(required) {
+  return async (req, res, next) => {
+    req.user = await loadUser(req);
+    if (req.user) setAuthCookie(req, res, signToken(req.user.id));
+    if (required && (!req.user || !req.user.is_admin)) {
+      return res.status(403).json({ status: 'error', error: { code: 'forbidden', message: 'Bukan admin.' } });
+    }
+    next();
+  };
+}
+
+module.exports = { signToken, setAuthCookie, clearAuthCookie, auth, adminAuth };

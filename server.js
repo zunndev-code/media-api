@@ -11,6 +11,7 @@ const keysRouter = require('./routes/keys');
 const statsRouter = require('./routes/stats');
 const downloadRouter = require('./routes/download');
 const paymentsRouter = require('./routes/payments');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'));
@@ -69,12 +70,23 @@ app.get('/api', (req, res) => {
   });
 });
 
+const authLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 'error', error: { code: 'rate_limited', message: 'Terlalu banyak percobaan, tunggu 5 menit.' } },
+});
+
 app.use('/api', limiter);
+app.use('/api/login', authLimiter);
+app.use('/api/register', authLimiter);
 app.use('/api', authRouter);
 app.use('/api/keys', keysRouter);
 app.use('/api', statsRouter);
 app.use('/api', downloadRouter.router);
 app.use('/api', paymentsRouter.router);
+app.use('/api/admin', adminRouter.router);
 
 app.get('/api/openapi.json', (req, res) => {
   res.json(buildOpenApiSpec(baseUrl(req)));
@@ -117,13 +129,29 @@ app.get('/api/docs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'docs.html'));
 });
 
+if (config.ADMIN_PATH) {
+  app.get('/' + config.ADMIN_PATH, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  });
+  app.get('/' + config.ADMIN_PATH + '/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  });
+}
+
 app.use((req, res) => {
   if (req.accepts('html')) return res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
   res.status(404).json({ status: 'error', error: { code: 'not_found', message: 'Endpoint tidak ditemukan' } });
 });
 
 initDb()
-  .then(() => {
+  .then(async () => {
+    if (config.ADMIN_EMAILS.length) {
+      const { rowCount } = await require('./db').pool.query(
+        'UPDATE users SET is_admin = true WHERE email = ANY($1)',
+        [config.ADMIN_EMAILS]
+      );
+      if (rowCount) console.log('Admin sync:', rowCount, 'akun dijadikan admin.');
+    }
     app.listen(config.PORT, () => {
       console.log('Media API v3 jalan di http://localhost:' + config.PORT);
     });

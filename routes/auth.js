@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
 const { pool } = require('../db');
 const { signToken, setAuthCookie, clearAuthCookie, auth } = require('../middleware');
 const { grantDaily } = require('../lib/credits');
+const { hashPassword, verifyPassword, isScrypt } = require('../lib/password');
 const config = require('../config');
 
 function fail(res, status, code, message) {
@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
   const clean = String(email).toLowerCase().trim();
   const exists = await pool.query('SELECT 1 FROM users WHERE email = $1', [clean]);
   if (exists.rows.length) return fail(res, 409, 'email_taken', 'Email sudah terdaftar.');
-  const hash = bcrypt.hashSync(String(password), 10);
+  const hash = hashPassword(String(password));
   const { rows } = await pool.query(
     'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, credits, created_at',
     [clean, hash, String(name).trim()]
@@ -47,8 +47,11 @@ router.post('/login', async (req, res) => {
     [String(email).toLowerCase().trim()]
   );
   const user = rows[0];
-  if (!user || !user.password_hash || !bcrypt.compareSync(String(password), user.password_hash)) {
+  if (!user || !user.password_hash || !verifyPassword(String(password), user.password_hash)) {
     return fail(res, 401, 'invalid_credentials', 'Email atau password salah.');
+  }
+  if (!isScrypt(user.password_hash)) {
+    await pool.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hashPassword(String(password)), user.id]);
   }
   setAuthCookie(req, res, signToken(user.id));
   return ok(res, 200, publicUser(user));

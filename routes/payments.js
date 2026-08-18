@@ -2,7 +2,7 @@ const { pool } = require('../db');
 const config = require('../config');
 const qris = require('../lib/qris');
 const { auth } = require('../middleware');
-const { grantDaily } = require('../lib/credits');
+const { activateOrder } = require('../lib/orders');
 
 const router = require('express').Router();
 
@@ -26,18 +26,6 @@ function publicOrder(o) {
     paidAt: o.paid_at,
     expiresAt: o.expires_at,
   };
-}
-
-async function activateOrder(orderId) {
-  const { rows } = await pool.query(
-    "UPDATE orders SET status = 'paid', paid_at = now() WHERE id = $1 AND status = 'pending' RETURNING user_id, role",
-    [orderId]
-  );
-  if (!rows.length) return false;
-  const order = rows[0];
-  await pool.query('UPDATE users SET role = $1 WHERE id = $2', [order.role, order.user_id]);
-  await grantDaily(order.user_id, order.role);
-  return true;
 }
 
 router.post('/orders', auth(true), async (req, res) => {
