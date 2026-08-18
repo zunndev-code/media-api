@@ -3,7 +3,7 @@
   'use strict';
   const LANG = {
     en: {
-      'nav.home': 'Home', 'nav.endpoint': 'Endpoints', 'nav.stats': 'Stats', 'nav.docs': 'Docs',
+      'nav.home': 'Home',  'nav.stats': 'Stats', 'nav.docs': 'Docs',
       'nav.keys': 'API Keys', 'nav.hist': 'History', 'nav.lblMain': 'Menu', 'nav.lblMore': 'More',
       'dash.title': 'Dashboard', 'dash.sub': 'Your API usage at a glance',
       'buy.title': 'Credits & Roles', 'buy.sub': 'Pick a role — the higher the role, the more requests per day',
@@ -44,11 +44,11 @@
       'land.s2': 'STEP 2', 'land.s2t': 'Create an API key', 'land.s2d': 'One click from your dashboard. Keys look like md_... — keep them safe.',
       'land.s3': 'STEP 3', 'land.s3t': 'Send a request', 'land.s3d': 'Pass your key in the X-API-Key header. 1 successful request = 1 credit.',
       'stats.title': 'Statistics', 'stats.sub': 'How many times bots & apps hit the API every day.',
-      'endpoints.title': 'Endpoints.', 'endpoints.sub': 'Click a row to copy its path.', 'endpoints.tip': 'All media endpoints: optional X-API-Key header. 1 successful request = 1 credit. Account, key & stats endpoints are not published here — use the dashboard.',
+      
       'docs.title': 'API Guide.', 'docs.sub': 'From signup to your first request — under a minute.',
     },
     id: {
-      'nav.home': 'Beranda', 'nav.endpoint': 'Endpoint', 'nav.stats': 'Stats', 'nav.docs': 'Docs',
+      'nav.home': 'Beranda',  'nav.stats': 'Stats', 'nav.docs': 'Docs',
       'nav.keys': 'API Key', 'nav.hist': 'Riwayat', 'nav.lblMain': 'Menu', 'nav.lblMore': 'Lainnya',
       'dash.title': 'Dashboard', 'dash.sub': 'Ringkasan pemakaian API kamu',
       'buy.title': 'Credit & Role', 'buy.sub': 'Pilih role — makin tinggi role, makin banyak request per hari',
@@ -89,7 +89,7 @@
       'land.s2': 'LANGKAH 2', 'land.s2t': 'Buat API key', 'land.s2d': 'Dari Dashboard, buat key satu klik. Bentuknya md_..., simpen baik-baik.',
       'land.s3': 'LANGKAH 3', 'land.s3t': 'Kirim request', 'land.s3d': 'Tempel key di header X-API-Key. 1 request sukses = 1 credit.',
       'stats.title': 'Statistik', 'stats.sub': 'Berapa kali bot & aplikasi nembak API tiap hari.',
-      'endpoints.title': 'Endpoint.', 'endpoints.sub': 'Klik baris untuk menyalin path-nya.', 'endpoints.tip': 'Semua endpoint media: opsional kirim header X-API-Key. 1 request sukses = 1 credit. Endpoint akun, key & statistik tidak dipublikasikan di sini — masuk lewat dashboard.',
+      
       'docs.title': 'Cara pakai API.', 'docs.sub': 'Dari daftar sampai request pertama, kurang dari 1 menit.',
     }
   };

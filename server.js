@@ -116,7 +116,6 @@ const PAGE_ALIASES = {
   history: 'history.html',
   login: 'login.html',
   register: 'register.html',
-  endpoints: 'endpoints.html',
   docs: 'docs.html',
   beli: 'buy.html',
 };
