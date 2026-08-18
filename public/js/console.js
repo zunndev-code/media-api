@@ -139,9 +139,9 @@
     $('s-total').textContent = fmtNum(d.stats.total);
     $('s-fail').textContent = fmtNum(d.stats.failed);
 
-    const sRes = await api('/api/stats');
+    const sRes = await api('/api/stats/daily');
     const days = sRes.res.ok && sRes.body && sRes.body.data ? sRes.body.data.days : [];
-    const last = days.slice(-7);
+    const last = days.slice(-7).map((d) => ({ hits: d.hits || 0, label: new Date(d.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' }) }));
     const chart = $('mchart');
     const labels = $('mchart-labels');
     if (!last.length) { chart.innerHTML = '<div class="empty" style="width:100%">' + tr('hist.empty') + '</div>'; labels.innerHTML = ''; return; }
