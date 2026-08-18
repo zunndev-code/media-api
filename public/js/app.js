@@ -61,12 +61,6 @@ const LOGO_MARK = '<span class="mark"><span class="zglyph">✧</span></span>';
 function buildNav() {
   const nav = $('nav');
   if (!nav) return;
-  const langBtn = document.createElement('button');
-  langBtn.className = 'langbtn nav-lang';
-  langBtn.dataset.i18nLang = '1';
-  langBtn.textContent = currentLang() === 'en' ? 'ID' : 'EN';
-  langBtn.addEventListener('click', () => { toggleLang(); });
-  nav.appendChild(langBtn);
   const linksHtml = NAV_LINKS.map(navLink).join('');
   nav.innerHTML =
     '<a class="logo" href="/">' +
@@ -88,8 +82,15 @@ function buildNav() {
     '<p class="drawer-label">Akun</p>' +
     '<div class="drawer-auth" id="nav-auth-m"></div>' +
     '</div>' +
-    '<div class="drawer-foot">Zunndev API v3.0</div>' +
+    '<div class="drawer-foot">Zunndev API v35</div>' +
     '</aside>';
+
+  const langBtn = document.createElement('button');
+  langBtn.className = 'langbtn nav-lang';
+  langBtn.dataset.i18nLang = '1';
+  langBtn.textContent = currentLang() === 'en' ? 'ID' : 'EN';
+  langBtn.addEventListener('click', () => { toggleLang(); });
+  nav.appendChild(langBtn);
 
   const burger = $('burger');
   const close = $('drawer-close');
