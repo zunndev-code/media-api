@@ -855,6 +855,10 @@ table.tbl td .no { color: var(--error); }
 }
 .chart-labels span {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-align: center;
   font-size: 0.62rem;
   color: var(--muted-2);
