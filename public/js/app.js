@@ -119,6 +119,85 @@ function buildFooter() {
     '</div>';
 }
 
+const APP_LINKS = [
+  { href: '/dashboard', label: 'Dashboard', icon: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>' },
+  { href: '/beli', label: 'Beli Role', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/>' },
+  { href: '/stats', label: 'Stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
+  { href: '/endpoints', label: 'Endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
+  { href: '/api/docs', label: 'API Docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+];
+
+function buildAppShell() {
+  const shell = document.querySelector('.app');
+  if (!shell || shell.dataset.built) return;
+  shell.dataset.built = '1';
+  const title = shell.dataset.title || 'Dashboard';
+  const page = location.pathname;
+  shell.innerHTML =
+    '<header class="app-top">' +
+    '<button class="app-burger" id="app-burger" aria-label="Menu">☰</button>' +
+    '<a class="logo" href="/dashboard">' + LOGO_MARK + 'Zunndev API</a>' +
+    '<span class="app-top-title">' + esc(title) + '</span>' +
+    '<div class="app-top-right">' +
+    '<a class="cred-chip" id="cred-chip" href="/beli">⚡ <span>—</span></a>' +
+    '<div class="user-chip" id="user-chip"><span class="ava">—</span><span class="nm">—</span><span class="caret">▾</span>' +
+    '<div class="user-menu" id="user-menu">' +
+    '<a href="/dashboard">Dashboard</a>' +
+    '<a href="/beli">Beli Role</a>' +
+    '<div class="sep"></div>' +
+    '<button class="danger" data-logout="1">Keluar</button>' +
+    '</div></div>' +
+    '</div></header>' +
+    '<div class="app-body">' +
+    '<aside class="app-side" id="app-side">' +
+    '<p class="side-label">Menu</p>' +
+    APP_LINKS.map((l) =>
+      '<a class="side-link' + (page.startsWith(l.href) ? ' active' : '') + '" href="' + l.href + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + l.icon + '</svg>' +
+      l.label + '</a>'
+    ).join('') +
+    '<div class="side-foot">© ' + new Date().getFullYear() + ' Zunndev API<br>v3.1</div>' +
+    '</aside>' +
+    '<main class="app-main"></main>' +
+    '</div>';
+
+  const burger = $('app-burger');
+  const side = $('app-side');
+  burger.addEventListener('click', () => side.classList.toggle('open'));
+  document.querySelectorAll('.app-main a').forEach(() => {});
+  side.addEventListener('click', (e) => {
+    if (e.target.closest('a')) side.classList.remove('open');
+  });
+
+  const chipEl = $('user-chip');
+  chipEl.addEventListener('click', (e) => {
+    if (e.target.closest('[data-logout]')) return;
+    e.stopPropagation();
+    $('user-menu').classList.toggle('open');
+  });
+  document.addEventListener('click', () => $('user-menu').classList.remove('open'));
+
+  $('user-menu').querySelector('[data-logout]').addEventListener('click', async () => {
+    await api('/api/logout', { method: 'POST' });
+    location.href = '/';
+  });
+
+  api('/api/me').then(({ res, body }) => {
+    if (!res.ok || !body || body.status !== 'success') return;
+    const u = body.data.user;
+    const ava = $('user-chip').querySelector('.ava');
+    const nm = $('user-chip').querySelector('.nm');
+    ava.textContent = (u.name || '?').charAt(0).toUpperCase();
+    nm.textContent = u.name;
+    $('cred-chip').innerHTML = '⚡ <span>' + fmtNum(u.credits) + '</span>';
+    $('cred-chip').title = 'Sisa credit — klik buat top-up';
+  });
+
+  const main = document.querySelector('.app-main');
+  const content = document.querySelector('.app-content');
+  if (content) main.appendChild(content);
+}
+
 function setNavAuth() {
   api('/api/me').then(({ res, body }) => {
     const fill = (uid) => {
@@ -545,8 +624,12 @@ function initApiList() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  buildNav();
-  buildFooter();
+  if (document.querySelector('.app')) {
+    buildAppShell();
+  } else {
+    buildNav();
+    buildFooter();
+  }
   setNavAuth();
   initDownloader();
   initGlobalStats();

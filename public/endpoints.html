@@ -6,7 +6,7 @@
   <title>Endpoint — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=24">
+  <link rel="stylesheet" href="/css/style.css?v=26">
   <style>
     .ep-group h2 { font-size: 1.02rem; font-weight: 700; margin: 2rem 0 0.75rem; }
     .ep-group .card { overflow: hidden; }
@@ -21,9 +21,9 @@
   </style>
 </head>
 <body>
-  <nav id="nav"></nav>
-
-  <main class="wrap wide">
+<div class="app" data-title="Endpoint">
+    <div class="app-content">
+      <main class="wrap wide">
     <section class="hero" style="padding-bottom:1rem">
       <p class="kicker">Daftar Endpoint &middot; Zunndev API</p>
       <h1>Semua endpoint.</h1>
@@ -76,12 +76,10 @@
       </div>
     </section>
   </main>
+    </div>
+  </div>
 
-  <footer>
-    <p><a href="/">Blog</a> &middot; <a href="/stats">Stats</a> &middot; <a href="/api/docs">API Docs</a></p>
-  </footer>
-
-  <script src="/js/app.js?v=24"></script>
+  <script src="/js/app.js?v=26"></script>
   <script>
     document.querySelectorAll('.eprow').forEach(row => {
       row.addEventListener('click', async () => {

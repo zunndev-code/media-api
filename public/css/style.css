@@ -1117,3 +1117,93 @@ footer {
   .steps { grid-template-columns: 1fr; }
   .oauth-row { grid-template-columns: 1fr; }
 }
+
+/* ===== App shell (setelah login) ===== */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.app-top {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(12, 14, 19, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.app-top .logo { font-family: 'Unbounded', var(--display); font-size: 0.8rem; white-space: nowrap; }
+.app-top .logo .mark { width: 32px; height: 32px; font-size: 17px; }
+.app-top-title { font-size: 0.8rem; font-weight: 700; color: var(--muted-2); letter-spacing: 0.04em; }
+.app-top-right { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; }
+.cred-chip {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: var(--green-dark); border: 1px solid rgba(240, 181, 72, 0.35);
+  color: var(--green-bright); font-size: 0.78rem; font-weight: 800;
+  padding: 0.42rem 0.85rem; border-radius: 999px; white-space: nowrap;
+  text-decoration: none;
+}
+.user-chip {
+  position: relative; display: flex; align-items: center; gap: 0.55rem;
+  background: var(--panel); border: 1px solid var(--border-strong); border-radius: 999px;
+  padding: 0.3rem 0.9rem 0.3rem 0.35rem; cursor: pointer; user-select: none;
+}
+.user-chip .ava {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #ffd27a, #f0b548); color: #241505;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 800;
+}
+.user-chip .nm { font-size: 0.78rem; font-weight: 700; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-chip .caret { color: var(--muted-2); font-size: 0.6rem; }
+.user-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; min-width: 190px;
+  background: var(--panel-2); border: 1px solid var(--border-strong); border-radius: 14px;
+  padding: 0.45rem; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  display: none; z-index: 120;
+}
+.user-menu.open { display: block; }
+.user-menu a, .user-menu button {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%; box-sizing: border-box;
+  background: transparent; border: 0; color: var(--muted); text-decoration: none;
+  font-family: inherit; font-size: 0.8rem; font-weight: 600; text-align: left;
+  padding: 0.55rem 0.7rem; border-radius: 9px; cursor: pointer;
+}
+.user-menu a:hover, .user-menu button:hover { background: var(--panel); color: var(--text); }
+.user-menu .sep { border-top: 1px solid var(--border); margin: 0.3rem 0.4rem; }
+.user-menu .danger { color: var(--error); }
+.user-menu .danger:hover { background: rgba(255, 107, 107, 0.08); color: var(--error); }
+.app-body { flex: 1; display: flex; align-items: stretch; }
+.app-side {
+  width: 230px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 1.2rem 0.9rem;
+  display: flex; flex-direction: column; gap: 0.2rem;
+  position: sticky; top: 57px; align-self: flex-start; height: calc(100vh - 57px);
+  box-sizing: border-box;
+}
+.app-side .side-label {
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted-2); padding: 0.9rem 0.7rem 0.35rem;
+}
+.app-side a.side-link {
+  display: flex; align-items: center; gap: 0.65rem;
+  color: var(--muted); text-decoration: none; font-size: 0.83rem; font-weight: 600;
+  padding: 0.6rem 0.7rem; border-radius: 10px; transition: all 0.13s;
+}
+.app-side a.side-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+.app-side a.side-link:hover { background: var(--panel); color: var(--text); }
+.app-side a.side-link.active { background: var(--green-dark); color: var(--green-bright); font-weight: 700; }
+.app-side .side-foot {
+  margin-top: auto; padding: 1rem 0.7rem 0.2rem;
+  font-size: 0.7rem; color: var(--muted-2);
+}
+.app-main { flex: 1; min-width: 0; }
+.app-main .wrap { max-width: 980px; padding-top: 1.6rem; }
+.app-burger { display: none; background: transparent; border: 1px solid var(--border-strong); color: var(--text); font-size: 1rem; border-radius: 9px; padding: 0.35rem 0.6rem; cursor: pointer; }
+@media (max-width: 860px) {
+  .app-side {
+    position: fixed; top: 57px; left: 0; bottom: 0; height: auto; z-index: 90;
+    background: var(--bg); transform: translateX(-100%); transition: transform 0.22s;
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.4);
+  }
+  .app-side.open { transform: translateX(0); }
+  .app-burger { display: block; }
+  .app-top-title { display: none; }
+}
