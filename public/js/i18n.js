@@ -44,7 +44,7 @@
       'land.s2': 'STEP 2', 'land.s2t': 'Create an API key', 'land.s2d': 'One click from your dashboard. Keys look like md_... — keep them safe.',
       'land.s3': 'STEP 3', 'land.s3t': 'Send a request', 'land.s3d': 'Pass your key in the X-API-Key header. 1 successful request = 1 credit.',
       'stats.title': 'Statistics', 'stats.sub': 'How many times bots & apps hit the API every day.',
-      'endpoints.title': 'All endpoints.', 'endpoints.sub': 'Click a row to copy its path.',
+      'endpoints.title': 'Endpoints.', 'endpoints.sub': 'Click a row to copy its path.', 'endpoints.tip': 'All media endpoints: optional X-API-Key header. 1 successful request = 1 credit. Account, key & stats endpoints are not published here — use the dashboard.',
       'docs.title': 'API Guide.', 'docs.sub': 'From signup to your first request — under a minute.',
     },
     id: {
@@ -89,7 +89,7 @@
       'land.s2': 'LANGKAH 2', 'land.s2t': 'Buat API key', 'land.s2d': 'Dari Dashboard, buat key satu klik. Bentuknya md_..., simpen baik-baik.',
       'land.s3': 'LANGKAH 3', 'land.s3t': 'Kirim request', 'land.s3d': 'Tempel key di header X-API-Key. 1 request sukses = 1 credit.',
       'stats.title': 'Statistik', 'stats.sub': 'Berapa kali bot & aplikasi nembak API tiap hari.',
-      'endpoints.title': 'Semua endpoint.', 'endpoints.sub': 'Klik baris untuk menyalin path-nya.',
+      'endpoints.title': 'Endpoint.', 'endpoints.sub': 'Klik baris untuk menyalin path-nya.', 'endpoints.tip': 'Semua endpoint media: opsional kirim header X-API-Key. 1 request sukses = 1 credit. Endpoint akun, key & statistik tidak dipublikasikan di sini — masuk lewat dashboard.',
       'docs.title': 'Cara pakai API.', 'docs.sub': 'Dari daftar sampai request pertama, kurang dari 1 menit.',
     }
   };

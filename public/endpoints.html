@@ -9,16 +9,29 @@
   <link rel="stylesheet" href="/css/style.css?v=36">
   <link rel="stylesheet" href="/css/console.css?v=36">
   <style>
-    .ep-group h2 { font-size: 1.02rem; font-weight: 700; margin: 2rem 0 0.75rem; }
-    .ep-group .card { overflow: hidden; }
-    .eprow { cursor: pointer; }
-    .eprow:hover { background: var(--panel-2); }
-    .tag { font-size: 0.7rem; font-weight: 700; padding: 0.14rem 0.5rem; border-radius: 999px; margin-left: 0.5rem; vertical-align: middle; white-space: nowrap; }
-    .tag.log { background: var(--green-dark); color: var(--green-bright); border: 1px solid var(--green); }
-    .tag.key { background: #2b2b1d; color: #e8d44d; border: 1px solid #55501a; }
-    .tag.pub { background: var(--panel-2); color: var(--muted-2); border: 1px solid var(--border-strong); }
-    .copy-ok { color: var(--green-bright); font-size: 0.75rem; }
-    .tip { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+    .eplist { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .eprow {
+      display: grid; grid-template-columns: 64px 1fr auto; gap: 0.8rem; align-items: center;
+      padding: 12px 16px; cursor: pointer; background: #13151d;
+      border-bottom: 1px solid var(--border); transition: background 0.12s;
+    }
+    .eprow:last-child { border-bottom: 0; }
+    .eprow:hover { background: #181b26; }
+    .m {
+      font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 3px 7px; border-radius: 6px; text-align: center;
+    }
+    .m.get { color: #4ade80; background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); }
+    .m.post { color: #60a5fa; background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.3); }
+    .m.del { color: #f87171; background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.3); }
+    .eprow code { font-size: 0.82rem; color: var(--text); word-break: break-all; }
+    .eprow .d { font-size: 0.76rem; color: var(--muted); text-align: right; }
+    .copy-ok { color: var(--green-bright); font-size: 0.76rem; }
+    .tip { color: var(--dim); font-size: 0.8rem; margin-top: 0.9rem; line-height: 1.6; }
+    @media (max-width: 560px) {
+      .eprow { grid-template-columns: 56px 1fr; }
+      .eprow .d { grid-column: 2; text-align: left; }
+    }
   </style>
 </head>
 <body class="console">
@@ -26,57 +39,23 @@
     <header class="head">
       <div>
         <h1 data-i18n="endpoints.title">All endpoints.</h1>
-        <p class="headsub"><span data-i18n="endpoints.sub">Click a row to copy its path.</span> Base URL: <code class="inline">https://zunndev.my.id</code> — cara pakai lengkap di <a href="/api/docs" style="color:var(--green)">API Docs</a>.</p>
+        <p class="headsub"><span data-i18n="endpoints.sub">Click a row to copy its path.</span> Base URL: <code class="inline">https://zunndev.my.id</code></p>
       </div>
     </header>
 
-    <section class="ep-group">
-      <h2>Layanan Media &mdash; Media Downloader <span class="tag log">live</span></h2>
-      <div class="card">
-        <div class="eprow" data-copy="api/download"><span><span class="m post">POST</span><code>api/download</code></span><span class="d">deteksi otomatis semua platform</span></div>
-        <div class="eprow" data-copy="api/yt"><span><span class="m get">GET</span><code>api/yt</code></span><span class="d">YouTube (watch, youtu.be, shorts)</span></div>
-        <div class="eprow" data-copy="api/ig"><span><span class="m get">GET</span><code>api/ig</code></span><span class="d">Instagram (post &amp; reel)</span></div>
-        <div class="eprow" data-copy="api/fb"><span><span class="m get">GET</span><code>api/fb</code></span><span class="d">Facebook (video)</span></div>
-        <div class="eprow" data-copy="api/tt"><span><span class="m get">GET</span><code>api/tt</code></span><span class="d">TikTok (video)</span></div>
-        <div class="eprow" data-copy="api/x"><span><span class="m get">GET</span><code>api/x</code></span><span class="d">X / Twitter (tweet berisi video)</span></div>
-        <div class="eprow" data-copy="api/mp3"><span><span class="m get">GET</span><code>api/mp3</code></span><span class="d">ekstrak audio MP3 dari platform mana pun</span></div>
-        <div class="eprow" data-copy="api/download"><span><span class="m get">GET</span><code>api/download?url=...</code></span><span class="d">versi query param + <code class="inline">type=mp3</code></span></div>
-      </div>
-      <p class="tip">Semua endpoint media: opsional kirim header <code class="inline">X-API-Key</code>. 1 request sukses = 1 credit.</p>
+    <section class="eplist">
+      <div class="eprow" data-copy="api/download"><span class="m post">POST</span><code>api/download</code><span class="d">deteksi otomatis semua platform</span></div>
+      <div class="eprow" data-copy="api/yt"><span class="m get">GET</span><code>api/yt</code><span class="d">YouTube (watch, youtu.be, shorts)</span></div>
+      <div class="eprow" data-copy="api/ig"><span class="m get">GET</span><code>api/ig</code><span class="d">Instagram (post &amp; reel)</span></div>
+      <div class="eprow" data-copy="api/fb"><span class="m get">GET</span><code>api/fb</code><span class="d">Facebook (video)</span></div>
+      <div class="eprow" data-copy="api/tt"><span class="m get">GET</span><code>api/tt</code><span class="d">TikTok (video)</span></div>
+      <div class="eprow" data-copy="api/x"><span class="m get">GET</span><code>api/x</code><span class="d">X / Twitter (tweet berisi video)</span></div>
+      <div class="eprow" data-copy="api/mp3"><span class="m get">GET</span><code>api/mp3</code><span class="d">ekstrak audio MP3 dari platform mana pun</span></div>
+      <div class="eprow" data-copy="api/download"><span class="m get">GET</span><code>api/download?url=...&amp;type=mp3</code><span class="d">versi query param</span></div>
     </section>
 
-    <section class="ep-group">
-      <h2>Akun <span class="tag key">butuh login</span></h2>
-      <div class="card">
-        <div class="eprow" data-copy="api/register"><span><span class="m post">POST</span><code>api/register</code></span><span class="d">daftar akun baru (langsung 1000 credit)</span></div>
-        <div class="eprow" data-copy="api/login"><span><span class="m post">POST</span><code>api/login</code></span><span class="d">login email + password</span></div>
-        <div class="eprow" data-copy="api/logout"><span><span class="m post">POST</span><code>api/logout</code></span><span class="d">keluar</span></div>
-        <div class="eprow" data-copy="api/me"><span><span class="m get">GET</span><code>api/me</code></span><span class="d">info akun, credit, key, pemakaian hari ini</span></div>
-      </div>
-    </section>
-
-    <section class="ep-group">
-      <h2>API Key <span class="tag key">butuh login</span></h2>
-      <div class="card">
-        <div class="eprow" data-copy="api/keys"><span><span class="m get">GET</span><code>api/keys</code></span><span class="d">daftar key milik kamu</span></div>
-        <div class="eprow" data-copy="api/keys"><span><span class="m post">POST</span><code>api/keys</code></span><span class="d">buat key baru (nama opsional)</span></div>
-        <div class="eprow" data-copy="api/keys"><span><span class="m post">POST</span><code>api/keys/{id}/toggle</code></span><span class="d">aktifkan / nonaktifkan key</span></div>
-        <div class="eprow" data-copy="api/keys"><span><span class="m del">DELETE</span><code>api/keys/{id}</code></span><span class="d">hapus key</span></div>
-      </div>
-    </section>
-
-    <section class="ep-group">
-      <h2>Statistik <span class="tag pub">publik</span></h2>
-      <div class="card">
-        <div class="eprow" data-copy="api/stats"><span><span class="m get">GET</span><code>api/stats</code></span><span class="d">hit hari ini, total hit, jumlah user</span></div>
-        <div class="eprow" data-copy="api/stats/daily"><span><span class="m get">GET</span><code>api/stats/daily</code></span><span class="d">hits 14 hari terakhir (ikut data kamu kalau login)</span></div>
-        <div class="eprow" data-copy="api/roles"><span><span class="m get">GET</span><code>api/roles</code></span><span class="d">daftar role &amp; harga</span></div>
-        <div class="eprow" data-copy="api/apis"><span><span class="m get">GET</span><code>api/apis</code></span><span class="d">daftar layanan (live / segera hadir)</span></div>
-        <div class="eprow" data-copy="api"><span><span class="m get">GET</span><code>api</code></span><span class="d">info &amp; daftar endpoint versi JSON</span></div>
-      </div>
-    </section>
+    <p class="tip" data-i18n="endpoints.tip">Semua endpoint media: opsional kirim header <code class="inline">X-API-Key</code>. 1 request sukses = 1 credit. Endpoint akun, key &amp; statistik tidak dipublikasikan di sini — masuk lewat dashboard.</p>
   </main>
-
   <script src="/js/i18n.js?v=36"></script>
   <script src="/js/app.js?v=36"></script>
   <script src="/js/console.js?v=36"></script>
