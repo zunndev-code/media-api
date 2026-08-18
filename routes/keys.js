@@ -25,7 +25,7 @@ router.post('/', auth(true), async (req, res) => {
   const name = (req.body && req.body.name ? String(req.body.name).trim() : 'default').slice(0, 40);
   const role = ROLES[req.user.role] || ROLES.free;
   const { rows: cnt } = await pool.query('SELECT COUNT(*)::int AS c FROM api_keys WHERE user_id = $1', [req.user.id]);
-  if (cnt[0].c >= role.keys) {
+  if (!req.user.is_admin && cnt[0].c >= role.keys) {
     return fail(res, 400, 'key_limit', 'Batas maksimal API key untuk role ' + role.label + ' adalah ' + role.keys + '. Hapus key lama atau upgrade role.');
   }
   const key = 'md_' + crypto.randomBytes(24).toString('hex');
