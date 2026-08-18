@@ -1332,9 +1332,9 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
 }
 .faq-item:hover { border-color: var(--border-strong); transform: translateY(-1px); }
 .faq-item[open] {
-  border-color: var(--brand);
-  background: linear-gradient(180deg, rgba(139, 92, 246, 0.07), var(--panel) 60%);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(139, 92, 246, 0.18);
+  border-color: var(--green);
+  background: linear-gradient(180deg, rgba(109, 93, 252, 0.08), var(--panel) 60%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(109, 93, 252, 0.2);
 }
 .faq-item.pre { opacity: 0; transform: translateY(16px); }
 .faq-item.in { opacity: 1; transform: none; }
@@ -1361,7 +1361,7 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   flex-shrink: 0;
   transition: color 0.2s;
 }
-.faq-item[open] summary::before { color: var(--brand); }
+.faq-item[open] summary::before { color: var(--green); }
 .faq-item summary::after {
   content: "+";
   display: grid;
@@ -1380,9 +1380,9 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
 }
 .faq-item[open] summary::after {
   transform: rotate(45deg);
-  color: var(--brand);
-  border-color: var(--brand);
-  background: rgba(139, 92, 246, 0.12);
+  color: var(--green);
+  border-color: var(--green);
+  background: rgba(109, 93, 252, 0.14);
 }
 .faq-item p {
   display: grid;
@@ -1410,9 +1410,9 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--brand);
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: var(--green);
+  background: rgba(109, 93, 252, 0.12);
+  border: 1px solid rgba(109, 93, 252, 0.3);
   padding: 0.32rem 0.85rem;
   border-radius: 999px;
 }
@@ -1422,7 +1422,7 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   font-size: 0.85rem;
   margin-top: 1.4rem;
 }
-.faq-more a { color: var(--brand); font-weight: 600; text-decoration: none; border-bottom: 1px dashed rgba(139, 92, 246, 0.4); }
+.faq-more a { color: var(--green); font-weight: 600; text-decoration: none; border-bottom: 1px dashed rgba(109, 93, 252, 0.4); }
 .faq-more a:hover { border-bottom-style: solid; }
 @media (prefers-reduced-motion: reduce) {
   .faq-item, .faq-item p { transition: none; }
