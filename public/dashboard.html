@@ -5,260 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=28">
-  <style>
-    .dash-head {
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-    .dash-head h1 { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
-    .dash-head h1 .nm { color: var(--green-bright); }
-    .dash-head .sub { color: var(--muted); font-size: 0.85rem; margin-top: 0.4rem; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
-    .dash-head .sub .sep { opacity: 0.45; }
-    .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 1.5rem; }
-    @media (max-width: 900px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 460px) { .dash-grid { grid-template-columns: 1fr; } }
-    .dash-card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.15rem;
-      transition: border-color 0.15s;
-    }
-    .dash-card:hover { border-color: var(--border-strong); }
-    .dash-card .num { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-    .dash-card .lbl { color: var(--muted-2); font-size: 0.68rem; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.08em; }
-    .dash-card.green .num { color: var(--green-bright); }
-    .dash-card.red .num { color: var(--error); }
-    .card { border-radius: 14px; }
-    .card h2 { font-size: 0.95rem; font-weight: 800; }
-    .card .sub { color: var(--muted-2); font-size: 0.82rem; line-height: 1.6; }
-    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .toolbar input {
-      background: var(--bg); border: 1px solid var(--border-strong); color: var(--text);
-      border-radius: 10px; padding: 0.62rem 0.9rem; font-family: inherit; font-size: 0.85rem; outline: none; width: 180px;
-      transition: border-color 0.15s;
-    }
-    .toolbar input:focus { border-color: var(--green); }
-    table.tbl th { font-size: 0.68rem; font-weight: 700; color: var(--muted-2); letter-spacing: 0.09em; }
-    table.tbl td { color: var(--muted); }
-    .badge {
-      display: inline-block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;
-      padding: 0.2rem 0.65rem; border-radius: 999px; white-space: nowrap;
-    }
-    .badge.on { color: var(--green-bright); background: var(--green-dark); border: 1px solid rgba(240, 181, 72, 0.4); }
-    .badge.off { color: var(--muted-2); background: var(--panel-2); border: 1px solid var(--border-strong); }
-    .badge.ok { color: #7ef0c9; background: rgba(30, 208, 144, 0.1); border: 1px solid rgba(30, 208, 144, 0.4); }
-    .badge.err { color: var(--error); background: rgba(255, 107, 107, 0.08); border: 1px solid rgba(255, 107, 107, 0.4); }
-    .sm-btn {
-      border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--muted);
-      font-family: inherit; font-size: 0.72rem; font-weight: 700; padding: 0.38rem 0.8rem; border-radius: 999px; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .sm-btn:hover { color: var(--text); border-color: var(--muted-2); }
-    .sm-btn.okc { color: var(--green-bright); border-color: rgba(240, 181, 72, 0.4); background: var(--green-dark); }
-    .sm-btn.okc:hover { background: var(--green); color: #241505; }
-    .sm-btn.danger { color: var(--error); border-color: rgba(255, 107, 107, 0.4); background: rgba(255, 107, 107, 0.06); }
-    .sm-btn.danger:hover { background: var(--error); color: #1a0505; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=31">
+  <link rel="stylesheet" href="/css/console.css?v=31">
 </head>
-<body>
-  <div class="app" data-title="Dashboard">
-    <div class="app-content">
-      <main class="wrap wide">
-        <header class="dash-head">
-          <div>
-            <h1><span id="user-greet">Halo</span>, <span class="nm" id="user-name">-</span>.</h1>
-            <p class="sub"><span id="user-email">-</span><span class="sep">·</span><span id="user-role"></span><span class="sep">·</span><span id="greet">Memuat…</span></p>
-          </div>
-          <a class="ghost-btn" href="/beli">Tambah credit</a>
-        </header>
+<body data-title="Dashboard">
+  <main class="page" id="dash">
+    <header class="head">
+      <div>
+        <h1><span id="greet-w">Halo</span> <span class="nm" id="un">-</span>.</h1>
+        <p class="headsub">
+          <span id="email">-</span><span class="sep">·</span><span id="urole"></span><span class="sep">·</span><span id="quota">Memuat…</span>
+        </p>
+      </div>
+      <a class="btn solid" href="/beli">+ Credit</a>
+    </header>
 
-        <div class="dash-grid">
-          <div class="dash-card green">
-            <div class="num" id="stat-credits">-</div>
-            <div class="lbl">Sisa credit</div>
-          </div>
-          <div class="dash-card green">
-            <div class="num" id="stat-today">-</div>
-            <div class="lbl">Hits hari ini</div>
-          </div>
-          <div class="dash-card">
-            <div class="num" id="stat-total">-</div>
-            <div class="lbl">Total hits</div>
-          </div>
-          <div class="dash-card red">
-            <div class="num" id="stat-failed">-</div>
-            <div class="lbl">Request gagal</div>
-          </div>
-        </div>
+    <div class="tiles">
+      <div class="tile">
+        <p class="tl">Sisa credit</p>
+        <p class="tn" id="s-credit">—</p>
+      </div>
+      <div class="tile">
+        <p class="tl">Hits hari ini</p>
+        <p class="tn" id="s-today">—</p>
+      </div>
+      <div class="tile">
+        <p class="tl">Total hits</p>
+        <p class="tn plain" id="s-total">—</p>
+      </div>
+      <div class="tile">
+        <p class="tl">Request gagal</p>
+        <p class="tn err" id="s-fail">—</p>
+      </div>
+    </div>
 
-    <section class="card">
-      <div class="toolbar">
+    <section class="sec">
+      <div class="sech">
         <div>
-          <h2 style="margin-bottom:0">API Keys</h2>
-          <p class="sub" style="margin-top:.45rem">1 request sukses = 1 credit. Jangan share key ke siapa pun.</p>
+          <h2>API Keys</h2>
+          <p class="sub">1 request sukses = 1 credit. Jangan share key ke siapa pun.</p>
         </div>
-        <div style="display:flex;gap:.5rem">
-          <input type="text" id="key-name" placeholder="nama key (opsional)">
-          <button class="ghost-btn" id="btn-new-key">Buat key</button>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <input class="inp" id="kname" placeholder="nama key (opsional)">
+          <button class="btn solid" id="newkey">Buat key</button>
         </div>
       </div>
-      <div class="tbl-wrap" style="overflow-x:auto;margin-top:1rem">
-        <table class="tbl" id="keys-table"></table>
-      </div>
+      <div id="keys" class="rows"></div>
     </section>
 
-    <section class="card">
-      <h2>Riwayat Pemakaian</h2>
-      <p class="sub" style="margin-top:.45rem">25 request terakhir dari semua key kamu.</p>
-      <div class="tbl-wrap" style="overflow-x:auto;margin-top:1rem">
-        <table class="tbl" id="history-table"></table>
+    <section class="sec">
+      <div class="sech">
+        <div>
+          <h2>Riwayat Pemakaian</h2>
+          <p class="sub">25 request terakhir dari semua key kamu.</p>
+        </div>
       </div>
+      <div id="hist" class="rows"></div>
     </section>
 
-    <section class="card" id="orders-wrap" style="display:none">
+    <section class="sec" id="orders">
       <h2>Pesanan Role</h2>
-      <div id="orders-list" style="margin-top:1rem"></div>
+      <div id="orders-list"></div>
     </section>
   </main>
-    </div>
-  </div>
 
-  <div class="modal-bg" id="modal-bg">
+  <div class="modal-bg" id="mbg">
     <div class="modal">
       <h3>Hapus API key?</h3>
-      <p id="modal-text">Key ini akan dihapus permanen dan tidak bisa dipakai lagi.</p>
-      <div class="modal-actions">
-        <button class="modal-btn" id="modal-cancel">Batal</button>
-        <button class="modal-btn danger" id="modal-ok">Hapus</button>
+      <p id="mtext">Key ini akan dihapus permanen dan tidak bisa dipakai lagi.</p>
+      <div class="mact">
+        <button class="btn" id="mc">Batal</button>
+        <button class="btn danger" id="mk">Hapus</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/app.js?v=28"></script>
-  <script>
-    const el = (id) => document.getElementById(id);
-
-    function greetWord() {
-      const h = new Date().getHours();
-      if (h < 11) return 'Pagi';
-      if (h < 15) return 'Siang';
-      if (h < 19) return 'Sore';
-      return 'Malam';
-    }
-
-    function renderKeys(keys) {
-      const t = el('keys-table');
-      t.innerHTML =
-        '<tr><th>Nama</th><th>Key</th><th>Hits</th><th>Terakhir dipakai</th><th>Status</th><th></th></tr>' +
-        keys.map(k =>
-          '<tr>' +
-          '<td style="color:var(--text);font-weight:700">' + esc(k.name) + '</td>' +
-          '<td><code>' + esc(k.key) + '</code></td>' +
-          '<td>' + fmtNum(k.hits) + '</td>' +
-          '<td>' + (k.last_used ? fmtDate(k.last_used) : 'belum dipakai') + '</td>' +
-          '<td>' + (k.active ? '<span class="badge on">aktif</span>' : '<span class="badge off">mati</span>') + '</td>' +
-          '<td style="white-space:nowrap">' +
-            '<button class="sm-btn okc" data-act="copy" data-key="' + esc(k.key) + '">Salin</button> ' +
-            '<button class="sm-btn" data-act="toggle" data-id="' + k.id + '">' + (k.active ? 'Nonaktifkan' : 'Aktifkan') + '</button> ' +
-            '<button class="sm-btn danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '">Hapus</button>' +
-          '</td>' +
-          '</tr>'
-        ).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted-2)">Belum ada key. Buat key pertama kamu.</td></tr>';
-    }
-
-    function renderHistory(rows) {
-      const t = el('history-table');
-      t.innerHTML =
-        '<tr><th>Waktu</th><th>Endpoint</th><th>Key</th><th>Hasil</th></tr>' +
-        (rows.length ? rows.map(h =>
-          '<tr>' +
-          '<td>' + fmtDate(h.created_at) + '</td>' +
-          '<td><code>' + esc(h.endpoint) + '</code></td>' +
-          '<td>' + esc(h.key_name || '-') + '</td>' +
-          '<td>' + (h.success ? '<span class="badge ok">sukses</span>' : '<span class="badge err">gagal</span>') + '</td>' +
-          '</tr>'
-        ).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted-2)">Belum ada pemakaian.</td></tr>');
-    }
-
-    function bindKeys() {
-      document.querySelectorAll('#keys-table button[data-act]').forEach(b => {
-        b.addEventListener('click', async () => {
-          const act = b.dataset.act;
-          b.disabled = true;
-          if (act === 'copy') {
-            const okCopy = await copyText(b.dataset.key);
-            b.textContent = okCopy ? 'Tersalin!' : 'Gagal';
-            setTimeout(() => { b.textContent = 'Salin'; b.disabled = false; }, 1200);
-            return;
-          }
-          if (act === 'toggle') await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
-          if (act === 'del') {
-            if (!(await askDelete(b.dataset.id, b.dataset.name))) { b.disabled = false; return; }
-            await api('/api/keys/' + b.dataset.id, { method: 'DELETE' });
-          }
-          load();
-        });
-      });
-    }
-
-    const modalBg = el('modal-bg');
-    let modalResolve = null;
-
-    function askDelete(id, name) {
-      el('modal-text').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> akan dihapus permanen dan tidak bisa dipakai lagi.';
-      modalBg.classList.add('show');
-      return new Promise((resolve) => {
-        modalResolve = resolve;
-        el('modal-ok').onclick = () => { closeModal(); resolve(true); };
-        el('modal-cancel').onclick = () => { closeModal(); resolve(false); };
-        modalBg.onclick = (e) => { if (e.target === modalBg) { closeModal(); resolve(false); } };
-      });
-    }
-
-    function closeModal() {
-      modalBg.classList.remove('show');
-      el('modal-ok').onclick = null;
-      el('modal-cancel').onclick = null;
-      modalBg.onclick = null;
-    }
-
-    async function load() {
-      const { res, body } = await api('/api/dashboard');
-      if (!res.ok) {
-        location.href = '/login';
-        return;
-      }
-      const d = body.data;
-      el('user-name').textContent = d.user.name;
-      el('user-email').textContent = d.user.email;
-      const r = d.roleInfo || {};
-      el('user-role').innerHTML =
-        '<span class="role-pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
-      el('user-greet').textContent = greetWord();
-      el('greet').textContent = 'Jatah hari ini ' + fmtNum(r.daily || 0) + ' credit';
-      el('stat-credits').textContent = fmtNum(d.user.credits);
-      el('stat-today').textContent = fmtNum(d.stats.today);
-      el('stat-total').textContent = fmtNum(d.stats.total);
-      el('stat-failed').textContent = fmtNum(d.stats.failed);
-      renderKeys(d.keys);
-      renderHistory(d.history);
-      bindKeys();
-    }
-
-    el('btn-new-key').addEventListener('click', async () => {
-      const name = el('key-name').value.trim();
-      el('btn-new-key').disabled = true;
-      const { res } = await api('/api/keys', { method: 'POST', body: JSON.stringify({ name }) });
-      if (res.ok) {
-        el('key-name').value = '';
-        el('btn-new-key').textContent = 'Buat key';
-      }
-      el('btn-new-key').disabled = false;
-      load();
-    });
-
-    load();
-    initOrders();
-  </script>
+  <script src="/js/app.js?v=31"></script>
+  <script src="/js/console.js?v=31"></script>
 </body>
 </html>

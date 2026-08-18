@@ -148,6 +148,7 @@ function buildAppShell() {
     '<a href="/beli">Beli Role</a>' +
     '<div class="sep"></div>' +
     '<button class="danger" data-logout="1">Keluar</button>' +
+    '<p style="font-size:0.62rem;color:var(--muted-2);margin:0.4rem 0.7rem 0.2rem">Zunndev API · v30</p>' +
     '</div></div>' +
     '</div></header>' +
     '<div class="app-body">' +
