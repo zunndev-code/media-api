@@ -49,7 +49,7 @@ body.console {
   display: flex; flex-direction: column;
   position: static; z-index: auto;
   justify-content: flex-start; align-items: stretch;
-  max-width: none; width: auto;
+  max-width: none; width: 100%; box-sizing: border-box;
 }
 .nav-lbl {
   font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
