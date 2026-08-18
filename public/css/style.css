@@ -1236,3 +1236,37 @@ body.lite .cred-chip { background: #fdf3e3; border-color: #f0c98a; }
 body.lite .cur-plan { background: #fdf3e3; border-color: #f0c98a; }
 body.lite .ghost-btn { border-color: #d4d9e0; background: #fff; }
 body.lite .ghost-btn:hover { border-color: #b45309; color: #b45309; }
+
+/* ===== Bottom nav (model aplikasi, mobile) + theme toggle ===== */
+.app-nav-bottom { display: none; }
+.theme-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--border-strong); color: var(--muted);
+  cursor: pointer; padding: 0;
+}
+.theme-btn svg { width: 16px; height: 16px; }
+.theme-btn:hover { color: var(--text); border-color: var(--muted-2); }
+body.lite .app-nav-bottom { background: rgba(255, 255, 255, 0.94); }
+body.lite .app-nav-bottom a.active { background: #fdf3e3; color: #b45309; }
+@media (max-width: 860px) {
+  .app-burger { display: none; }
+  .app-side { display: none; }
+  .app-nav-bottom {
+    display: flex; justify-content: space-around; align-items: stretch;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 95;
+    background: rgba(12, 14, 19, 0.94);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    padding: 0.3rem 0.4rem calc(0.3rem + env(safe-area-inset-bottom));
+  }
+  .app-nav-bottom a {
+    display: flex; flex-direction: column; align-items: center; gap: 0.18rem;
+    color: var(--muted); text-decoration: none;
+    font-size: 0.58rem; font-weight: 700;
+    padding: 0.32rem 0.7rem; border-radius: 10px; min-width: 56px;
+  }
+  .app-nav-bottom a svg { width: 19px; height: 19px; }
+  .app-nav-bottom a.active { color: var(--green-bright); background: var(--green-dark); }
+  .app-main { padding-bottom: 72px; }
+}
