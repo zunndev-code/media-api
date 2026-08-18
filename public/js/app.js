@@ -560,6 +560,18 @@ function openPayModal(order, opts) {
   createOrder(order.role);
 }
 
+function roleSpecs(r) {
+  if (!r || !r.pros) return '';
+  const l = currentLang();
+  const pros = (r.pros && r.pros[l]) ? r.pros[l] : [];
+  const cons = (r.cons && r.cons[l]) ? r.cons[l] : [];
+  return '<div class="specs">' +
+    '<p class="spec-h">' + tr('buy.pros') + '</p>' +
+    '<ul class="pros">' + pros.map((p) => '<li>' + esc(p) + '</li>').join('') + '</ul>' +
+    (cons.length ? '<p class="spec-h">' + tr('buy.cons') + '</p><ul class="cons">' + cons.map((c) => '<li>' + esc(c) + '</li>').join('') + '</ul>' : '') +
+    '</div>';
+}
+
 function initBuy() {
   const box = $('pricing');
   if (!box) return;
@@ -587,7 +599,8 @@ function initBuy() {
       return '<div class="price-card' + (isCurrent ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : tr('buy.freePrice')) + (r.price ? '<small>' + tr('buy.perMonth') + '</small>' : '') + '</div>' +
-        '<ul><li>' + tr('buy.featDaily').replace('{n}', fmtNum(r.daily)) + '</li><li>' + tr('buy.featApis') + '</li><li>' + tr('buy.featKeys') + '</li></ul>' +
+        '<ul><li>' + tr('buy.featDaily').replace('{n}', fmtNum(r.daily)) + '</li><li>' + tr('buy.featApis') + '</li><li>' + tr('buy.featKeys').replace('{n}', r.keys) + '</li></ul>' +
+        roleSpecs(r) +
         (isCurrent ? '<div class="now-badge">' + tr('buy.yours') + '</div>' : '') +
         btn + '</div>';
     }).join('');
@@ -705,4 +718,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initOrders();
   initApiList();
   initCTA();
+
+  document.addEventListener('langchange', () => {
+    initBuy();
+    initApiList();
+    initGlobalStats();
+  });
 });

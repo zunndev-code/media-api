@@ -1469,3 +1469,13 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   .faq-item, .faq-item p { transition: none; }
   .faq-item.pre { opacity: 1; transform: none; }
 }
+
+/* Role specs (kelebihan & kekurangan) */
+.specs { border-top: 1px dashed var(--border-strong); margin-top: 1.1rem; padding-top: 0.9rem; }
+.spec-h { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.45rem; }
+.specs ul { list-style: none; margin: 0 0 0.8rem; padding: 0; display: grid; gap: 0.32rem; }
+.specs ul:last-child { margin-bottom: 0; }
+.specs li { font-size: 0.82rem; color: var(--muted); line-height: 1.45; padding-left: 1.15rem; position: relative; }
+.specs li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
+.specs .pros li::before { content: '\2713'; color: var(--green-bright); }
+.specs .cons li::before { content: '\2717'; color: var(--error); }

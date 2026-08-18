@@ -11,6 +11,22 @@ function ok(res, status, data) {
 }
 
 let queue = Promise.resolve();
+const { ROLES } = require('../config');
+
+const keyWindow = new Map();
+function keyRateOk(keyId, max) {
+  if (max <= 0) return true;
+  const now = Date.now();
+  const arr = (keyWindow.get(keyId) || []).filter((t) => now - t < 60000);
+  if (arr.length >= max) {
+    keyWindow.set(keyId, arr);
+    return false;
+  }
+  arr.push(now);
+  keyWindow.set(keyId, arr);
+  return true;
+}
+
 function enqueue(task) {
   const run = queue.then(task, task);
   queue = run.catch(() => {});
@@ -68,6 +84,11 @@ async function processDownload(req, res, { audioOnly, create, endpoint }) {
   const key = resolved && resolved.key ? resolved.key : null;
 
   if (key) {
+    const role = ROLES[key.role] || ROLES.free;
+    if (!keyRateOk(key.key_id, role.rate)) {
+      await recordHit(clientIp(req), key.user_id, key.key_id, endpoint, false);
+      return fail(res, 429, 'rate_limited', 'Terlalu banyak request. Batas role ' + role.label + ': ' + role.rate + ' request per menit.');
+    }
     const credits = await ensureDailyCredits(key.user_id, key.role);
     if (credits <= 0) {
       await recordHit(clientIp(req), key.user_id, key.key_id, endpoint, false);
