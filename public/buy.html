@@ -3,80 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beli Role — Zunndev API</title>
+  <title>Beli — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=35">
-  <style>
-    .cur-plan {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      background: var(--green-dark);
-      border: 1px solid var(--green);
-      border-radius: var(--radius);
-      padding: 1rem 1.3rem;
-      margin: 1.5rem 0 2.5rem;
-    }
-    .cur-plan .lbl { font-size: 0.78rem; color: var(--muted); }
-    .cur-plan .val { font-size: 1.05rem; font-weight: 800; margin-top: 0.15rem; }
-    .cur-plan .cred { font-size: 0.82rem; color: var(--green-bright); font-weight: 600; }
-    .price-card.current { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 10px 30px rgba(99, 91, 255, 0.1); }
-    .now-badge {
-      display: inline-block;
-      margin-top: 0.6rem;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--green-bright);
-      background: var(--green-dark);
-      border: 1px solid var(--green);
-      border-radius: 999px;
-      padding: 0.25rem 0.7rem;
-    }
-    .note {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem 1.4rem;
-      margin-top: 2.5rem;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.65;
-    }
-    .note b { color: var(--text); }
-  </style>
+  <link rel="stylesheet" href="/css/style.css?v=36">
+  <link rel="stylesheet" href="/css/console.css?v=36">
 </head>
-<body>
-      <main class="page">
-    <section class="hero" style="padding-bottom:0.5rem">
-      <p class="kicker">Harga &amp; Role</p>
-      <h1>Pilih role kamu.</h1>
-      <p>Role nentuin jatah credit harian. Semakin tinggi role, makin banyak request yang bisa kamu kirim tiap hari.</p>
-    </section>
+<body class="console">
+  <main class="page" id="page">
 
     <div class="cur-plan" id="cur-plan" style="display:none">
       <div>
-        <div class="lbl">Plan kamu saat ini</div>
-        <div class="val" id="cur-name">—</div>
+        <div class="lbl" data-i18n="buy.plan">Your plan</div>
+        <div class="val" id="cur-name">-</div>
       </div>
       <div class="cred" id="cur-cred"></div>
     </div>
 
     <div class="pricing" id="pricing"></div>
 
-    <div class="note" id="pay-note">
-      <b>Pembayaran QRIS.</b><br>
-      Setelah kamu klik <b>Beli sekarang</b>, muncul QR untuk scan — bayar pakai e-wallet (GoPay, OVO, DANA, ShopeePay) atau m-banking mana aja. Role langsung aktif otomatis begitu pembayaran ke-detect. QR valid <b>10 menit</b>.
-    </div>
+    <section class="sec" id="orders-wrap" style="display:none">
+      <h2 data-i18n="buy.orders">Role Orders</h2>
+      <div id="orders-list"></div>
+    </section>
+
+    <div class="note" id="pay-note" data-i18n="buy.note">After you click Buy now, a QR code appears — scan it with any e-wallet (GoPay, OVO, DANA, ShopeePay) or mobile banking. Your role activates automatically once payment is detected. QR is valid for 10 minutes.</div>
+
   </main>
 
-  <script src="/js/i18n.js?v=35"></script>
-  <script src="/js/app.js?v=35"></script>
-  <script src="/js/console.js?v=35"></script>
-  <script>initBuy();</script>
+  <script src="/js/i18n.js?v=36"></script>
+  <script src="/js/app.js?v=36"></script>
+  <script src="/js/console.js?v=36"></script>
 </body>
 </html>

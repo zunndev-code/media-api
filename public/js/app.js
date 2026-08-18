@@ -410,11 +410,11 @@ function initGlobalStats() {
 }
 
 const PAY_STATUS = {
-  pending: 'Menunggu pembayaran',
-  paid: 'Berhasil',
-  expired: 'Kadaluarsa',
-  failed: 'Gagal',
-  cancelled: 'Dibatalkan',
+  pending: () => tr('buy.orders.pending'),
+  paid: () => tr('buy.orders.paid'),
+  expired: () => tr('buy.orders.expired'),
+  failed: () => tr('buy.orders.failed'),
+  cancelled: () => tr('buy.orders.cancelled'),
 };
 
 function payStatusClass(s) {
@@ -422,7 +422,7 @@ function payStatusClass(s) {
 }
 
 function payStatusBadge(s) {
-  return '<span class="pay-badge ' + payStatusClass(s) + '">' + (PAY_STATUS[s] || s) + '</span>';
+  return '<span class="pay-badge ' + payStatusClass(s) + '">' + (PAY_STATUS[s] ? PAY_STATUS[s]() : s) + '</span>';
 }
 
 function formatCountdown(ms) {
@@ -568,22 +568,22 @@ function initBuy() {
     if (cur && me) {
       cur.style.display = 'flex';
       $('cur-name').textContent = roles[me.role] ? roles[me.role].label : me.role;
-      $('cur-cred').textContent = fmtNum(me.credits) + ' credit tersisa';
+      $('cur-cred').textContent = fmtNum(me.credits) + ' ' + tr('buy.left');
     }
     box.innerHTML = order.map((k) => {
       const r = roles[k];
       if (!r) return '';
       const isCurrent = me && me.role === k;
       let btn;
-      if (k === 'free') btn = '<div class="buy">Gratis selamanya</div>';
-      else if (!me) btn = '<a class="buy soon" href="/login">Masuk dulu</a>';
-      else if (isCurrent) btn = '<div class="buy">Plan kamu</div>';
-      else btn = '<button class="buy" data-buy="' + k + '">Beli sekarang</button>';
+      if (k === 'free') btn = '<div class="buy">' + tr('buy.free') + '</div>';
+      else if (!me) btn = '<a class="buy soon" href="/login">' + tr('buy.login') + '</a>';
+      else if (isCurrent) btn = '<div class="buy">' + tr('buy.yours') + '</div>';
+      else btn = '<button class="buy" data-buy="' + k + '">' + tr('buy.now') + '</button>';
       return '<div class="price-card' + (isCurrent ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
-        '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : 'Gratis') + (r.price ? '<small>/bulan</small>' : '') + '</div>' +
-        '<ul><li>' + fmtNum(r.daily) + ' credit setiap hari</li><li>Semua API</li><li>Tanpa batas key</li></ul>' +
-        (isCurrent ? '<div class="now-badge">Plan kamu</div>' : '') +
+        '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : tr('buy.freePrice')) + (r.price ? '<small>' + tr('buy.perMonth') + '</small>' : '') + '</div>' +
+        '<ul><li>' + tr('buy.featDaily').replace('{n}', fmtNum(r.daily)) + '</li><li>' + tr('buy.featApis') + '</li><li>' + tr('buy.featKeys') + '</li></ul>' +
+        (isCurrent ? '<div class="now-badge">' + tr('buy.yours') + '</div>' : '') +
         btn + '</div>';
     }).join('');
     box.querySelectorAll('[data-buy]').forEach((b) => {
@@ -619,7 +619,7 @@ function initOrders() {
       '<span class="order-meta">Rp ' + fmtNum(o.amount) + ' · ' + fmtDate(o.createdAt) + '</span></div>' +
       payStatusBadge(o.status) +
       (o.status === 'pending'
-        ? '<button class="order-btn" data-view="' + o.id + '">Lihat QR</button><button class="order-btn ghost" data-cancel="' + o.id + '">Batal</button>'
+        ? '<button class="order-btn" data-view="' + o.id + '">' + tr('buy.qr') + '</button><button class="order-btn ghost" data-cancel="' + o.id + '">' + tr('buy.cancel') + '</button>'
         : '') +
       '</div>'
     ).join('');
@@ -654,6 +654,15 @@ function initApiList() {
   });
 }
 
+
+function applyTheme() {
+  const lite = localStorage.getItem('znd-theme') === 'lite';
+  document.body.classList.toggle('lite', lite);
+}
+function toggleTheme() {
+  localStorage.setItem('znd-theme', document.body.classList.contains('lite') ? 'dark' : 'lite');
+  applyTheme();
+}
 document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('.app')) {
     buildAppShell();

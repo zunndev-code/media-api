@@ -1,45 +1,153 @@
-/* ===== Zunndev Console v3 — tabs + i18n ===== */
-(function () {
+/* Zunndev Console v36 — sidebar kiri, halaman terpisah, i18n */
+(() => {
   'use strict';
+  if (!document.body.classList.contains('console')) return;
 
-  const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmtNum = (n) => Number(n || 0).toLocaleString('id-ID');
-  const fmtDate = (s) => {
-    if (!s) return '—';
-    const d = new Date(s);
-    return isNaN(d) ? '—' : d.toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-  };
-  const api = async (path, opts = {}) => {
-    try {
-      const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
-      let body = null;
-      try { body = await res.json(); } catch (e) { /* noop */ }
-      return { res, body };
-    } catch (err) {
-      return { res: { ok: false }, body: { error: { message: err.message } } };
-    }
-  };
-  const copyText = async (t) => {
-    try { await navigator.clipboard.writeText(t); return true; }
-    catch (e) {
-      const ta = document.createElement('textarea');
-      ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy'); ta.remove();
-      return ok;
-    }
+  const PAGE = location.pathname.replace(/\/$/, '') || '/';
+
+  const TITLES = {
+    '/dashboard': ['dash.title', 'dash.sub'],
+    '/keys': ['keys.title', 'keys.sub'],
+    '/history': ['hist.title', 'hist.sub'],
+    '/beli': ['buy.title', 'buy.sub'],
   };
 
-  const TABS = [
-    { id: 'overview', key: 'dash.overview' },
-    { id: 'keys', key: 'dash.keys' },
-    { id: 'history', key: 'dash.history' },
-    { id: 'buy', key: 'dash.buy' },
+  const NAV_PRIMARY = [
+    { href: '/dashboard', key: 'nav.dash', icon: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>' },
+    { href: '/keys', key: 'nav.keys', icon: '<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>' },
+    { href: '/history', key: 'nav.hist', icon: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>' },
+    { href: '/beli', key: 'nav.buy', icon: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>' },
   ];
 
-  const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-  const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const NAV_SECONDARY = [
+    { href: '/stats', key: 'nav.stats', icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
+    { href: '/endpoints', key: 'nav.endpoint', icon: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>' },
+    { href: '/api/docs', key: 'nav.docs', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+  ];
+
+  function svg(paths) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+  }
+  function navItem(l) {
+    const active = l.href === '/' ? PAGE === '/' : (PAGE === l.href);
+    return '<a class="side-link' + (active ? ' active' : '') + '" href="' + l.href + '">' + svg(l.icon) +
+      '<span data-i18n="' + l.key + '">' + tr(l.key) + '</span></a>';
+  }
+
+  function buildShell() {
+    const pageEl = document.getElementById('page');
+    if (!pageEl) return;
+
+    const title = TITLES[PAGE] || ['nav.dash', ''];
+    const t = TITLES[PAGE] ? tr(title[0]) : 'Zunndev API';
+
+    const shell = document.createElement('div');
+    shell.innerHTML =
+      '<aside class="side">' +
+      '<div class="side-top"><a class="logo" href="/dashboard">' +
+      '<span class="logo-chip">✧</span>' +
+      '<span>Zunndev API</span></a><span class="ver-chip">v36</span></div>' +
+      '<nav class="side-nav">' +
+      '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
+      NAV_PRIMARY.map(navItem).join('') +
+      '<p class="nav-lbl" data-i18n="nav.lblMore">Lainnya</p>' +
+      NAV_SECONDARY.map(navItem).join('') +
+      '</nav>' +
+      '<div class="side-foot">' +
+      '<div class="user-card">' +
+      '<span class="avatar" id="avatar">-</span>' +
+      '<div class="uinfo"><div class="unm" id="u-name">-</div><div class="uem" id="u-email">-</div></div>' +
+      '<button id="logout" aria-label="Logout">' + svg('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>') + '</button>' +
+      '</div>' +
+      '<div class="side-tools">' +
+      '<button class="tbtn" id="tbtn" aria-label="Theme">' + svg('<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>') + '</button>' +
+      '<button class="langbtn" id="langbtn" data-i18n-lang="1">' + (currentLang() === 'en' ? 'ID' : 'EN') + '</button>' +
+      '</div></div></aside>' +
+      '<div id="ovl"></div>' +
+      '<div class="main">' +
+      '<header class="topbar">' +
+      '<button class="burger" id="burger" aria-label="Menu">' + svg('<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>') + '</button>' +
+      '<div><h1 id="p-title">' + t + '</h1><p class="tsub" id="p-sub">' + (TITLES[PAGE] ? tr(title[1]) : '') + '</p></div>' +
+      '<div class="tr">' +
+      '<a class="cred" href="/beli"><span class="zglyph">✧</span><span id="cred-n">-</span></a>' +
+      '</div>' +
+      '</header>' +
+      '</div>';
+
+    document.body.insertBefore(shell, pageEl);
+    document.querySelector('.main').appendChild(pageEl);
+
+    const burger = document.getElementById('burger');
+    const side = document.querySelector('.side');
+    const ovl = document.getElementById('ovl');
+    const open = () => { side.classList.add('open'); ovl.classList.add('show'); };
+    const shut = () => { side.classList.remove('open'); ovl.classList.remove('show'); };
+    burger.addEventListener('click', open);
+    ovl.addEventListener('click', shut);
+    document.querySelectorAll('.side-link').forEach((l) => l.addEventListener('click', shut));
+
+    document.getElementById('tbtn').addEventListener('click', toggleTheme);
+    document.getElementById('langbtn').addEventListener('click', toggleLang);
+    document.getElementById('logout').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      location.href = '/login';
+    });
+  }
+
+  function setUser(u) {
+    document.getElementById('u-name').textContent = u.name;
+    document.getElementById('u-email').textContent = u.email;
+    document.getElementById('avatar').textContent = (u.name || 'U').slice(0, 1).toUpperCase();
+    const cred = document.getElementById('cred-n');
+    if (cred) {
+      cred.textContent = fmtNum(u.credits) + ' · ' + (tr('ov.credits').split(' ')[0] || 'credits');
+    }
+  }
+
+  /* ===== API helper ===== */
+  async function loadMe() {
+    const { res, body } = await api('/api/me');
+    if (!res.ok) { location.href = '/login'; return null; }
+    setUser(body.data);
+    return body.data;
+  }
+
+  function fmtDate(iso) {
+    try {
+      return new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    } catch { return iso || ''; }
+  }
+
+  /* ===== Overview ===== */
+  async function loadOverview() {
+    const { res, body } = await api('/api/dashboard');
+    if (!res.ok) return;
+    const d = body.data;
+    const r = d.roleInfo || {};
+    const un = document.getElementById('un'); if (un) un.textContent = d.user.name;
+    const gw = document.getElementById('greet-w'); if (gw) gw.textContent = greetWord();
+    const em = document.getElementById('email'); if (em) em.textContent = d.user.email;
+    const ur = document.getElementById('urole');
+    if (ur) ur.innerHTML = '<span class="pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
+    const q = document.getElementById('quota');
+    if (q) q.textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('s-credit', fmtNum(d.user.credits));
+    set('s-today', fmtNum(d.stats.today));
+    set('s-total', fmtNum(d.stats.total));
+    set('s-fail', fmtNum(d.stats.failed));
+
+    const chart = document.getElementById('mchart');
+    if (!chart) return;
+    const sRes = await api('/api/stats/daily');
+    const days = sRes.res.ok && sRes.body && sRes.body.data ? sRes.body.data.days : [];
+    const last = days.slice(-7).map((x) => ({ hits: x.hits || 0, label: new Date(x.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' }) }));
+    const labelsEl = document.getElementById('mchart-labels');
+    if (!last.length) { chart.innerHTML = '<div class="empty" style="width:100%">' + tr('hist.empty') + '</div>'; if (labelsEl) labelsEl.innerHTML = ''; return; }
+    const max = Math.max.apply(null, last.map((x) => x.hits)) || 1;
+    chart.innerHTML = last.map((x) => '<div class="mb' + (x.hits > 0 ? ' hi' : '') + '" style="height:' + Math.max(3, Math.round((x.hits / max) * 100)) + '%"></div>').join('');
+    if (labelsEl) labelsEl.innerHTML = last.map((x) => '<span>' + x.label + '</span>').join('');
+  }
 
   function greetWord() {
     const h = new Date().getHours();
@@ -49,113 +157,13 @@
     return tr('greet.night');
   }
 
-  function buildShell() {
-    document.body.classList.add('console');
-
-    const top = document.createElement('header');
-    top.className = 'topbar';
-    top.innerHTML =
-      '<a class="logo" href="/dashboard"><span class="mark">✧</span>Zunndev API</a>' +
-      '<div class="tr">' +
-      '<button class="langbtn" id="langbtn" data-i18n-lang="1">EN</button>' +
-      '<button class="tbtn" id="tbtn" aria-label="Theme"></button>' +
-      '<a class="cred" href="/beli"><span class="zglyph">✧</span> <span id="cred-n">—</span></a>' +
-      '<div class="usr" id="usr">' +
-      '<span class="ava" id="ava">?</span><span class="unm" id="unm">—</span><span class="uarr">▾</span>' +
-      '<div class="umenu" id="umenu">' +
-      '<a href="/dashboard" data-i18n="dash.overview">Overview</a>' +
-      '<a href="/beli" data-i18n="nav.buy">Buy Role</a>' +
-      '<div class="usep"></div>' +
-      '<button class="danger" id="logout" data-i18n="common.logout">Log out</button>' +
-      '<p class="uver">Zunndev API · v35</p>' +
-      '</div></div></div>';
-    document.body.prepend(top);
-
-    const tabs = document.createElement('nav');
-    tabs.className = 'tabs';
-    tabs.innerHTML = TABS.map((t) =>
-      '<button class="tabbtn' + (t.id === 'overview' ? ' on' : '') + '" data-tab="' + t.id + '" data-i18n="' + t.key + '">' + tr(t.key) + '</button>'
-    ).join('');
-    document.body.appendChild(tabs);
-    tabs.addEventListener('click', (e) => {
-      const b = e.target.closest('.tabbtn');
-      if (b) showTab(b.dataset.tab);
-    });
-
-    const saved = localStorage.getItem('znd-theme');
-    const tbtn = $('tbtn');
-    const paint = (lite) => {
-      document.body.classList.toggle('lite', lite);
-      tbtn.innerHTML = lite ? MOON : SUN;
-    };
-    paint(saved === 'lite');
-    tbtn.addEventListener('click', () => {
-      const lite = !document.body.classList.contains('lite');
-      localStorage.setItem('znd-theme', lite ? 'lite' : 'dark');
-      paint(lite);
-    });
-
-    $('langbtn').addEventListener('click', () => { toggleLang(); });
-
-    const usr = $('usr'), umenu = $('umenu');
-    usr.addEventListener('click', (e) => { e.stopPropagation(); umenu.classList.toggle('open'); });
-    document.addEventListener('click', () => umenu.classList.remove('open'));
-    $('logout').addEventListener('click', async () => {
-      await api('/api/logout', { method: 'POST' });
-      location.href = '/';
-    });
-
-    api('/api/me').then(({ res, body }) => {
-      if (!res.ok || !body || body.status !== 'success') return;
-      const u = body.data.user;
-      $('ava').textContent = (u.name || '?').charAt(0).toUpperCase();
-      $('unm').textContent = u.name;
-      $('cred-n').textContent = fmtNum(u.credits);
-    });
-  }
-
-  function showTab(id) {
-    document.querySelectorAll('.tabpanel').forEach((p) => p.classList.toggle('on', p.dataset.panel === id));
-    document.querySelectorAll('.tabbtn').forEach((b) => b.classList.toggle('on', b.dataset.tab === id));
-    if (id === 'overview') loadOverview();
-    if (id === 'keys') renderKeys();
-    if (id === 'history') renderHistory();
-    if (id === 'buy') { const w = $('orders-wrap'); if (w && $('orders-list') && $('orders-list').children.length) w.style.display = 'block'; }
-  }
-
-  /* ===== Overview ===== */
-  async function loadOverview() {
-    const { res, body } = await api('/api/dashboard');
-    if (!res.ok) { location.href = '/login'; return; }
-    const d = body.data;
-    const r = d.roleInfo || {};
-    $('un').textContent = d.user.name;
-    $('greet-w').textContent = greetWord();
-    $('email').textContent = d.user.email;
-    $('urole').innerHTML = '<span class="pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
-    $('quota').textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
-    $('s-credit').textContent = fmtNum(d.user.credits);
-    $('s-today').textContent = fmtNum(d.stats.today);
-    $('s-total').textContent = fmtNum(d.stats.total);
-    $('s-fail').textContent = fmtNum(d.stats.failed);
-
-    const sRes = await api('/api/stats/daily');
-    const days = sRes.res.ok && sRes.body && sRes.body.data ? sRes.body.data.days : [];
-    const last = days.slice(-7).map((d) => ({ hits: d.hits || 0, label: new Date(d.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' }) }));
-    const chart = $('mchart');
-    const labels = $('mchart-labels');
-    if (!last.length) { chart.innerHTML = '<div class="empty" style="width:100%">' + tr('hist.empty') + '</div>'; labels.innerHTML = ''; return; }
-    const max = Math.max.apply(null, last.map((d) => d.hits || 0)) || 1;
-    chart.innerHTML = last.map((d) => '<div class="mb' + (d.hits > 0 ? ' hi' : '') + '" style="height:' + Math.max(3, Math.round((d.hits / max) * 100)) + '%"></div>').join('');
-    labels.innerHTML = last.map((d) => '<span>' + (d.label || '') + '</span>').join('');
-  }
-
   /* ===== Keys ===== */
   function renderKeys() {
+    const box = document.getElementById('keys');
+    if (!box) return;
     api('/api/dashboard').then(({ res, body }) => {
       if (!res.ok) return;
       const keys = body.data.keys || [];
-      const box = $('keys');
       box.innerHTML = keys.length
         ? keys.map((k) =>
             '<div class="krow">' +
@@ -163,9 +171,9 @@
             '<div class="kmeta"><span class="km">' + fmtNum(k.hits) + ' hit</span>' +
             '<span class="pill ' + (k.active ? 'ok' : 'off') + '">' + tr(k.active ? 'keys.on' : 'keys.off') + '</span></div>' +
             '<div class="kact">' +
-            '<button class="btn sm" data-act="copy" data-key="' + esc(k.key) + '" data-i18n="keys.copy">Copy</button>' +
-            '<button class="btn sm" data-act="toggle" data-id="' + k.id + '" data-i18n="keys.' + (k.active ? 'disable' : 'enable') + '">' + (k.active ? 'Disable' : 'Enable') + '</button>' +
-            '<button class="btn sm danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '" data-i18n="keys.delete">Delete</button>' +
+            '<button class="btn sm" data-act="copy" data-key="' + esc(k.key) + '" data-i18n="keys.copy">' + tr('keys.copy') + '</button>' +
+            '<button class="btn sm" data-act="toggle" data-id="' + k.id + '" data-i18n="keys.' + (k.active ? 'disable' : 'enable') + '">' + tr(k.active ? 'keys.disable' : 'keys.enable') + '</button>' +
+            '<button class="btn sm danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '" data-i18n="keys.delete">' + tr('keys.delete') + '</button>' +
             '</div></div>'
           ).join('')
         : '<div class="empty">' + tr('keys.empty') + '</div>';
@@ -174,81 +182,109 @@
   }
 
   function bindRows() {
-    document.querySelectorAll('#keys .krow button[data-act]').forEach((b) => {
-      b.addEventListener('click', async () => {
-        const act = b.dataset.act;
-        b.disabled = true;
-        if (act === 'copy') {
-          const ok = await copyText(b.dataset.key);
-          b.textContent = ok ? tr('keys.copied') : '—';
-          setTimeout(() => { b.textContent = tr('keys.copy'); b.disabled = false; }, 1200);
-          return;
-        }
-        if (act === 'toggle') await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
-        if (act === 'del') {
-          if (!(await askDelete(b.dataset.id, b.dataset.name))) { b.disabled = false; return; }
-          await api('/api/keys/' + b.dataset.id, { method: 'DELETE' });
-        }
-        renderKeys();
-      });
-    });
+    document.querySelectorAll('[data-act=copy]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.key);
+        const old = b.textContent;
+        b.textContent = tr('keys.copied');
+        setTimeout(() => { b.textContent = old; }, 1200);
+      } catch {}
+    }));
+    document.querySelectorAll('[data-act=toggle]').forEach((b) => b.addEventListener('click', async () => {
+      const btn = b;
+      btn.disabled = true;
+      const { res } = await api('/api/keys/' + b.dataset.id + '/toggle', { method: 'POST' });
+      if (res.ok) renderKeys();
+      else btn.disabled = false;
+    }));
+    document.querySelectorAll('[data-act=del]').forEach((b) => b.addEventListener('click', () => {
+      askDelete(b.dataset.id, b.dataset.name).then((ok) => { if (ok) renderKeys(); });
+    }));
   }
 
   let modalResolve = null;
   function askDelete(id, name) {
-    $('mtext').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> — ' + tr('keys.delText');
-    $('mbg').classList.add('show');
+    const bg = document.getElementById('mbg');
+    if (!bg) return Promise.resolve(false);
+    document.getElementById('mtext').innerHTML = 'Key <code>' + esc(name || 'default') + '</code> — ' + tr('keys.delText');
+    bg.classList.add('show');
     return new Promise((resolve) => {
       modalResolve = resolve;
-      $('mk').onclick = () => { closeModal(); resolve(true); };
-      $('mc').onclick = () => { closeModal(); resolve(false); };
-      $('mbg').onclick = (e) => { if (e.target === $('mbg')) { closeModal(); resolve(false); } };
+      const mc = document.getElementById('mc');
+      const mk = document.getElementById('mk');
+      mc.onclick = () => { bg.classList.remove('show'); modalResolve(false); };
+      mk.onclick = async () => {
+        mk.disabled = true;
+        const { res } = await api('/api/keys/' + id, { method: 'DELETE' });
+        mk.disabled = false;
+        bg.classList.remove('show');
+        modalResolve(res.ok);
+      };
     });
-  }
-  function closeModal() {
-    $('mbg').classList.remove('show');
-    $('mk').onclick = null;
-    $('mc').onclick = null;
-    $('mbg').onclick = null;
   }
 
   /* ===== History ===== */
   function renderHistory() {
-    api('/api/dashboard').then(({ res, body }) => {
+    const box = document.getElementById('hist');
+    if (!box) return;
+    api('/api/history').then(({ res, body }) => {
       if (!res.ok) return;
-      const rows = body.data.history || [];
-      const box = $('hist');
-      box.innerHTML = rows.length
-        ? rows.map((h) =>
+      const list = body.data || [];
+      box.innerHTML = list.length
+        ? list.map((h) =>
             '<div class="hrow">' +
-            '<span class="hp"><code>' + esc(h.endpoint) + '</code> <span class="ht">· ' + esc(h.key_name || '-') + '</span></span>' +
-            '<span class="km">' + (h.success ? '<span class="pill ok">' + tr('hist.ok') + '</span>' : '<span class="pill err">' + tr('hist.fail') + '</span>') + ' · ' + fmtDate(h.created_at) + '</span>' +
-            '</div>'
+            '<div><div class="hpath">' + esc(h.path || '/') + '</div>' +
+            '<div class="hkey">' + esc(h.key || '') + '</div></div>' +
+            '<div class="hmeta">' +
+            '<span class="pill ' + (h.ok ? 'ok' : 'bad') + '">' + tr(h.ok ? 'hist.ok' : 'hist.fail') + '</span>' +
+            '<span class="hdate">' + fmtDate(h.createdAt) + '</span>' +
+            '</div></div>'
           ).join('')
         : '<div class="empty">' + tr('hist.empty') + '</div>';
     });
   }
 
+  /* ===== Boot ===== */
   document.addEventListener('DOMContentLoaded', () => {
     buildShell();
     applyLang();
-    if ($('dash')) {
-      showTab('overview');
-      const goBuy = $('go-buy');
-      if (goBuy) goBuy.addEventListener('click', (e) => { e.preventDefault(); showTab('buy'); });
-      $('newkey').addEventListener('click', async () => {
-        const name = $('kname').value.trim();
-        $('newkey').disabled = true;
-        await api('/api/keys', { method: 'POST', body: JSON.stringify({ name }) });
-        $('newkey').disabled = false;
-        $('kname').value = '';
-        renderKeys();
-      });
-      document.addEventListener('langchange', () => {
-        loadOverview();
-        renderKeys();
-        renderHistory();
-      });
+    loadMe().then((u) => {
+      if (!u) return;
+      const g = document.getElementById('greet-w');
+      if (g) g.textContent = greetWord();
+    });
+    if (PAGE === '/dashboard') loadOverview();
+    if (PAGE === '/keys') { renderKeys(); const nk = document.getElementById('newkey'); if (nk) nk.addEventListener('click', createKey); }
+    if (PAGE === '/history') renderHistory();
+    if (PAGE === '/beli') { initBuy(); initOrders(); }
+  });
+
+  async function createKey() {
+    const btn = document.getElementById('newkey');
+    btn.disabled = true;
+    const name = (document.getElementById('kname') || {}).value || '';
+    const { res } = await api('/api/keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    btn.disabled = false;
+    if (res.ok) {
+      if (document.getElementById('kname')) document.getElementById('kname').value = '';
+      renderKeys();
     }
+  }
+
+  document.addEventListener('langchange', () => {
+    const tt = TITLES[PAGE];
+    if (tt) {
+      const t1 = document.getElementById('p-title');
+      const t2 = document.getElementById('p-sub');
+      if (t1) t1.textContent = tr(tt[0]);
+      if (t2) t2.textContent = tr(tt[1]);
+    }
+    if (PAGE === '/dashboard') loadOverview();
+    if (PAGE === '/keys') renderKeys();
+    if (PAGE === '/history') renderHistory();
   });
 })();

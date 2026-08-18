@@ -112,6 +112,8 @@ app.get('/api/redoc', (req, res) => {
 const PAGE_ALIASES = {
   stats: 'stats.html',
   dashboard: 'dashboard.html',
+  keys: 'keys.html',
+  history: 'history.html',
   login: 'login.html',
   register: 'register.html',
   endpoints: 'endpoints.html',
