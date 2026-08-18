@@ -1410,14 +1410,13 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   overflow: hidden;
   margin: 0;
   padding: 0 0 0 1.05rem;
-  border-left: 2px solid transparent;
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.65;
-  transition: grid-template-rows 0.35s ease, padding-bottom 0.35s ease, border-color 0.25s ease;
+  transition: grid-template-rows 0.35s ease, padding-bottom 0.35s ease;
 }
 .faq-item p > span { min-height: 0; }
-.faq-item[open] p { grid-template-rows: 1fr; padding-bottom: 1.05rem; border-left-color: rgba(109, 93, 252, 0.35); }
+.faq-item[open] p { grid-template-rows: 1fr; padding-bottom: 1.05rem; }
 .sec-badge {
   display: flex;
   justify-content: center;
