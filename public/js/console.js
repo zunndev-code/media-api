@@ -62,7 +62,7 @@
       '<a href="/beli">Beli Role</a>' +
       '<div class="usep"></div>' +
       '<button class="danger" id="logout">Keluar</button>' +
-      '<p class="uver">Zunndev API · v31</p>' +
+      '<p class="uver">Zunndev API · v34</p>' +
       '</div></div></div>';
     document.body.prepend(top);
 
