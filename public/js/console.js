@@ -195,7 +195,7 @@
     if (!res.ok) { location.href = '/login'; return; }
     const d = body.data;
     const r = d.roleInfo || {};
-    $('un').textContent = ' ' + d.user.name;
+    $('un').textContent = d.user.name;
     $('greet-w').textContent = greetWord() + ',';
     $('email').textContent = d.user.email;
     $('urole').innerHTML = '<span class="pill" style="color:' + r.color + ';border-color:' + r.color + '">' + esc(r.label || d.user.role) + '</span>';
