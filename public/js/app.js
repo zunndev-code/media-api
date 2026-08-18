@@ -157,7 +157,7 @@ function buildAppShell() {
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + l.icon + '</svg>' +
       l.label + '</a>'
     ).join('') +
-    '<div class="side-foot">© ' + new Date().getFullYear() + ' Zunndev API<br>v3.1</div>' +
+    '<div class="side-foot">© ' + new Date().getFullYear() + ' Zunndev API<br>v28</div>' +
     '</aside>' +
     '<main class="app-main"></main>' +
     '</div>';
@@ -196,6 +196,7 @@ function buildAppShell() {
 
   const main = shell.querySelector('.app-main');
   if (content) main.appendChild(content);
+  document.body.classList.add('lite');
 }
 
 function setNavAuth() {

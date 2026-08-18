@@ -1207,3 +1207,32 @@ footer {
   .app-burger { display: block; }
   .app-top-title { display: none; }
 }
+
+/* ===== Light console (mode app, setelah login) ===== */
+body.lite {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --panel-2: #f2f4f6;
+  --text: #171a1f;
+  --muted: #5b6472;
+  --muted-2: #8b93a2;
+  --border: #e8eaee;
+  --border-strong: #d4d9e0;
+  --green: #b45309;
+  --green-bright: #b45309;
+  --green-dark: #fdf3e3;
+  --error: #dc2626;
+}
+body.lite .app-top { background: rgba(255, 255, 255, 0.92); }
+body.lite .app-side { background: #ffffff; }
+body.lite .app-side a.side-link.active { background: #fdf3e3; color: #b45309; }
+body.lite .dash-card { box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05); }
+body.lite table.tbl tbody tr:hover { background: #fafbfc; }
+body.lite .modal { background: #ffffff; }
+body.lite .user-chip .ava { background: linear-gradient(135deg, #f0b548, #d97706); color: #fff; }
+body.lite .sm-btn.okc { background: #fdf3e3; }
+body.lite .sm-btn.okc:hover { background: #b45309; color: #fff; }
+body.lite .cred-chip { background: #fdf3e3; border-color: #f0c98a; }
+body.lite .cur-plan { background: #fdf3e3; border-color: #f0c98a; }
+body.lite .ghost-btn { border-color: #d4d9e0; background: #fff; }
+body.lite .ghost-btn:hover { border-color: #b45309; color: #b45309; }
