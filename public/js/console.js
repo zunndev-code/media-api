@@ -106,10 +106,10 @@
 
   /* ===== API helper ===== */
   async function loadMe() {
-    const { res, body } = await api('/api/me');
+    const { res, body } = await api('/api/dashboard');
     if (!res.ok) { location.href = '/login'; return null; }
-    setUser(body.data);
-    return body.data;
+    setUser(body.data.user);
+    return body.data.user;
   }
 
   function fmtDate(iso) {
@@ -227,17 +227,17 @@
   function renderHistory() {
     const box = document.getElementById('hist');
     if (!box) return;
-    api('/api/history').then(({ res, body }) => {
-      if (!res.ok) return;
-      const list = body.data || [];
+    api('/api/stats/daily').then(({ res, body }) => {
+      if (!res.ok || !body.data || !body.data.me) return;
+      const list = body.data.me.history || [];
       box.innerHTML = list.length
         ? list.map((h) =>
             '<div class="hrow">' +
-            '<div><div class="hpath">' + esc(h.path || '/') + '</div>' +
-            '<div class="hkey">' + esc(h.key || '') + '</div></div>' +
+            '<div><div class="hpath">' + esc(h.endpoint || '/') + '</div>' +
+            '<div class="hkey">' + esc(h.key_name || '') + '</div></div>' +
             '<div class="hmeta">' +
-            '<span class="pill ' + (h.ok ? 'ok' : 'bad') + '">' + tr(h.ok ? 'hist.ok' : 'hist.fail') + '</span>' +
-            '<span class="hdate">' + fmtDate(h.createdAt) + '</span>' +
+            '<span class="pill ' + (h.success ? 'ok' : 'bad') + '">' + tr(h.success ? 'hist.ok' : 'hist.fail') + '</span>' +
+            '<span class="hdate">' + fmtDate(h.created_at) + '</span>' +
             '</div></div>'
           ).join('')
         : '<div class="empty">' + tr('hist.empty') + '</div>';
