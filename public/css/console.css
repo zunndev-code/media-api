@@ -96,6 +96,14 @@ body.console .logo { font-family: 'Unbounded', var(--display); font-size: 0.78re
   display: none;
 }
 @media (max-width: 860px) {
+  .tpage { display: none; }
+  .topbar { gap: 0.5rem; padding: 0 0.7rem; }
+  .tr { gap: 0.4rem; min-width: 0; }
+  .usr { padding: 0.25rem 0.35rem; }
+  .unm { display: none; }
+  .uarr { display: none; }
+  .cred { padding: 0.4rem 0.7rem; }
+  .logo { font-size: 0.72rem; }
   .navb {
     display: flex; justify-content: space-around; align-items: stretch;
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 95;
