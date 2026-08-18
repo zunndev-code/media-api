@@ -227,9 +227,9 @@
   function renderHistory() {
     const box = document.getElementById('hist');
     if (!box) return;
-    api('/api/stats/daily').then(({ res, body }) => {
-      if (!res.ok || !body.data || !body.data.me) return;
-      const list = body.data.me.history || [];
+    api('/api/dashboard').then(({ res, body }) => {
+      if (!res.ok || !body.data) return;
+      const list = body.data.history || [];
       box.innerHTML = list.length
         ? list.map((h) =>
             '<div class="hrow">' +
