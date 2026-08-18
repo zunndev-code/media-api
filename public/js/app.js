@@ -117,7 +117,7 @@ function buildFooter() {
     'Zunndev API</a>' +
     '<p>API platform buatan anak Indonesia. Mulai dari media downloader, nyusul tools lainnya.</p>' +
     '</div>' +
-    '<div><h4>Menu</h4><a href="/">Blog</a><a href="/endpoints">Endpoint</a><a href="/stats">Stats</a><a href="/api/docs">API Docs</a></div>' +
+    '<div><h4>Menu</h4><a href="/">Blog</a><a href="/endpoints">Endpoint</a><a href="/#faq">FAQ</a><a href="/stats">Stats</a><a href="/api/docs">API Docs</a></div>' +
     '<div><h4>Akun</h4><a href="/login">Masuk</a><a href="/register">Daftar gratis</a><a href="/dashboard">Dashboard</a><a href="/beli">Beli Role</a></div>' +
     '<div><h4>Layanan</h4><a href="/#demo">Media Downloader</a><a href="/#harga">Harga</a><a href="/beli">Upgrade credit</a><a href="/api/docs">Cara pakai</a></div>' +
     '</div>' +

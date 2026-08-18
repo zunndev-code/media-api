@@ -111,6 +111,41 @@
       <div class="pricing" id="pricing"></div>
     </section>
 
+    <section class="section" id="faq">
+      <h2 class="sec-title" data-i18n="faq.title">FAQ.</h2>
+      <p class="sec-sub" data-i18n="faq.sub">Pertanyaan yang paling sering ditanya.</p>
+      <div class="faq">
+        <details class="faq-item">
+          <summary data-i18n="faq.q1">Apa itu Zunndev API?</summary>
+          <p data-i18n="faq.a1">Platform API media downloader: ambil video/audio dari YouTube, Instagram, Facebook, TikTok, dan X lewat satu key. Setiap request sukses memotong 1 credit.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q2">Gimana cara dapat API key?</summary>
+          <p data-i18n="faq.a2">Daftar akun gratis, masuk ke Dashboard, tekan "Buat key". Key berbentuk <code class="inline">md_...</code> dan hanya ditampilkan sekali — simpan baik-baik.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q3">Credit cara kerjanya?</summary>
+          <p data-i18n="faq.a3">1 request sukses = 1 credit. Akun gratis dapat 1000 credit setiap hari, menumpuk sampai maksimal 3000. Role berbayar menaikkan jatah harian.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q4">Bisa dipakai tanpa key?</summary>
+          <p data-i18n="faq.a4">Bisa, buat coba-coba — dibatasi 60 request per menit per IP dan credit tidak tercatat. Untuk pemakaian serius, daftar dan pakai key kamu.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q5">Kenapa endpoint akun, key &amp; statistik tidak dipublikasikan?</summary>
+          <p data-i18n="faq.a5">Demi keamanan — akses ke data akun dibatasi lewat dashboard, supaya tidak bisa diakses orang lain dari luar.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q6">Error yang sering muncul?</summary>
+          <p data-i18n="faq.a6"><code class="inline">401 invalid_key</code> key salah · <code class="inline">402 insufficient_credits</code> credit habis · <code class="inline">429 rate_limited</code> kebanyakan request · <code class="inline">502 scrape_failed</code> gagal ambil data dari platform.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q7">Bayar role kapan bisa?</summary>
+          <p data-i18n="faq.a7">Pembayaran manual (transfer, DANA, QRIS) segera hadir. Sementara itu role bisa didapat lewat jalur admin.</p>
+        </details>
+      </div>
+    </section>
+
     <section class="section" id="update">
       <h2 class="sec-title">Update</h2>
       <div class="card">
@@ -127,7 +162,7 @@
     <p><a href="/">Blog</a> &middot; <a href="/stats">Stats</a> &middot; <a href="/api/docs">API Docs</a> &middot; <a href="/login">Masuk</a></p>
   </footer>
 
-  <script src="/js/i18n.js?v=38"></script>
-  <script src="/js/app.js?v=38"></script>
+  <script src="/js/i18n.js?v=39"></script>
+  <script src="/js/app.js?v=39"></script>
 </body>
 </html>

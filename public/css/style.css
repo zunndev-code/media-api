@@ -1312,3 +1312,41 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   font-size: 0.78rem; line-height: 1.75; color: #c9cdf0; white-space: pre-wrap; word-break: break-word;
 }
 .term pre.tout { border-top: 1px solid var(--border); color: var(--green-bright); }
+
+/* FAQ accordion */
+.faq { display: grid; gap: 0.6rem; max-width: 720px; margin: 0 auto; }
+.faq-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.15rem 1.1rem;
+  transition: border-color 0.15s;
+}
+.faq-item[open] { border-color: var(--brand); }
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  font-size: 1.1rem;
+  color: var(--muted);
+  transition: transform 0.2s, color 0.2s;
+}
+.faq-item[open] summary::after { transform: rotate(45deg); color: var(--brand); }
+.faq-item p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  padding-bottom: 1rem;
+  margin: 0;
+}
