@@ -94,3 +94,15 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 - Klaim "All endpoints" di kartu VERUS masih belum akurat (semua role akses endpoint sama)
 - Tombol "Continue with Google/GitHub" di login masih label "segera"
 - QRIS_WEBHOOK_SECRET belum di-set (aktivasi instan via webhook belum bisa; polling tetap jalan)
+## 27 — 19 Agu 2026 — Email verification LIVE
+- Resend domain ziplan.eu.cc verified (DKIM/SPF/MX/DMARC via dns.google)
+- RESEND_API_KEY set in VPS .env; lib/mail.js sendVerification (from noreply@ziplan.eu.cc, 15s timeout, errors swallowed)
+- register with key present → is_verified=false, 6-digit code (crypto.randomInt), 10-min expiry, 60s resend cooldown (verification_sent_at)
+- /api/verify: code match + not expired → verified=true + grantDaily on the spot
+- /api/resend-code: 60s cooldown, 404 if already verified
+- grantDaily skips unverified → credits 0 until verified (no farm value)
+- No key in env → old behavior (auto-verified, grants immediately) — safe rollback path
+- verify UI: register page swaps form → code box (#vcode/#vbtn/#vresend, #vemail-line); i18n reg.* EN+ID; {e} placeholder AVOIDED (applyLang wipes innerHTML)
+- E2E verified: register → box shown, wrong code 400, right code → verified + 7000 credits granted
+- Test accounts cleaned (pwverify* id 18/19)
+- TODO: Cloudflare Turnstile masih pending
