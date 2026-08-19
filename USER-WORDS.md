@@ -75,8 +75,12 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 23. **"kalo gue suruh edit cek semua halam an soalnya tadi ada logo belum di ubah ke logo"**
     → Status: **DONE** (aturan permanen ditambahkan di atas; sisa logo ✧ di sidebar console & admin panel diganti gambar logo, v60)
 
+24. **"sekarang pymen urus"** → "Paymen" = urus payment
+    → Status: **DONE** (payment QRIS.PW aktif: API key+secret dipasang di .env VPS, create-order end-to-end terverifikasi — QR real, polling status jalan, admin cancel jalan; butuh webhook_secret dari dashboard qris.pw kalau mau aktivasi instan via webhook)
+
 ## Catatan masih menggantung
 - Port API 3000 → 3001 (klaim "ketbrak sama yang udah make") — belum dipindah
 - Bullet "Data OAuth" di privacy policy: GitHub login masih "segera" (belum live)
 - Klaim "All endpoints" di kartu VERUS masih belum akurat (semua role akses endpoint sama)
 - Tombol "Continue with Google/GitHub" di login masih label "segera"
+- QRIS_WEBHOOK_SECRET belum di-set (aktivasi instan via webhook belum bisa; polling tetap jalan)
