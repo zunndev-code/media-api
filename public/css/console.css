@@ -1,5 +1,4 @@
 /* ===== Ziplan Console v36 — sidebar kiri, halaman terpisah, dark premium ===== */
-html, body { overscroll-behavior-y: none; }
 body.console {
   background: var(--bg);
   color: var(--text);

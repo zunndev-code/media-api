@@ -17,9 +17,13 @@ const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'
 
 app.set('trust proxy', 1);
 
+const READ_ONLY = ['/me', '/roles', '/apis', '/stats', '/orders', '/keys'];
+
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   limit: config.RATE_LIMIT_PER_MIN,
+  skip: (req) =>
+    req.method === 'GET' && READ_ONLY.some((p) => req.path === p || req.path.startsWith(p + '/')),
   standardHeaders: true,
   legacyHeaders: false,
   message: { status: 'error', error: { code: 'rate_limited', message: 'Terlalu banyak request, tunggu sebentar.' } },
