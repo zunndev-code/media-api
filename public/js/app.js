@@ -408,9 +408,9 @@ function initGlobalStats() {
   api('/api/stats').then(({ res, body }) => {
     if (!res.ok || !body) return;
     box.innerHTML =
-      '<div class="stat"><div class="num">' + fmtNum(body.data.hitsToday) + '</div><div class="lbl">Hits hari ini</div></div>' +
-      '<div class="stat"><div class="num">' + fmtNum(body.data.hitsTotal) + '</div><div class="lbl">Total hits</div></div>' +
-      '<div class="stat"><div class="num">' + fmtNum(body.data.users) + '</div><div class="lbl">Pengguna terdaftar</div></div>';
+      '<div class="stat"><div class="num">' + fmtNum(body.data.hitsToday) + '</div><div class="lbl">' + tr('land.sh1') + '</div></div>' +
+      '<div class="stat"><div class="num">' + fmtNum(body.data.hitsTotal) + '</div><div class="lbl">' + tr('land.sh2') + '</div></div>' +
+      '<div class="stat"><div class="num">' + fmtNum(body.data.users) + '</div><div class="lbl">' + tr('land.sh3') + '</div></div>';
   });
 }
 
@@ -662,13 +662,16 @@ function initApiList() {
   if (!box) return;
   api('/api/apis').then(({ res, body }) => {
     if (!res.ok || !body) return;
-    box.innerHTML = body.data.map(a =>
-      '<div class="api-card' + (a.status === 'soon' ? ' soon' : '') + '">' +
-      '<div class="api-head"><span class="api-name">' + esc(a.name) + '</span>' +
-      '<span class="api-status ' + (a.status === 'live' ? 'live' : 'soon') + '">' + (a.status === 'live' ? 'LIVE' : 'SEGERA') + '</span></div>' +
-      '<p class="api-desc">' + esc(a.desc) + '</p>' +
-      '</div>'
-    ).join('');
+    box.innerHTML = body.data.map(a => {
+      const l = currentLang();
+      const name = (a.name && a.name[l]) ? a.name[l] : a.name;
+      const desc = (a.desc && a.desc[l]) ? a.desc[l] : a.desc;
+      return '<div class="api-card' + (a.status === 'soon' ? ' soon' : '') + '">' +
+      '<div class="api-head"><span class="api-name">' + esc(name) + '</span>' +
+      '<span class="api-status ' + (a.status === 'live' ? 'live' : 'soon') + '">' + tr(a.status === 'live' ? 'api.live' : 'api.soon') + '</span></div>' +
+      '<p class="api-desc">' + esc(desc) + '</p>' +
+      '</div>';
+    }).join('');
   });
 }
 
