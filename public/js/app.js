@@ -245,7 +245,7 @@ function setNavAuth() {
       if (res.ok) {
         elm.innerHTML =
           '<a href="/dashboard" class="primary">Dashboard</a>' +
-          '<a href="#" data-logout="1">Keluar</a>';
+          '<a href="#" data-logout="1">' + tr('nav.logout') + '</a>';
         elm.querySelector('[data-logout]').addEventListener('click', async (e) => {
           e.preventDefault();
           await api('/api/logout', { method: 'POST' });
@@ -253,8 +253,8 @@ function setNavAuth() {
         });
       } else {
         elm.innerHTML =
-          '<a href="/login">Masuk</a>' +
-          '<a href="/register" class="primary">Daftar</a>';
+          '<a href="/login">' + tr('nav.login') + '</a>' +
+          '<a href="/register" class="primary">' + tr('nav.reg') + '</a>';
       }
     };
     fill('nav-auth');

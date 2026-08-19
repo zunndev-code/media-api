@@ -4,6 +4,7 @@
   const LANG = {
     en: {
       'nav.home': 'Home',
+      'nav.login': 'Log in', 'nav.reg': 'Register', 'nav.logout': 'Log out',
       'nav.privacy': 'Privacy', 'nav.terms': 'Terms',
       'foot.brand': 'API platform built in Indonesia. Media downloader first — more tools on the way.',
       'foot.menu': 'Menu', 'foot.blog': 'Blog', 'foot.ep': 'Endpoints', 'foot.faq': 'FAQ', 'foot.stats': 'Stats', 'foot.docs': 'API Docs',
@@ -160,6 +161,7 @@
     },
     id: {
       'nav.home': 'Beranda',
+      'nav.login': 'Masuk', 'nav.reg': 'Daftar', 'nav.logout': 'Keluar',
       'nav.privacy': 'Privasi', 'nav.terms': 'Ketentuan',
       'foot.brand': 'API platform buatan anak Indonesia. Mulai dari media downloader, nyusul tools lainnya.',
       'foot.menu': 'Menu', 'foot.blog': 'Blog', 'foot.ep': 'Endpoint', 'foot.faq': 'FAQ', 'foot.stats': 'Stats', 'foot.docs': 'API Docs',
