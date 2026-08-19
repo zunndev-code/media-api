@@ -61,10 +61,11 @@ app.get('/api', (req, res) => {
 
 const authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  limit: 10,
+  limit: 15,
+  skipSuccessfulRequests: true,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { status: 'error', error: { code: 'rate_limited', message: 'Terlalu banyak percobaan, tunggu 5 menit.' } },
+  message: { status: 'error', error: { code: 'rate_limited', message: 'Terlalu banyak percobaan gagal, tunggu 5 menit.' } },
 });
 
 app.use('/api', limiter);
