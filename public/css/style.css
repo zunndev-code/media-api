@@ -21,7 +21,7 @@
   --brand: 'Space Grotesk', var(--display);
 }
 
-html, body { overflow-x: hidden; max-width: 100%; }
+html, body { overflow-x: hidden; max-width: 100%; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -191,7 +191,7 @@ nav .nav-links a.primary:hover { background: var(--green-bright); border: none; 
   justify-content: center;
 }
 .drawer-logo .mark .zglyph { font-size: 15px; color: #0a0a16; font-weight: 700; line-height: 1; }
-.drawer-body { flex: 1; overflow-y: auto; padding: 1rem 0.85rem; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 1rem 0.85rem; overscroll-behavior-y: contain; }
 .drawer-label {
   font-size: 0.68rem;
   font-weight: 700;
