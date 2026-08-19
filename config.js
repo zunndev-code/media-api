@@ -77,6 +77,7 @@ module.exports = {
   ADMIN_PATH: process.env.ADMIN_PATH || '',
   ADMIN_EMAILS: (process.env.ADMIN_EMAILS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  ANON_RATE_PER_MIN: Number(process.env.ANON_RATE_PER_MIN) || 5,
   ROLES,
   APIS,
 };

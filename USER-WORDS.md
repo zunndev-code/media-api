@@ -106,3 +106,11 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 - E2E verified: register → box shown, wrong code 400, right code → verified + 7000 credits granted
 - Test accounts cleaned (pwverify* id 18/19)
 - TODO: Cloudflare Turnstile masih pending
+
+## 28 — 19 Agu 2026 — Demo gratis tanpa key (keputusan boss)
+- missing_key sekarang = mode anonim di semua endpoint download (yt/ig/fb/tt/x/mp3/download)
+- anonLimiter: 5 request/menit per IP (config.ANON_RATE_PER_MIN, .env bisa override), skip kalau ada key
+- anon: tanpa charge credit, tanpa whitelist, priority 0; hits dicatat user_id NULL
+- invalid_key/key_disabled TETAP error 401/403 — cuma missing_key yang jadi anon
+- frontend: land.demosub/keyPh/faq.a4/docs.h7p update EN+ID; buy.featDaily pakai r.daily*7
+- SEMUA teks per-hari/1000 → per-minggu/7.000 (i18n + fallback HTML + terms + register + meta)

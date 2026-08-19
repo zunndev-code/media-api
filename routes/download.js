@@ -1,6 +1,21 @@
+const rateLimit = require('express-rate-limit');
+const config = require('../config');
 const { pool } = require('../db');
 const { extract, summarize, detectPlatform, isAllowedHost } = require('../scraper');
 const { ensureDailyCredits } = require('../lib/credits');
+
+function hasKey(req) {
+  return !!(req.headers['x-api-key'] || req.query.key || req.query.api_key);
+}
+
+const anonLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: config.ANON_RATE_PER_MIN,
+  skip: hasKey,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 'error', error: { code: 'rate_limited', message: 'Demo gratis dibatasi ' + config.ANON_RATE_PER_MIN + ' request per menit per IP. Daftar untuk tanpa batas.' } },
+});
 
 function fail(res, status, code, message) {
   return res.status(status).json({ status: 'error', error: { code, message } });
@@ -92,7 +107,9 @@ async function processDownload(req, res, { audioOnly, create, endpoint }) {
   }
 
   const resolved = await resolveKey(req);
-  if (resolved && resolved.error) return fail(res, resolved.error.status, resolved.error.code, resolved.error.message);
+  if (resolved && resolved.error && resolved.error.code !== 'missing_key') {
+    return fail(res, resolved.error.status, resolved.error.code, resolved.error.message);
+  }
   const key = resolved && resolved.key ? resolved.key : null;
   const ip = clientIp(req);
 
@@ -152,22 +169,22 @@ function makeHandler(platform, audioOnly = false) {
 module.exports = {
   router: (() => {
     const router = require('express').Router();
-    router.post('/download', (req, res) => processDownload(req, res, {
+    router.post('/download', anonLimiter, (req, res) => processDownload(req, res, {
       audioOnly: !!(req.body && req.body.type === 'mp3'),
       create: true,
       endpoint: '/api/download',
     }));
-    router.get('/download', (req, res) => processDownload(req, res, {
+    router.get('/download', anonLimiter, (req, res) => processDownload(req, res, {
       audioOnly: req.query.type === 'mp3',
       create: false,
       endpoint: '/api/download',
     }));
-    router.get('/yt', makeHandler('yt'));
-    router.get('/ig', makeHandler('ig'));
-    router.get('/fb', makeHandler('fb'));
-    router.get('/tt', makeHandler('tt'));
-    router.get('/x', makeHandler('x'));
-    router.get('/mp3', makeHandler(null, true));
+    router.get('/yt', anonLimiter, makeHandler('yt'));
+    router.get('/ig', anonLimiter, makeHandler('ig'));
+    router.get('/fb', anonLimiter, makeHandler('fb'));
+    router.get('/tt', anonLimiter, makeHandler('tt'));
+    router.get('/x', anonLimiter, makeHandler('x'));
+    router.get('/mp3', anonLimiter, makeHandler(null, true));
     return router;
   })(),
 };

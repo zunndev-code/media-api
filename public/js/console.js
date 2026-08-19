@@ -49,7 +49,7 @@
     shell.innerHTML =
       '<aside class="side">' +
       '<div class="side-top"><a class="logo" href="/dashboard">' +
-      '<img class="logo-img" src="/img/logo.png?v=86" alt="Ziplan">' +
+      '<img class="logo-img" src="/img/logo.png?v=87" alt="Ziplan">' +
       '<span>Ziplan</span></a><span class="ver-chip">v36</span></div>' +
       '<nav class="side-nav">' +
       '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
