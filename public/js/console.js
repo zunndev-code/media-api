@@ -147,6 +147,11 @@
     if (ur) ur.innerHTML = '<span style="color:' + (r.color || '#6d5dfc') + '">' + esc(r.label || d.user.role) + '</span>';
     const q = document.getElementById('quota');
     if (q) q.textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
+    const sr = document.getElementById('s-role');
+    if (sr) {
+      sr.textContent = r.label || d.user.role;
+      sr.style.color = r.color || '';
+    }
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     set('s-credit', fmtNum(d.user.credits));
     set('s-today', fmtNum(d.stats.today));
