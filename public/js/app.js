@@ -56,7 +56,7 @@ function navLink(l, cls) {
     '<span data-i18n="' + l.label + '">' + tr(l.label) + '</span></a>';
 }
 
-const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=88" alt="Ziplan">';
+const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=89" alt="Ziplan">';
 
 function buildNav() {
   const nav = $('nav');
@@ -155,7 +155,7 @@ function buildAppShell() {
     '<a class="logo" href="/dashboard">' + LOGO_MARK + 'Ziplan</a>' +
     '<span class="app-top-title">' + esc(title) + '</span>' +
     '<div class="app-top-right">' +
-    '<a class="cred-chip" id="cred-chip" href="/beli"><span class="zglyph">✧</span> <span>—</span></a>' +
+    '<a class="cred-chip" id="cred-chip" href="/beli"><span class="zglyph">✧\ufe0e</span> <span>—</span></a>' +
     '<button class="theme-btn" id="theme-btn" aria-label="Ganti tema"></button>' +
     '<div class="user-chip" id="user-chip"><span class="ava">—</span><span class="nm">—</span><span class="caret">▾</span>' +
     '<div class="user-menu" id="user-menu">' +
@@ -229,7 +229,7 @@ function buildAppShell() {
     const nm = $('user-chip').querySelector('.nm');
     ava.textContent = (u.name || '?').charAt(0).toUpperCase();
     nm.textContent = u.name;
-    $('cred-chip').innerHTML = '<span class="zglyph">✧</span> <span>' + fmtNum(u.credits) + '</span>';
+    $('cred-chip').innerHTML = '<span class="zglyph">✧\ufe0e</span> <span>' + fmtNum(u.credits) + '</span>';
     $('cred-chip').title = 'Sisa credit — klik buat top-up';
   });
 

@@ -1458,7 +1458,8 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   border-radius: 999px;
 }
 .sec-badge span::before {
-  content: '✧';
+  content: '✧\fe0e';
+  font-variant-emoji: text;
   position: absolute;
   left: 0.7rem;
   color: var(--green);
@@ -1496,5 +1497,5 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
 .specs ul:last-child { margin-bottom: 0; }
 .specs li { font-size: 0.82rem; color: var(--muted); line-height: 1.45; padding-left: 1.15rem; position: relative; }
 .specs li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
-.specs .pros li::before { content: '\2713'; color: var(--green-bright); }
-.specs .cons li::before { content: '\2717'; color: var(--error); }
+.specs .pros li::before { content: '\2713\fe0e'; color: var(--green-bright); font-variant-emoji: text; }
+.specs .cons li::before { content: '\2717\fe0e'; color: var(--error); font-variant-emoji: text; }

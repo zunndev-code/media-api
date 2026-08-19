@@ -49,7 +49,7 @@
     shell.innerHTML =
       '<aside class="side">' +
       '<div class="side-top"><a class="logo" href="/dashboard">' +
-      '<img class="logo-img" src="/img/logo.png?v=88" alt="Ziplan">' +
+      '<img class="logo-img" src="/img/logo.png?v=89" alt="Ziplan">' +
       '<span>Ziplan</span></a><span class="ver-chip">v36</span></div>' +
       '<nav class="side-nav">' +
       '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
@@ -100,7 +100,7 @@
     if (!u) {
       document.getElementById('u-name').textContent = tr('nav.login');
       document.getElementById('u-email').textContent = tr('nav.register');
-      document.getElementById('avatar').textContent = '✧';
+      document.getElementById('avatar').textContent = '✧\ufe0e';
       return;
     }
     document.getElementById('u-name').textContent = u.name;
