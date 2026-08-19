@@ -78,6 +78,9 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 24. **"sekarang pymen urus"** → "Paymen" = urus payment
     → Status: **DONE** (payment QRIS.PW aktif: API key+secret dipasang di .env VPS, create-order end-to-end terverifikasi — QR real, polling status jalan, admin cancel jalan; butuh webhook_secret dari dashboard qris.pw kalau mau aktivasi instan via webhook)
 
+25. **"ini kata temen gue masi bisa pake api nya tanpa keys"** — temen user nemu API bisa dipake tanpa API key
+    → Status: **DONE + ATURAN** (lubang: resolveKey() balik null kalau key kosong → semua cek rate/credit di-skip → API gratis tanpa batas. Fix: key WAJIB di semua endpoint download, error `401 missing_key`. **Aturan baru: kalau nambah endpoint API apapun, WAJIB cek dulu: tanpa key/auth masih bisa dipake nggak? Semua route download/paid WAJIB key valid + charge credit.**)
+
 ## Catatan masih menggantung
 - Port API 3000 → 3001 (klaim "ketbrak sama yang udah make") — belum dipindah
 - Bullet "Data OAuth" di privacy policy: GitHub login masih "segera" (belum live)
