@@ -6,79 +6,144 @@
   <title>Endpoint — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=48">
-  <link rel="stylesheet" href="/css/console.css?v=48">
+  <link rel="stylesheet" href="/css/style.css?v=49">
+  <link rel="stylesheet" href="/css/console.css?v=49">
 </head>
 <body class="console">
   <main class="page" id="page">
     <header class="head">
       <div>
         <h1 id="p-title" data-i18n="endpoints.title">Endpoints.</h1>
-        <p class="headsub" id="p-sub"><span data-i18n="endpoints.sub">Click a row to copy its path.</span> Base URL: <code class="inline">https://zunndev.my.id</code></p>
+        <p class="headsub" id="p-sub"><span data-i18n="endpoints.sub">Click a category to expand — click a row to copy its path.</span> Base URL: <code class="inline">https://zunndev.my.id</code></p>
       </div>
     </header>
 
     <div class="eplist">
-      <div class="eprow" data-copy="api/download">
-        <span class="m post">POST</span>
-        <code>api/download</code>
-        <span class="d">Deteksi otomatis semua platform</span>
+      <div class="epcat open">
+        <div class="epcat-head" role="button" tabindex="0">
+          <span class="epcat-name" data-i18n="ep.g1">Downloader</span>
+          <span class="api-status live">LIVE</span>
+          <span class="epcat-chev">▾</span>
+        </div>
+        <div class="epcat-body">
+          <div class="epcat-rows">
+            <div class="eprow" data-copy="api/download">
+              <span class="m post">POST</span>
+              <code>api/download</code>
+              <span class="d" data-i18n="ep.p1">Auto-detect all platforms</span>
+            </div>
+            <div class="eprow" data-copy="api/yt">
+              <span class="m get">GET</span>
+              <code>api/yt</code>
+              <span class="d" data-i18n="ep.p2">YouTube video</span>
+            </div>
+            <div class="eprow" data-copy="api/ig">
+              <span class="m get">GET</span>
+              <code>api/ig</code>
+              <span class="d" data-i18n="ep.p3">Instagram reels, photos &amp; stories</span>
+            </div>
+            <div class="eprow" data-copy="api/fb">
+              <span class="m get">GET</span>
+              <code>api/fb</code>
+              <span class="d" data-i18n="ep.p4">Facebook video</span>
+            </div>
+            <div class="eprow" data-copy="api/tt">
+              <span class="m get">GET</span>
+              <code>api/tt</code>
+              <span class="d" data-i18n="ep.p5">TikTok without watermark</span>
+            </div>
+            <div class="eprow" data-copy="api/x">
+              <span class="m get">GET</span>
+              <code>api/x</code>
+              <span class="d" data-i18n="ep.p6">X / Twitter video</span>
+            </div>
+            <div class="eprow" data-copy="api/mp3">
+              <span class="m get">GET</span>
+              <code>api/mp3</code>
+              <span class="d" data-i18n="ep.p7">Extract audio as MP3</span>
+            </div>
+            <div class="eprow" data-copy="api/download?url=...&type=mp3">
+              <span class="m get">GET</span>
+              <code>api/download?url=...&amp;type=mp3</code>
+              <span class="d" data-i18n="ep.p8">Force MP3 output (audio)</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="eprow" data-copy="api/yt">
-        <span class="m get">GET</span>
-        <code>api/yt</code>
-        <span class="d">YouTube video</span>
+
+      <div class="epcat">
+        <div class="epcat-head" role="button" tabindex="0">
+          <span class="epcat-name" data-i18n="ep.g2">Music &amp; Lyrics</span>
+          <span class="api-status soon">SOON</span>
+          <span class="epcat-chev">▾</span>
+        </div>
+        <div class="epcat-body">
+          <div class="epcat-rows">
+            <div class="eprow" data-copy="api/music/search">
+              <span class="m get">GET</span>
+              <code>api/music/search</code>
+              <span class="d" data-i18n="ep.p9">Search songs, metadata &amp; lyrics</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="eprow" data-copy="api/ig">
-        <span class="m get">GET</span>
-        <code>api/ig</code>
-        <span class="d">Instagram reels, foto &amp; story</span>
+
+      <div class="epcat">
+        <div class="epcat-head" role="button" tabindex="0">
+          <span class="epcat-name" data-i18n="ep.g3">Image Tools</span>
+          <span class="api-status soon">SOON</span>
+          <span class="epcat-chev">▾</span>
+        </div>
+        <div class="epcat-body">
+          <div class="epcat-rows">
+            <div class="eprow" data-copy="api/image/compress">
+              <span class="m get">GET</span>
+              <code>api/image/compress</code>
+              <span class="d" data-i18n="ep.p10">Compress &amp; resize images</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="eprow" data-copy="api/fb">
-        <span class="m get">GET</span>
-        <code>api/fb</code>
-        <span class="d">Facebook video</span>
-      </div>
-      <div class="eprow" data-copy="api/tt">
-        <span class="m get">GET</span>
-        <code>api/tt</code>
-        <span class="d">TikTok tanpa watermark</span>
-      </div>
-      <div class="eprow" data-copy="api/x">
-        <span class="m get">GET</span>
-        <code>api/x</code>
-        <span class="d">X / Twitter video</span>
-      </div>
-      <div class="eprow" data-copy="api/mp3">
-        <span class="m get">GET</span>
-        <code>api/mp3</code>
-        <span class="d">Ekstrak audio MP3</span>
-      </div>
-      <div class="eprow" data-copy="api/download?url=...&type=mp3">
-        <span class="m get">GET</span>
-        <code>api/download?url=...&amp;type=mp3</code>
-        <span class="d">Paksa output MP3 (audio)</span>
+
+      <div class="epcat">
+        <div class="epcat-head" role="button" tabindex="0">
+          <span class="epcat-name" data-i18n="ep.g4">Text Tools</span>
+          <span class="api-status soon">SOON</span>
+          <span class="epcat-chev">▾</span>
+        </div>
+        <div class="epcat-body">
+          <div class="epcat-rows">
+            <div class="eprow" data-copy="api/text/qr">
+              <span class="m get">GET</span>
+              <code>api/text/qr</code>
+              <span class="d" data-i18n="ep.p11">Generate QR codes</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <p class="tip" data-i18n="endpoints.tip">Semua endpoint media: opsional kirim header <code class="inline">X-API-Key</code>. 1 request sukses = 1 credit. Endpoint akun, key &amp; statistik tidak dipublikasikan di sini — masuk lewat dashboard.</p>
   </main>
 
-  <script src="/js/i18n.js?v=48"></script>
-  <script src="/js/app.js?v=48"></script>
-  <script src="/js/console.js?v=48"></script>
+  <script src="/js/i18n.js?v=49"></script>
+  <script src="/js/app.js?v=49"></script>
+  <script src="/js/console.js?v=49"></script>
   <script>
     (function () {
-      var rows = document.querySelectorAll('.eprow');
-      var orig = {};
-      rows.forEach(function (row) { orig[row.dataset.copy] = row.querySelector('.d').textContent; });
-      rows.forEach(function (row) {
+      document.querySelectorAll('.epcat-head').forEach(function (head) {
+        head.addEventListener('click', function () { head.parentElement.classList.toggle('open'); });
+        head.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); head.parentElement.classList.toggle('open'); }
+        });
+      });
+      document.querySelectorAll('.eprow').forEach(function (row) {
         row.addEventListener('click', function () {
-          var path = row.dataset.copy;
           var d = row.querySelector('.d');
-          d.textContent = (window.currentLang === 'id') ? 'Tersalin!' : 'Copied!';
-          setTimeout(function () { d.textContent = orig[path]; }, 1200);
-          var full = 'https://zunndev.my.id/' + path;
+          var orig = d.textContent;
+          d.textContent = tr('endpoints.copied');
+          setTimeout(function () { d.textContent = orig; }, 1200);
+          var full = 'https://zunndev.my.id/' + row.dataset.copy;
           function fallback() {
             var ta = document.createElement('textarea');
             ta.value = full;

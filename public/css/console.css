@@ -403,7 +403,31 @@ body.lite .btn.solid { background: linear-gradient(135deg, #6d5dfc, #8b5cf6); co
 }
 
 /* Endpoint list */
-.eplist { display: grid; gap: 0.5rem; }
+.eplist { display: grid; gap: 0.75rem; }
+.epcat {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.epcat-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.epcat-head:hover { background: rgba(124, 110, 255, 0.06); }
+.epcat-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.epcat-head .api-status { margin-left: auto; }
+.epcat-chev { color: var(--muted); font-size: 0.8rem; transition: transform 0.2s; }
+.epcat.open .epcat-chev { transform: rotate(180deg); }
+.epcat-body { display: none; padding: 0 1rem 1rem; }
+.epcat.open .epcat-body { display: block; }
+.epcat-rows { display: grid; gap: 0.5rem; }
+.epcat-body .eprow { background: var(--panel); }
 .eprow {
   display: grid;
   grid-template-columns: auto 1fr;

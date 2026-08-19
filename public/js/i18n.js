@@ -160,7 +160,12 @@
       'land.s3': 'STEP 3', 'land.s3t': 'Send a request', 'land.s3d': 'Pass your key in the X-API-Key header. 1 successful request = 1 credit.',
       'stats.title': 'Statistics', 'stats.sub': 'How many times bots & apps hit the API every day.',
       
-      'endpoints.title': 'Endpoints.', 'endpoints.sub': 'Click a row to copy its path.', 'endpoints.tip': 'All media endpoints: optional X-API-Key header. 1 successful request = 1 credit. Account, key & stats endpoints are not published here — use the dashboard.',
+      'endpoints.title': 'Endpoints.', 'endpoints.sub': 'Click a category to expand — click a row to copy its path.', 'endpoints.copied': 'Copied!',
+      'endpoints.tip': 'All media endpoints: optional X-API-Key header. 1 successful request = 1 credit. Account, key & stats endpoints are not published here — use the dashboard.',
+      'ep.g1': 'Downloader', 'ep.g2': 'Music & Lyrics', 'ep.g3': 'Image Tools', 'ep.g4': 'Text Tools',
+      'ep.p1': 'Auto-detect all platforms', 'ep.p2': 'YouTube video', 'ep.p3': 'Instagram reels, photos & stories', 'ep.p4': 'Facebook video',
+      'ep.p5': 'TikTok without watermark', 'ep.p6': 'X / Twitter video', 'ep.p7': 'Extract audio as MP3', 'ep.p8': 'Force MP3 output (audio)',
+      'ep.p9': 'Search songs, metadata & lyrics', 'ep.p10': 'Compress & resize images', 'ep.p11': 'Generate QR codes',
       'docs.title': 'API Guide.', 'docs.sub': 'From signup to your first request — under a minute.',
     },
     id: {
@@ -321,7 +326,12 @@
       'land.s3': 'LANGKAH 3', 'land.s3t': 'Kirim request', 'land.s3d': 'Tempel key di header X-API-Key. 1 request sukses = 1 credit.',
       'stats.title': 'Statistik', 'stats.sub': 'Berapa kali bot & aplikasi nembak API tiap hari.',
       
-      'endpoints.title': 'Endpoint.', 'endpoints.sub': 'Klik baris untuk menyalin path-nya.', 'endpoints.tip': 'Semua endpoint media: opsional kirim header X-API-Key. 1 request sukses = 1 credit. Endpoint akun, key & statistik tidak dipublikasikan di sini — masuk lewat dashboard.',
+      'endpoints.title': 'Endpoint.', 'endpoints.sub': 'Klik kategori untuk membuka — klik baris untuk menyalin path-nya.', 'endpoints.copied': 'Tersalin!',
+      'endpoints.tip': 'Semua endpoint media: opsional kirim header X-API-Key. 1 request sukses = 1 credit. Endpoint akun, key & statistik tidak dipublikasikan di sini — masuk lewat dashboard.',
+      'ep.g1': 'Downloader', 'ep.g2': 'Music & Lirik', 'ep.g3': 'Image Tools', 'ep.g4': 'Text Tools',
+      'ep.p1': 'Deteksi otomatis semua platform', 'ep.p2': 'YouTube video', 'ep.p3': 'Instagram reels, foto & story', 'ep.p4': 'Facebook video',
+      'ep.p5': 'TikTok tanpa watermark', 'ep.p6': 'X / Twitter video', 'ep.p7': 'Ekstrak audio MP3', 'ep.p8': 'Paksa output MP3 (audio)',
+      'ep.p9': 'Cari lagu, metadata & lirik', 'ep.p10': 'Compress & resize gambar', 'ep.p11': 'Generate QR code',
       'docs.title': 'Cara pakai API.', 'docs.sub': 'Dari daftar sampai request pertama, kurang dari 1 menit.',
     }
   };
