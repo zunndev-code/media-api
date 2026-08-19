@@ -590,8 +590,8 @@ pre.curl {
   background: var(--role-color, var(--border-strong));
 }
 .price-card:hover { border-color: var(--role-color, var(--border-strong)); transform: translateY(-2px); }
-.price-card .rp { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; }
-.price-card .rp { text-transform: uppercase; }
+.price-card .rp { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.price-card .rp::after { content: ''; display: block; width: 26px; height: 3px; border-radius: 2px; background: var(--role-color, var(--border-strong)); margin-top: 0.45rem; }
 .price-card .pr { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
 .price-card .pr small { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
 .price-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }

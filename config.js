@@ -22,7 +22,7 @@ const ROLES = {
     cons: { en: ['Support is not dedicated'],
             id: ['Support bukan dedicated'] } },
   verus: { label: 'VERUS', daily: 1000000, price: 40000, color: '#b98cff', keys: 10, rate: 300, whitelist: true, priority: 4, support: 'Dedicated (WA + email)', bonus: 300000,
-    pros: { en: ['1.000.000 credits every day (reset 00:00 WIB)', '10 API keys', '300 requests per minute', 'All endpoints + highest priority', 'IP whitelist', 'Top priority queue', 'Dedicated support (WA + email)', '300.000 bonus credits on upgrade'],
+    pros: { en: ['1.000.000 credits every day (resets at 00:00 WIB / UTC+7)', '10 API keys', '300 requests per minute', 'All endpoints + highest priority', 'IP whitelist', 'Top priority queue', 'Dedicated support (WA + email)', '300.000 bonus credits on upgrade'],
             id: ['1.000.000 credit setiap hari (reset 00:00 WIB)', '10 API key', '300 request per menit', 'Semua endpoint + priority tertinggi', 'IP whitelist', 'Priority queue level tertinggi', 'Support dedicated (WA + email)', 'Bonus 300.000 credit saat upgrade'] },
     cons: { en: [], id: [] } },
 };
