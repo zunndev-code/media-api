@@ -144,7 +144,7 @@
     const gw = document.getElementById('greet-w'); if (gw) gw.textContent = greetWord();
     const em = document.getElementById('email'); if (em) em.textContent = d.user.email;
     const ur = document.getElementById('urole');
-    if (ur) ur.innerHTML = '<span class="pill role" style="color:' + (r.color || '#6d5dfc') + '">' + esc(r.label || d.user.role) + '</span>';
+    if (ur) ur.innerHTML = '<span style="color:' + (r.color || '#6d5dfc') + '">' + esc(r.label || d.user.role) + '</span>';
     const q = document.getElementById('quota');
     if (q) q.textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
