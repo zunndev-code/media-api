@@ -10,8 +10,26 @@ function ok(res, status, data) {
   return res.status(status).json({ status: 'success', data });
 }
 
-let queue = Promise.resolve();
 const { ROLES } = require('../config');
+
+let waitQueue = [];
+let queueBusy = false;
+function enqueue(task, priority = 0) {
+  return new Promise((resolve, reject) => {
+    waitQueue.push({ priority, task, resolve, reject });
+    waitQueue.sort((a, b) => b.priority - a.priority);
+    pumpQueue();
+  });
+}
+async function pumpQueue() {
+  if (queueBusy) return;
+  queueBusy = true;
+  while (waitQueue.length) {
+    const item = waitQueue.shift();
+    try { item.resolve(await item.task()); } catch (e) { item.reject(e); }
+  }
+  queueBusy = false;
+}
 
 const keyWindow = new Map();
 function keyRateOk(keyId, max) {
@@ -37,7 +55,7 @@ async function resolveKey(req) {
   const value = req.headers['x-api-key'] || req.query.key || req.query.api_key;
   if (!value) return null;
   const { rows } = await pool.query(
-    `SELECT k.id AS key_id, k.user_id, k.active, u.role
+    `SELECT k.id AS key_id, k.user_id, k.active, k.allowed_ips, u.role
      FROM api_keys k JOIN users u ON u.id = k.user_id
      WHERE k.key = $1`,
     [value]
@@ -82,21 +100,28 @@ async function processDownload(req, res, { audioOnly, create, endpoint }) {
   const resolved = await resolveKey(req);
   if (resolved && resolved.error) return fail(res, resolved.error.status, resolved.error.code, resolved.error.message);
   const key = resolved && resolved.key ? resolved.key : null;
+  const ip = clientIp(req);
 
   if (key) {
     const role = ROLES[key.role] || ROLES.free;
+    if (role.whitelist && Array.isArray(key.allowed_ips) && key.allowed_ips.length &&
+        !key.allowed_ips.includes(ip)) {
+      await recordHit(ip, key.user_id, key.key_id, endpoint, false);
+      return fail(res, 403, 'ip_not_allowed', 'IP ini tidak ada di whitelist key. Tambahkan IP ' + ip + ' lewat dashboard.');
+    }
     if (!keyRateOk(key.key_id, role.rate)) {
-      await recordHit(clientIp(req), key.user_id, key.key_id, endpoint, false);
+      await recordHit(ip, key.user_id, key.key_id, endpoint, false);
       return fail(res, 429, 'rate_limited', 'Terlalu banyak request. Batas role ' + role.label + ': ' + role.rate + ' request per menit.');
     }
     const credits = await ensureDailyCredits(key.user_id, key.role);
     if (credits <= 0) {
-      await recordHit(clientIp(req), key.user_id, key.key_id, endpoint, false);
+      await recordHit(ip, key.user_id, key.key_id, endpoint, false);
       return fail(res, 402, 'insufficient_credits', 'Credit habis. Top-up atau tunggu jatah harian berikutnya.');
     }
   }
 
   const platform = detectPlatform(url) || 'unknown';
+  const priority = key ? ((ROLES[key.role] || ROLES.free).priority || 0) : 0;
   return enqueue(async () => {
     try {
       const info = await extract(url, { audioOnly });

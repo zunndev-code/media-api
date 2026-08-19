@@ -57,7 +57,7 @@ router.get('/stats/daily', auth(false), async (req, res) => {
       [req.user.id]
     );
     const { rows: credits } = await pool.query(
-      'SELECT credits FROM users WHERE id = $1',
+      'SELECT credits, role FROM users WHERE id = $1',
       [req.user.id]
     );
     data.me = {
@@ -65,6 +65,7 @@ router.get('/stats/daily', auth(false), async (req, res) => {
       today: Number(today[0].hits),
       total: Number(total[0].hits),
       credits: Number(credits[0].credits),
+      role: credits[0].role,
     };
   }
   return ok(res, 200, data);
@@ -83,7 +84,7 @@ router.get('/dashboard', auth(true), async (req, res) => {
   await grantDaily(u.id, u.role);
   const [{ rows: user }, { rows: keys }, { rows: usage }, { rows: daily }] = await Promise.all([
     pool.query('SELECT id, email, name, role, credits, created_at FROM users WHERE id = $1', [u.id]),
-    pool.query('SELECT id, name, key, active, hits, last_used FROM api_keys WHERE user_id = $1 ORDER BY id', [u.id]),
+    pool.query('SELECT id, name, key, active, hits, last_used, allowed_ips FROM api_keys WHERE user_id = $1 ORDER BY id', [u.id]),
     pool.query(
       `SELECT
          count(*) FILTER (WHERE success) AS success,

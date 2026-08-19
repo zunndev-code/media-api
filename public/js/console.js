@@ -174,12 +174,23 @@
   }
 
   /* ===== Keys ===== */
+  let rolesConfig = null;
+  async function getRolesConfig() {
+    if (rolesConfig) return rolesConfig;
+    const { res, body } = await api('/api/roles');
+    if (res.ok && body && body.data) rolesConfig = body.data;
+    return rolesConfig || {};
+  }
+
   function renderKeys() {
     const box = document.getElementById('keys');
     if (!box) return;
-    api('/api/dashboard').then(({ res, body }) => {
+    api('/api/dashboard').then(async ({ res, body }) => {
       if (!res.ok) return;
       const keys = body.data.keys || [];
+      const me = body.data.me || {};
+      const roleCfg = (await getRolesConfig())[me.role] || {};
+      const canIps = !!roleCfg.whitelist;
       box.innerHTML = keys.length
         ? keys.map((k) =>
             '<div class="krow">' +
@@ -190,7 +201,11 @@
             '<button class="btn sm" data-act="copy" data-key="' + esc(k.key) + '" data-i18n="keys.copy">' + tr('keys.copy') + '</button>' +
             '<button class="btn sm" data-act="toggle" data-id="' + k.id + '" data-i18n="keys.' + (k.active ? 'disable' : 'enable') + '">' + tr(k.active ? 'keys.disable' : 'keys.enable') + '</button>' +
             '<button class="btn sm danger" data-act="del" data-id="' + k.id + '" data-name="' + esc(k.name) + '" data-i18n="keys.delete">' + tr('keys.delete') + '</button>' +
-            '</div></div>'
+            '</div>' +
+            (canIps ? '<div class="kips"><span class="kipl">' + tr('keys.ips') + '</span>' +
+              '<input class="inp" data-ips="' + k.id + '" value="' + esc((k.allowed_ips || []).join(', ')) + '" placeholder="' + tr('keys.ipsPh') + '" autocomplete="off">' +
+              '<button class="btn sm" data-act="ips" data-id="' + k.id + '" data-i18n="keys.ipsSave">' + tr('keys.ipsSave') + '</button></div>' : '') +
+            '</div>'
           ).join('')
         : '<div class="empty">' + tr('keys.empty') + '</div>';
       bindRows();
@@ -215,6 +230,18 @@
     }));
     document.querySelectorAll('[data-act=del]').forEach((b) => b.addEventListener('click', () => {
       askDelete(b.dataset.id, b.dataset.name).then((ok) => { if (ok) renderKeys(); });
+    }));
+    document.querySelectorAll('[data-act=ips]').forEach((b) => b.addEventListener('click', async () => {
+      const inp = document.querySelector('[data-ips="' + b.dataset.id + '"]');
+      b.disabled = true;
+      const ips = (inp.value || '').split(',').map((x) => x.trim()).filter(Boolean);
+      const { res } = await api('/api/keys/' + b.dataset.id + '/ips', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ips }),
+      });
+      b.disabled = false;
+      if (res.ok) renderKeys();
     }));
   }
 

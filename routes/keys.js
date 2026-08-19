@@ -15,7 +15,7 @@ const router = require('express').Router();
 
 router.get('/', auth(true), async (req, res) => {
   const { rows } = await pool.query(
-    'SELECT id, name, key, active, hits, last_used, created_at FROM api_keys WHERE user_id = $1 ORDER BY id',
+    'SELECT id, name, key, active, hits, last_used, created_at, allowed_ips FROM api_keys WHERE user_id = $1 ORDER BY id',
     [req.user.id]
   );
   return ok(res, 200, rows);
@@ -40,6 +40,24 @@ router.post('/:id/toggle', auth(true), async (req, res) => {
   const { rows } = await pool.query(
     'UPDATE api_keys SET active = NOT active WHERE id = $1 AND user_id = $2 RETURNING id, active',
     [req.params.id, req.user.id]
+  );
+  if (!rows.length) return fail(res, 404, 'not_found', 'Key tidak ditemukan.');
+  return ok(res, 200, rows[0]);
+});
+
+router.put('/:id/ips', auth(true), async (req, res) => {
+  const role = ROLES[req.user.role] || ROLES.free;
+  if (!role.whitelist) {
+    return fail(res, 403, 'whitelist_unsupported', 'Role ' + role.label + ' tidak punya fitur IP whitelist.');
+  }
+  const raw = Array.isArray(req.body && req.body.ips) ? req.body.ips : [];
+  const ips = raw
+    .map((x) => String(x).trim())
+    .filter((x) => /^[0-9a-fA-F:.]+$/.test(x) && x.length <= 45)
+    .slice(0, 20);
+  const { rows } = await pool.query(
+    'UPDATE api_keys SET allowed_ips = $1 WHERE id = $2 AND user_id = $3 RETURNING id, allowed_ips',
+    [ips, Number(req.params.id), req.user.id]
   );
   if (!rows.length) return fail(res, 404, 'not_found', 'Key tidak ditemukan.');
   return ok(res, 200, rows[0]);
