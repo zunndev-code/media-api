@@ -82,7 +82,7 @@ router.get('/apis', (req, res) => {
 router.get('/dashboard', auth(true), async (req, res) => {
   const u = req.user;
   await grantDaily(u.id, u.role);
-  const [{ rows: user }, { rows: keys }, { rows: usage }, { rows: daily }] = await Promise.all([
+  const [{ rows: user }, { rows: keys }, { rows: usage }, { rows: daily }, { rows: week }] = await Promise.all([
     pool.query('SELECT id, email, name, role, credits, created_at FROM users WHERE id = $1', [u.id]),
     pool.query('SELECT id, name, key, active, hits, last_used, allowed_ips FROM api_keys WHERE user_id = $1 ORDER BY id', [u.id]),
     pool.query(
@@ -96,6 +96,11 @@ router.get('/dashboard', auth(true), async (req, res) => {
       `SELECT
          count(*) FILTER (WHERE created_at >= CURRENT_DATE) AS today,
          count(*) FILTER (WHERE created_at >= CURRENT_DATE AND success) AS today_success
+       FROM hits WHERE user_id = $1`,
+      [u.id]
+    ),
+    pool.query(
+      `SELECT count(*) FILTER (WHERE created_at >= date_trunc('week', now()) AND success) AS week_success
        FROM hits WHERE user_id = $1`,
       [u.id]
     ),
@@ -120,6 +125,7 @@ router.get('/dashboard', auth(true), async (req, res) => {
       failed: Number(usage[0].failed),
       today: Number(daily[0].today),
       todaySuccess: Number(daily[0].today_success),
+      weekSuccess: Number(week[0].week_success),
     },
     dailyGranted: dailyToday.length ? Number(dailyToday[0].granted) : null,
     history,
