@@ -425,6 +425,8 @@ body.lite .btn.solid { background: linear-gradient(135deg, #6d5dfc, #8b5cf6); co
 .epcat-head .api-status { margin-left: auto; }
 .epcat-chev { color: var(--muted); font-size: 0.8rem; transition: transform 0.2s; }
 .epcat.open .epcat-chev { transform: rotate(180deg); }
+.treset { font-size: 0.72rem; color: var(--muted, #8b93a7); margin-top: 6px; }
+
 .epcat-body { display: none; padding: 0 1rem 1rem; }
 .epcat.open .epcat-body { display: block; }
 .epcat-rows { display: grid; gap: 0.5rem; }
