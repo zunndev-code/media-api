@@ -56,7 +56,7 @@ function navLink(l, cls) {
     '<span data-i18n="' + l.label + '">' + tr(l.label) + '</span></a>';
 }
 
-const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=85" alt="Ziplan">';
+const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=86" alt="Ziplan">';
 
 function buildNav() {
   const nav = $('nav');
@@ -612,7 +612,7 @@ function initBuy() {
       return '<div class="price-card' + (isCurrent ? ' current' : '') + '" style="--role-color:' + r.color + '">' +
         '<div class="rp" style="color:' + r.color + '">' + r.label + '</div>' +
         '<div class="pr">' + (r.price ? 'Rp ' + fmtNum(r.price) : tr('buy.freePrice')) + (r.price ? '<small>' + tr('buy.perMonth') + '</small>' : '') + '</div>' +
-        '<ul><li>' + tr('buy.featDaily').replace('{n}', fmtNum(r.daily)) + '</li><li>' + tr('buy.featApis') + '</li><li>' + tr('buy.featKeys').replace('{n}', r.keys) + '</li></ul>' +
+        '<ul><li>' + tr('buy.featDaily').replace('{n}', fmtNum(r.daily * 7)) + '</li><li>' + tr('buy.featApis') + '</li><li>' + tr('buy.featKeys').replace('{n}', r.keys) + '</li></ul>' +
         roleSpecs(r) +
         (isCurrent ? '<div class="now-badge">' + tr('buy.yours') + '</div>' : '') +
         btn + '</div>';

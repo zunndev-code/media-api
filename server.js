@@ -15,7 +15,15 @@ const adminRouter = require('./routes/admin');
 const app = express();
 const SWAGGER_DIST = path.dirname(require.resolve('swagger-ui-dist/package.json'));
 
+app.disable('x-powered-by');
 app.set('trust proxy', 1);
+
+const ALLOWED_HOSTS = new Set(['ziplan.eu.cc', 'www.ziplan.eu.cc', 'localhost', '127.0.0.1']);
+app.use((req, res, next) => {
+  const host = (req.get('host') || '').toLowerCase().replace(/:\d+$/, '');
+  if (!ALLOWED_HOSTS.has(host)) return res.status(444).end();
+  next();
+});
 
 const READ_ONLY = ['/me', '/roles', '/apis', '/stats', '/orders', '/keys'];
 
