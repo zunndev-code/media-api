@@ -1445,8 +1445,6 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  position: relative;
-  padding-left: 1.6rem;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -1460,10 +1458,10 @@ body.lite .app-nav-bottom a.active { background: #ece9ff; color: #b45309; }
 .sec-badge span::before {
   content: '✧\fe0e';
   font-variant-emoji: text;
-  position: absolute;
-  left: 0.7rem;
+  position: static;
   color: var(--green);
   font-size: 0.72rem;
+  line-height: 1;
 }
 .faq-more {
   text-align: center;
