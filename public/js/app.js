@@ -560,7 +560,14 @@ function openPayModal(order, opts) {
     });
   }
 
-  createOrder(order.role);
+  if (order.id && order.qrisUrl && order.status === 'pending') {
+    render('qr');
+    tick(order);
+    clearInterval(timer);
+    timer = setInterval(poll, 5000);
+  } else {
+    createOrder(order.role);
+  }
 }
 
 function roleSpecs(r) {
