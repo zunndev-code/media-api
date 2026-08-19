@@ -81,6 +81,13 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 25. **"ini kata temen gue masi bisa pake api nya tanpa keys"** — temen user nemu API bisa dipake tanpa API key
     → Status: **DONE + ATURAN** (lubang: resolveKey() balik null kalau key kosong → semua cek rate/credit di-skip → API gratis tanpa batas. Fix: key WAJIB di semua endpoint download, error `401 missing_key`. **Aturan baru: kalau nambah endpoint API apapun, WAJIB cek dulu: tanpa key/auth masih bisa dipake nggak? Semua route download/paid WAJIB key valid + charge credit.**)
 
+26. **Laporan temen user (jago cyber security)** — 3 temuan:
+    - 🔴 "Admin bisa dicuri via register" — **sebagian valid**: ADMIN_EMAILS cuma admin@zunndev.my.id, jadi admin@email.com yang didaftarin temen (id 12) TIDAK jadi admin. TAPI pola kerentanannya bener: kalau ADMIN_EMAILS berisi email yang belum terdaftar, siapa pun bisa daftar duluan → jadi admin pas restart.
+    - 🟠 Account farming: register langsung kasih 7.000 credit tanpa verifikasi email.
+    - 🟠 Email oracle: 409 email_taken bikin bisa nge-enum email terdaftar.
+    → Status: **DONE**: (1) sync admin jadi bootstrap-once (tabel admin_boot, intent dicatat duluan — email yang di-record nggak akan pernah di-promote lagi walau didaftar belakangan; terbukti: admin@email.com id 15 tetap is_admin=false setelah restart), (2) register dibatasi 3 akun/hari/IP (tabel reg_track; terbukti 201 201 429), (3) pesan email_taken digenerik. Akun tes temen (id 12) dihapus.
+    → **ATURAN: jangan pernah taruh email yang belum terdaftar di ADMIN_EMAILS. Register tetep butuh verifikasi email beneran (butuh SMTP/API email) + Cloudflare Turnstile kalau mau — TUNDA sampai user siapin akun.**
+
 ## Catatan masih menggantung
 - Port API 3000 → 3001 (klaim "ketbrak sama yang udah make") — belum dipindah
 - Bullet "Data OAuth" di privacy policy: GitHub login masih "segera" (belum live)
