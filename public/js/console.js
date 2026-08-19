@@ -49,7 +49,7 @@
     shell.innerHTML =
       '<aside class="side">' +
       '<div class="side-top"><a class="logo" href="/dashboard">' +
-      '<img class="logo-img" src="/img/logo.png?v=93" alt="Ziplan">' +
+      '<img class="logo-img" src="/img/logo.png?v=94" alt="Ziplan">' +
       '<span>Ziplan</span></a><span class="ver-chip">v36</span></div>' +
       '<nav class="side-nav">' +
       '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
@@ -127,10 +127,13 @@
   }
 
   /* ===== Overview ===== */
-  async function loadOverview() {
-    const { res, body } = await api('/api/dashboard');
-    if (!res.ok) return;
-    const d = body.data;
+  async function loadOverview(pre) {
+    let d = pre;
+    if (!d) {
+      const { res, body } = await api('/api/dashboard');
+      if (!res.ok || !body || !body.data) return;
+      d = body.data;
+    }
     const r = d.roleInfo || {};
     const un = document.getElementById('un'); if (un) un.textContent = d.user.name;
     const gw = document.getElementById('greet-w'); if (gw) gw.textContent = greetWord();
@@ -284,7 +287,19 @@
   }
 
   /* ===== Boot ===== */
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (PRIVATE.includes(PAGE)) {
+      const { res, body } = await api('/api/dashboard');
+      if (!res.ok || !body || !body.data) { location.href = '/login'; return; }
+      buildShell();
+      applyLang();
+      setUser(body.data.user);
+      if (PAGE === '/dashboard') loadOverview(body.data);
+      if (PAGE === '/keys') { renderKeys(); const nk = document.getElementById('newkey'); if (nk) nk.addEventListener('click', createKey); }
+      if (PAGE === '/history') renderHistory();
+      if (PAGE === '/beli') { initBuy(); initOrders(); }
+      return;
+    }
     buildShell();
     applyLang();
     loadMe().then((u) => {
@@ -292,10 +307,6 @@
       const g = document.getElementById('greet-w');
       if (g) g.textContent = greetWord();
     });
-    if (PAGE === '/dashboard') loadOverview();
-    if (PAGE === '/keys') { renderKeys(); const nk = document.getElementById('newkey'); if (nk) nk.addEventListener('click', createKey); }
-    if (PAGE === '/history') renderHistory();
-    if (PAGE === '/beli') { initBuy(); initOrders(); }
   });
 
   async function createKey() {
