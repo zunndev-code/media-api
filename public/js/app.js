@@ -456,19 +456,19 @@ function openPayModal(order, opts) {
     const body = bg.querySelector('#pay-body');
     if (state === 'create') {
       body.innerHTML =
-        '<h3>Buat pembayaran</h3>' +
-        '<p>Membuat QRIS ' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '...</p>' +
-        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+        '<h3>' + tr('buy.modal.create') + '</h3>' +
+        '<p>' + tr('buy.modal.creating').replace('{role}', esc((order.roleInfo && order.roleInfo.label) || order.role)) + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">' + tr('buy.modal.close') + '</button></div>';
     } else if (state === 'qr') {
       body.innerHTML =
-        '<h3>Scan &amp; bayar</h3>' +
+        '<h3>' + tr('buy.modal.scan') + '</h3>' +
         '<div class="pay-amount"><b>Rp ' + fmtNum(order.amount) + '</b>' +
         '<span>' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</span></div>' +
         '<img class="pay-qr" src="' + esc(order.qrisUrl) + '" alt="QRIS">' +
-        '<p class="pay-hint">Scan pakai GoPay, OVO, DANA, ShopeePay, atau m-banking mana aja. Pembayaran ke-deteksi otomatis.</p>' +
-        '<p class="pay-cd">QR valid <b id="pay-count">--:--</b> · status <b>Menunggu...</b></p>' +
-        '<div class="modal-actions"><button class="modal-btn danger" id="pay-cancel">Batal</button>' +
-        '<button class="modal-btn" id="pay-close">Tutup</button></div>';
+        '<p class="pay-hint">' + tr('buy.modal.hint') + '</p>' +
+        '<p class="pay-cd">' + tr('buy.modal.valid') + ' <b id="pay-count">--:--</b> · ' + tr('buy.modal.status') + ' <b>' + tr('buy.modal.wait') + '</b></p>' +
+        '<div class="modal-actions"><button class="modal-btn danger" id="pay-cancel">' + tr('buy.modal.cancel') + '</button>' +
+        '<button class="modal-btn" id="pay-close">' + tr('buy.modal.close') + '</button></div>';
       bg.querySelector('#pay-close').addEventListener('click', close);
       bg.querySelector('#pay-cancel').addEventListener('click', async () => {
         const { res, body: b } = await api('/api/orders/' + order.id + '/cancel', { method: 'POST' });
@@ -477,29 +477,29 @@ function openPayModal(order, opts) {
       });
     } else if (state === 'paid') {
       body.innerHTML =
-        '<h3>Pembayaran berhasil!</h3>' +
-        '<p>Role <b style="color:var(--green-bright)">' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</b> aktif sekarang. Jatah credit harian kamu sudah naik.</p>' +
-        '<div class="modal-actions"><button class="modal-btn primary" id="pay-close">Mantap</button></div>';
+        '<h3>' + tr('buy.modal.paid') + '</h3>' +
+        '<p>' + tr('buy.modal.paidsub').replace('{role}', esc((order.roleInfo && order.roleInfo.label) || order.role)) + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn primary" id="pay-close">' + tr('buy.modal.nice') + '</button></div>';
       bg.querySelector('#pay-close').addEventListener('click', close);
     } else if (state === 'expired') {
       body.innerHTML =
-        '<h3>QR kadaluarsa</h3>' +
-        '<p>QR berlaku 10 menit dan udah lewat. Buat ulang QR buat bayar role <b>' + esc((order.roleInfo && order.roleInfo.label) || order.role) + '</b>.</p>' +
-        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Nanti</button>' +
-        '<button class="modal-btn primary" id="pay-retry">Buat ulang</button></div>';
+        '<h3>' + tr('buy.modal.expired') + '</h3>' +
+        '<p>' + tr('buy.modal.expiredsub').replace('{role}', esc((order.roleInfo && order.roleInfo.label) || order.role)) + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">' + tr('buy.modal.later') + '</button>' +
+        '<button class="modal-btn primary" id="pay-retry">' + tr('buy.modal.retry') + '</button></div>';
       bg.querySelector('#pay-close').addEventListener('click', close);
       bg.querySelector('#pay-retry').addEventListener('click', () => createOrder(order.role));
     } else if (state === 'disabled') {
       body.innerHTML =
-        '<h3>Pembayaran QRIS belum aktif</h3>' +
-        '<p>' + esc(order.errMsg || 'Hubungi admin Zunndev API.') + '</p>' +
-        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+        '<h3>' + tr('buy.modal.disabled') + '</h3>' +
+        '<p>' + esc(order.errMsg || tr('buy.modal.disabledsub')) + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">' + tr('buy.modal.close') + '</button></div>';
       bg.querySelector('#pay-close').addEventListener('click', close);
     } else if (state === 'fail') {
       body.innerHTML =
-        '<h3>Gagal buat pembayaran</h3>' +
-        '<p>' + esc(order.errMsg || 'Coba lagi sebentar ya.') + '</p>' +
-        '<div class="modal-actions"><button class="modal-btn" id="pay-close">Tutup</button></div>';
+        '<h3>' + tr('buy.modal.fail') + '</h3>' +
+        '<p>' + esc(order.errMsg || tr('buy.modal.failsub')) + '</p>' +
+        '<div class="modal-actions"><button class="modal-btn" id="pay-close">' + tr('buy.modal.close') + '</button></div>';
       bg.querySelector('#pay-close').addEventListener('click', close);
     }
   }

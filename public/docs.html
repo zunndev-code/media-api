@@ -6,8 +6,8 @@
   <title>Dokumentasi — Zunndev API</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=44">
-  <link rel="stylesheet" href="/css/console.css?v=44">
+  <link rel="stylesheet" href="/css/style.css?v=45">
+  <link rel="stylesheet" href="/css/console.css?v=45">
   <style>
     .doc h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
     .doc h2 { font-size: 1.05rem; font-weight: 700; margin: 2rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
@@ -37,22 +37,22 @@
       </div>
     </header>
 
-    <h2>1. Daftar akun</h2>
-    <p>Buka <a href="/register" style="color:var(--green)">halaman daftar</a>, isi nama, email, dan password. Akun baru langsung dapat <b style="color:var(--text)">1000 credit</b>. Setiap hari, akun yang belum membeli role mendapat tambahan <b style="color:var(--text)">1000 credit gratis</b>.</p>
+    <h2 data-i18n="docs.h1">1. Sign up</h2>
+    <p data-i18n="docs.h1p">Open the <a href="/register" style="color:var(--green)">sign-up page</a>, fill in name, email, and password. New accounts get <b style="color:var(--text)">1000 credits</b> right away. Every day, accounts without a paid role get an extra <b style="color:var(--text)">1000 free credits</b>.</p>
 
-    <h2>2. Buat API key</h2>
-    <p>Masuk ke <a href="/dashboard" style="color:var(--green)">Dashboard</a>, tekan tombol "Buat key". Key berbentuk <code class="inline">md_...</code>. Simpan baik-baik — key hanya ditampilkan sekali.</p>
-    <p>Key dipakai lewat header <code class="inline">X-API-Key</code> atau parameter <code class="inline">key</code>.</p>
+    <h2 data-i18n="docs.h2">2. Create an API key</h2>
+    <p data-i18n="docs.h2p1">Go to the <a href="/dashboard" style="color:var(--green)">Dashboard</a> and press "Create key". Keys look like <code class="inline">md_...</code>. Save it — a key is only shown once.</p>
+    <p data-i18n="docs.h2p2">Keys are used via the <code class="inline">X-API-Key</code> header or the <code class="inline">key</code> parameter.</p>
 
-    <h2>3. Kirim request</h2>
-    <p>Setiap request yang berhasil memotong <b style="color:var(--text)">1 credit</b>. Kalau credit habis, dapat <code class="inline">402 insufficient_credits</code> — tunggu jatah harian berikutnya.</p>
+    <h2 data-i18n="docs.h3">3. Send a request</h2>
+    <p data-i18n="docs.h3p">Each successful request costs <b style="color:var(--text)">1 credit</b>. Out of credits? You get <code class="inline">402 insufficient_credits</code> — wait for the next daily allowance.</p>
     <pre class="curl">curl -X POST https://zunndev.my.id/api/download \
   -H "Content-Type: application/json" \
   -H "X-API-Key: md_xxx" \
   -d '{"url": "https://youtube.com/watch?v=..."}'</pre>
 
-    <h2>4. Format response</h2>
-    <p>Sukses:</p>
+    <h2 data-i18n="docs.h4">4. Response format</h2>
+    <p data-i18n="docs.h4ok">Success:</p>
     <pre class="curl">{
   "status": "success",
   "data": {
@@ -65,36 +65,36 @@
     "audio": [{ "quality": "128 kbps", "ext": "m4a", "url": "https://...", "filesize": 3051204 }]
   }
 }</pre>
-    <p>Gagal:</p>
+    <p data-i18n="docs.h4fail">Error:</p>
     <pre class="curl">{
   "status": "error",
   "error": { "code": "invalid_request", "message": "Field \"url\" wajib diisi." }
 }</pre>
 
-    <h2>5. Kode error</h2>
+    <h2 data-i18n="docs.h5">5. Error codes</h2>
     <ul>
-      <li><code class="inline">400 invalid_request</code> — parameter salah / domain tidak diizinkan</li>
-      <li><code class="inline">401 unauthorized</code> — belum login</li>
-      <li><code class="inline">401 invalid_key</code> — API key tidak dikenal</li>
-      <li><code class="inline">402 insufficient_credits</code> — credit habis</li>
-      <li><code class="inline">403 key_disabled</code> — key dinonaktifkan</li>
-      <li><code class="inline">404 not_found</code> — format tidak ditemukan</li>
-      <li><code class="inline">409 email_taken</code> — email sudah terdaftar</li>
-      <li><code class="inline">429 rate_limited</code> — terlalu banyak request (60/menit per IP)</li>
-      <li><code class="inline">502 scrape_failed</code> — gagal ambil data dari platform</li>
+      <li data-i18n="docs.e1"><code class="inline">400 invalid_request</code> — wrong parameters / domain not allowed</li>
+      <li data-i18n="docs.e2"><code class="inline">401 unauthorized</code> — not logged in</li>
+      <li data-i18n="docs.e3"><code class="inline">401 invalid_key</code> — unknown API key</li>
+      <li data-i18n="docs.e4"><code class="inline">402 insufficient_credits</code> — out of credits</li>
+      <li data-i18n="docs.e5"><code class="inline">403 key_disabled</code> — key disabled</li>
+      <li data-i18n="docs.e6"><code class="inline">404 not_found</code> — format not found</li>
+      <li data-i18n="docs.e7"><code class="inline">409 email_taken</code> — email already registered</li>
+      <li data-i18n="docs.e8"><code class="inline">429 rate_limited</code> — too many requests (60/min per IP)</li>
+      <li data-i18n="docs.e9"><code class="inline">502 scrape_failed</code> — failed to fetch from the platform</li>
     </ul>
 
-    <h2>6. Credit &amp; role</h2>
-    <p>1 request sukses = 1 credit. Akun gratis: 1000 credit per hari. Role berbayar menaikkan jatah harian — daftar harga di <a href="/#harga" style="color:var(--green)">halaman blog</a>.</p>
+    <h2 data-i18n="docs.h6">6. Credits &amp; roles</h2>
+    <p data-i18n="docs.h6p">1 successful request = 1 credit. Free accounts: 1000 credits per day. Paid roles raise your daily allowance — see pricing on the <a href="/#harga" style="color:var(--green)">home page</a>.</p>
 
-    <h2>7. Tanpa key?</h2>
-    <p>Request tanpa key tetap bisa dipakai (coba-coba / demo), dibatasi <code class="inline">60 request/menit per IP</code>. Untuk pemakaian bot yang serius, daftar dan pakai key kamu — biar credit &amp; statistik tercatat.</p>
+    <h2 data-i18n="docs.h7">7. No key?</h2>
+    <p data-i18n="docs.h7p">Requests without a key still work (trial/demo), limited to <code class="inline">60 requests/minute per IP</code>. For serious bot usage, sign up and use your key — so credits &amp; stats are tracked.</p>
 
-    <div class="warn">Daftar layanan &amp; harga ada di halaman utama. Endpoint akun, key &amp; statistik diakses lewat dashboard.</div>
+    <div class="warn" data-i18n="docs.warn">Services &amp; pricing are on the home page. Account, key &amp; stats endpoints are accessed via the dashboard.</div>
   </main>
 
-  <script src="/js/i18n.js?v=44"></script>
-  <script src="/js/app.js?v=44"></script>
-  <script src="/js/console.js?v=44"></script>
+  <script src="/js/i18n.js?v=45"></script>
+  <script src="/js/app.js?v=45"></script>
+  <script src="/js/console.js?v=45"></script>
 </body>
 </html>
