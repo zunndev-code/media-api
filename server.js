@@ -34,6 +34,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   next();
 });
 app.get(/^\/(\w+)\.html$/, (req, res) => res.redirect(301, '/' + req.params[0]));

@@ -56,7 +56,7 @@ function navLink(l, cls) {
     '<span data-i18n="' + l.label + '">' + tr(l.label) + '</span></a>';
 }
 
-const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=82" alt="Ziplan">';
+const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=83" alt="Ziplan">';
 
 function buildNav() {
   const nav = $('nav');
@@ -366,7 +366,10 @@ function initDownloader() {
   async function fetchAndRender(endpoint, url, audioOnly) {
     showLoading();
     try {
-      const { res, body } = await api('/api/' + endpoint + '?url=' + encodeURIComponent(url));
+      const headers = {};
+      const keyEl = $('key');
+      if (keyEl && keyEl.value.trim()) headers['X-API-Key'] = keyEl.value.trim();
+      const { res, body } = await api('/api/' + endpoint + '?url=' + encodeURIComponent(url), { headers });
       if (!res.ok || !body || body.status !== 'success') {
         const e = (body && body.error) || {};
         throw new Error(e.message || tr('land.err'));

@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
     }
   }
   const exists = await pool.query('SELECT 1 FROM users WHERE email = $1', [clean]);
-  if (exists.rows.length) return fail(res, 409, 'email_taken', 'Registrasi gagal. Coba email lain.');
+  if (exists.rows.length) return fail(res, 400, 'registration_failed', 'Registrasi gagal. Coba email lain.');
   const hash = hashPassword(String(password));
   const { rows } = await pool.query(
     'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, credits, created_at',
