@@ -71,7 +71,7 @@ function buildNav() {
     '<span class="drawer-logo">' +
     LOGO_MARK +
     'Zunndev API</span>' +
-    '<button class="burger" id="drawer-close" aria-label="Tutup">✕</button>' +
+    '<button class="burger" id="drawer-close" aria-label="Close">✕</button>' +
     '</div>' +
     '<div class="drawer-body">' +
     '<p class="drawer-label">Menu</p>' +
@@ -268,7 +268,7 @@ function welcomeToast(name) {
   t.innerHTML =
     '<span class="toast-ava">' + esc(name.charAt(0).toUpperCase()) + '</span>' +
     '<span class="toast-txt"><b>Masuk sebagai ' + esc(name) + '</b><br>Akun kamu tetap aktif, nggak perlu login ulang.</span>' +
-    '<button class="toast-x" aria-label="Tutup">✕</button>';
+    '<button class="toast-x" aria-label="Close">✕</button>';
   document.body.appendChild(t);
   const hide = () => { t.classList.add('out'); setTimeout(() => t.remove(), 350); };
   t.querySelector('.toast-x').addEventListener('click', hide);
@@ -357,7 +357,7 @@ function initDownloader() {
   function showLoading() {
     btnSubmit.disabled = true;
     btnLabel.innerHTML = '<span class="spinner"></span>';
-    showError('Memproses link, mohon tunggu beberapa detik...', true);
+    showError(tr('land.proc'), true);
   }
 
   async function fetchAndRender(endpoint, url, audioOnly) {
@@ -366,7 +366,7 @@ function initDownloader() {
       const { res, body } = await api('/api/' + endpoint + '?url=' + encodeURIComponent(url));
       if (!res.ok || !body || body.status !== 'success') {
         const e = (body && body.error) || {};
-        throw new Error(e.message || 'Gagal memproses link.');
+        throw new Error(e.message || tr('land.err'));
       }
       render(body.data, audioOnly);
     } catch (err) {

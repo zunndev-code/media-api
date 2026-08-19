@@ -4,7 +4,9 @@
   const LANG = {
     en: {
       'nav.home': 'Home',
-      'land.sh1': 'Hits today', 'land.sh2': 'Total hits', 'land.sh3': 'Users',
+      'land.sh1': 'Hits today',      'land.proc': 'Processing link, please wait a few seconds...',
+      'land.err': 'Failed to process the link.',
+ 'land.sh2': 'Total hits', 'land.sh3': 'Users',
       'api.live': 'LIVE', 'api.soon': 'SOON',
       'land.apis': 'All APIs',
       'land.apissub': 'One key for every API. 1 successful request = 1 credit.',
@@ -116,7 +118,9 @@
     },
     id: {
       'nav.home': 'Beranda',
-      'land.sh1': 'Hits hari ini', 'land.sh2': 'Total hits', 'land.sh3': 'Pengguna terdaftar',
+      'land.sh1': 'Hits hari ini',      'land.proc': 'Memproses link, mohon tunggu beberapa detik...',
+      'land.err': 'Gagal memproses link.',
+ 'land.sh2': 'Total hits', 'land.sh3': 'Pengguna terdaftar',
       'api.live': 'LIVE', 'api.soon': 'SEGERA',
       'land.apis': 'Daftar API',
       'land.apissub': 'Semua API pakai key yang sama. 1 request sukses = 1 credit.',
