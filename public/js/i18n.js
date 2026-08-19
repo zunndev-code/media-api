@@ -362,4 +362,10 @@
     localStorage.setItem('znd-lang', currentLang() === 'en' ? 'id' : 'en');
     applyLang();
   };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyLang);
+  } else {
+    applyLang();
+  }
 })();

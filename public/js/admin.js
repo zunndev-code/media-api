@@ -57,7 +57,7 @@
     app.innerHTML =
       '<div class="a-login">' +
       '<div class="a-login-card">' +
-      '<img class="a-logo" src="/img/logo.png?v=84" alt="Ziplan">' +
+      '<img class="a-logo" src="/img/logo.png?v=85" alt="Ziplan">' +
       '<h1>Admin <b>Ziplan</b></h1>' +
       '<p>Panel rahasia — masuk pakai akun admin.</p>' +
       '<div class="err" id="err"></div>' +
@@ -92,7 +92,7 @@
   function renderShell() {
     app.innerHTML =
       '<header class="a-head">' +
-      '<a class="a-brand" href="#"><img class="a-logo" src="/img/logo.png?v=84" alt="Ziplan">' +
+      '<a class="a-brand" href="#"><img class="a-logo" src="/img/logo.png?v=85" alt="Ziplan">' +
       '<span><span class="nm">Admin <b>Ziplan</b></span><br><span class="sub">Control Panel</span></span></a>' +
       '<div class="a-head-right">' +
       '<span class="a-user">Halo, <b>' + esc(userName) + '</b></span>' +
