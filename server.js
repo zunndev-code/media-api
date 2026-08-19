@@ -74,7 +74,7 @@ app.use('/api', (req, res, next) => {
   const p = req.path;
   if (WEB_ONLY.some((x) => p === x || p.startsWith(x + '/'))) {
     const o = (req.headers.origin || '') + ' ' + (req.headers.referer || '');
-    if (!/zunndev\.my\.id|38\.47\.85\.234|localhost/.test(o)) {
+    if (!/ziplan\.eu\.cc|zunndev\.my\.id|38\.47\.85\.234|localhost/.test(o)) {
       return res.status(403).json({ status: 'error', error: { code: 'forbidden', message: 'Forbidden' } });
     }
   }

@@ -71,7 +71,7 @@ module.exports = {
     key: process.env.QRIS_API_KEY || '',
     secret: process.env.QRIS_API_SECRET || '',
     webhookSecret: process.env.QRIS_WEBHOOK_SECRET || '',
-    callbackUrl: process.env.QRIS_CALLBACK_URL || 'https://zunndev.my.id/api/webhook/qris',
+    callbackUrl: process.env.QRIS_CALLBACK_URL || 'https://ziplan.eu.cc/api/webhook/qris',
     enabled: !!(process.env.QRIS_API_KEY && process.env.QRIS_API_SECRET),
   },
   ADMIN_PATH: process.env.ADMIN_PATH || '',
