@@ -56,7 +56,7 @@ function navLink(l) {
     '<span data-i18n="' + l.label + '">' + tr(l.label) + '</span></a>';
 }
 
-const LOGO_MARK = '<span class="mark"><span class="zglyph">✧</span></span>';
+const LOGO_MARK = '<img class="logo-img" src="/img/logo.png?v=55" alt="Ziplan">';
 
 function buildNav() {
   const nav = $('nav');
