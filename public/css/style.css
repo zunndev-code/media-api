@@ -75,7 +75,7 @@ nav {
 .logo .wm .wmt { font-family: var(--brand); font-size: inherit; letter-spacing: 0.01em; }
 .logo .wm .dot { color: var(--green); }
 .logo .wiggle { width: 2.5em; height: auto; margin-top: 0.3em; color: var(--green); }
-.logo .logo-img { height: 30px; width: auto; display: block; }
+.logo .logo-img { height: 24px; width: auto; display: block; }
 .logo .mark {
   width: 30px;
   height: 30px;
@@ -177,7 +177,7 @@ nav .nav-links a.primary:hover { background: var(--green-bright); border: none; 
   color: var(--text);
   text-decoration: none;
 }
-.drawer-logo .logo-img { height: 28px; width: auto; display: block; }
+.drawer-logo .logo-img { height: 22px; width: auto; display: block; }
 .drawer-logo .mark {
   width: 28px;
   height: 28px;
@@ -651,7 +651,7 @@ pre.curl {
   padding: 2.25rem 2rem;
 }
 .auth-card .logo { justify-content: center; margin-bottom: 1.75rem; }
-.auth-card .auth-logo { width: 84px; height: auto; display: block; }
+.auth-card .auth-logo { width: 48px; height: auto; display: block; }
 .auth-card h1 { font-size: 1.35rem; font-weight: 800; text-align: center; margin-bottom: 0.4rem; }
 .auth-card .sub { color: var(--muted); text-align: center; font-size: 0.88rem; margin-bottom: 1.75rem; }
 
