@@ -16,7 +16,14 @@ function publicUser(u) {
   return { id: u.id, name: u.name, email: u.email, role: u.role, roleInfo: config.ROLES[u.role], credits: u.credits, createdAt: u.created_at };
 }
 
+const mail = require('../lib/mail');
+const crypto = require('crypto');
+
 const router = require('express').Router();
+
+function genCode() {
+  return String(crypto.randomInt(100000, 1000000));
+}
 
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body || {};
@@ -44,11 +51,57 @@ router.post('/register', async (req, res) => {
     [clean, hash, String(name).trim()]
   );
   const user = rows[0];
+  setAuthCookie(req, res, signToken(user.id));
+  if (config.RESEND_API_KEY) {
+    const code = genCode();
+    await pool.query(
+      "UPDATE users SET verification_code = $1, verification_expires = now() + interval '10 minutes', verification_sent_at = now() WHERE id = $2",
+      [code, user.id]
+    );
+    await mail.sendVerification(user.email, code).catch(() => {});
+    return ok(res, 201, Object.assign(publicUser(user), { verified: false }));
+  }
   await grantDaily(user.id, user.role);
   const fresh = await pool.query('SELECT credits FROM users WHERE id = $1', [user.id]);
   user.credits = fresh.rows[0].credits;
-  setAuthCookie(req, res, signToken(user.id));
-  return ok(res, 201, publicUser(user));
+  return ok(res, 201, Object.assign(publicUser(user), { verified: true }));
+});
+
+router.post('/verify', async (req, res) => {
+  const { email, code } = req.body || {};
+  if (!email || !code) return fail(res, 400, 'invalid_request', 'Email dan kode wajib diisi.');
+  const clean = String(email).toLowerCase().trim();
+  const { rows } = await pool.query(
+    `UPDATE users SET is_verified = true, verification_code = NULL, verification_expires = NULL, verification_sent_at = NULL
+     WHERE email = $1 AND verification_code = $2 AND verification_expires > now()
+     RETURNING id, role`,
+    [clean, String(code)]
+  );
+  if (!rows.length) return fail(res, 400, 'invalid_code', 'Kode salah atau sudah kadaluarsa.');
+  await grantDaily(rows[0].id, rows[0].role);
+  return ok(res, 200, { verified: true });
+});
+
+router.post('/resend-code', async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return fail(res, 400, 'invalid_request', 'Email wajib diisi.');
+  const clean = String(email).toLowerCase().trim();
+  const { rows } = await pool.query(
+    'SELECT id, email, verification_sent_at FROM users WHERE email = $1 AND NOT is_verified',
+    [clean]
+  );
+  if (!rows.length) return fail(res, 404, 'not_found', 'Akun tidak ditemukan atau sudah terverifikasi.');
+  const sent = rows[0].verification_sent_at;
+  if (sent && Date.now() - new Date(sent).getTime() < 60000) {
+    return fail(res, 429, 'rate_limited', 'Tunggu 1 menit sebelum kirim ulang.');
+  }
+  const code = genCode();
+  await pool.query(
+    "UPDATE users SET verification_code = $1, verification_expires = now() + interval '10 minutes', verification_sent_at = now() WHERE id = $2",
+    [code, rows[0].id]
+  );
+  await mail.sendVerification(rows[0].email, code).catch(() => {});
+  return ok(res, 200, { sent: true });
 });
 
 router.post('/login', async (req, res) => {
