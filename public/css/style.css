@@ -107,6 +107,9 @@ nav {
 nav .links { display: flex; gap: 0.4rem; align-items: center; }
 
 nav .nav-links { display: flex; gap: 0.4rem; align-items: center; }
+nav .nav-links a.nav-item svg { display: none; }
+nav .nav-links a.nav-item { text-transform: none; }
+nav .nav-links a.nav-item.active { color: var(--text); border-bottom-color: var(--green); }
 
 nav .nav-links a {
   color: var(--muted);
