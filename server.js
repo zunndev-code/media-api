@@ -135,11 +135,21 @@ app.use((req, res) => {
 initDb()
   .then(async () => {
     if (config.ADMIN_EMAILS.length) {
-      const { rowCount } = await require('./db').pool.query(
-        'UPDATE users SET is_admin = true WHERE email = ANY($1)',
-        [config.ADMIN_EMAILS]
-      );
-      if (rowCount) console.log('Admin sync:', rowCount, 'akun dijadikan admin.');
+      const { pool } = require('./db');
+      const { rows: booted } = await pool.query('SELECT email FROM admin_boot');
+      const already = new Set(booted.map((r) => r.email));
+      const pending = config.ADMIN_EMAILS.filter((e) => !already.has(e));
+      if (pending.length) {
+        await pool.query(
+          'INSERT INTO admin_boot (email) VALUES (' + pending.map((_, i) => '$' + (i + 1)).join(',') + ') ON CONFLICT DO NOTHING',
+          pending
+        );
+        const { rowCount } = await pool.query(
+          'UPDATE users SET is_admin = true WHERE email = ANY($1)',
+          [pending]
+        );
+        if (rowCount) console.log('Admin sync:', rowCount, 'akun dijadikan admin.');
+      }
     }
     app.listen(config.PORT, () => {
       console.log('Media API v3 jalan di http://localhost:' + config.PORT);

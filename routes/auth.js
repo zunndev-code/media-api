@@ -24,8 +24,20 @@ router.post('/register', async (req, res) => {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return fail(res, 400, 'invalid_request', 'Email tidak valid.');
   if (!password || String(password).length < 6) return fail(res, 400, 'invalid_request', 'Password minimal 6 karakter.');
   const clean = String(email).toLowerCase().trim();
+  const ip = req.headers['x-forwarded-for'] ? String(req.headers['x-forwarded-for']).split(',')[0].trim() : (req.socket && req.socket.remoteAddress) || '';
+  if (ip) {
+    await pool.query(
+      `INSERT INTO reg_track (ip, day, n) VALUES ($1, CURRENT_DATE, 1)
+       ON CONFLICT (ip, day) DO UPDATE SET n = reg_track.n + 1`,
+      [ip]
+    );
+    const { rows: cnt } = await pool.query('SELECT n FROM reg_track WHERE ip = $1 AND day = CURRENT_DATE', [ip]);
+    if (Number(cnt[0].n) > 3) {
+      return fail(res, 429, 'rate_limited', 'Terlalu banyak pendaftaran dari IP ini. Coba lagi besok.');
+    }
+  }
   const exists = await pool.query('SELECT 1 FROM users WHERE email = $1', [clean]);
-  if (exists.rows.length) return fail(res, 409, 'email_taken', 'Email sudah terdaftar.');
+  if (exists.rows.length) return fail(res, 409, 'email_taken', 'Registrasi gagal. Coba email lain.');
   const hash = hashPassword(String(password));
   const { rows } = await pool.query(
     'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, credits, created_at',
