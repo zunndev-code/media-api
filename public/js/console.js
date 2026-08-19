@@ -144,7 +144,7 @@
       sr.style.color = r.color || '';
     }
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    set('s-credit', fmtNum(d.stats.todaySuccess) + '/' + fmtNum(r.daily || 0));
+    set('s-credit', '$' + fmtNum(d.stats.todaySuccess) + ' / $' + fmtNum(r.daily || 0));
     set('s-today', fmtNum(d.stats.today));
     set('s-total', fmtNum(d.stats.total));
     set('s-fail', fmtNum(d.stats.failed));
