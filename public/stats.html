@@ -6,8 +6,8 @@
   <title>Stats — Ziplan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=74">
-  <link rel="stylesheet" href="/css/console.css?v=74">
+  <link rel="stylesheet" href="/css/style.css?v=75">
+  <link rel="stylesheet" href="/css/console.css?v=75">
 </head>
 <body class="console">
       <main class="page" id="page">
@@ -21,25 +21,25 @@
     <div class="dash-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
       <div class="dash-card green">
         <div class="num" id="g-today">-</div>
-        <div class="lbl">Hits hari ini</div>
+        <div class="lbl" data-i18n="stats.today">Hits today</div>
       </div>
       <div class="dash-card green">
         <div class="num" id="g-total">-</div>
-        <div class="lbl">Total hits</div>
+        <div class="lbl" data-i18n="stats.total">Total hits</div>
       </div>
       <div class="dash-card">
         <div class="num" id="g-users">-</div>
-        <div class="lbl">Pengguna</div>
+        <div class="lbl" data-i18n="stats.users">Users</div>
       </div>
       <div class="dash-card">
         <div class="num" id="g-7d">-</div>
-        <div class="lbl">7 hari terakhir</div>
+        <div class="lbl" data-i18n="stats.last7">Last 7 days</div>
       </div>
     </div>
 
     <section class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem">
-        <h2 style="margin-bottom:0">Hits 14 hari terakhir</h2>
+        <h2 style="margin-bottom:0" data-i18n="stats.chart14">Hits last 14 days</h2>
         <span class="live-badge">LIVE</span>
       </div>
       <div class="chart" id="chart-global"></div>
@@ -47,20 +47,20 @@
     </section>
 
     <section class="card hidden" id="me-box">
-      <h2>Pemakaian kamu <span class="live-badge" style="margin-left:.5rem">LIVE</span></h2>
+      <h2 data-i18n="stats.yourUsage">Your usage <span class="live-badge" style="margin-left:.5rem">LIVE</span></h2>
       <div class="dash-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
-        <div class="dash-card green"><div class="num" id="m-today">-</div><div class="lbl">Hits kamu hari ini</div></div>
-        <div class="dash-card green"><div class="num" id="m-total">-</div><div class="lbl">Total hits kamu</div></div>
-        <div class="dash-card green"><div class="num" id="m-credits">-</div><div class="lbl">Credit tersisa</div></div>
+        <div class="dash-card green"><div class="num" id="m-today">-</div><div class="lbl" data-i18n="stats.myToday">Your hits today</div></div>
+        <div class="dash-card green"><div class="num" id="m-total">-</div><div class="lbl" data-i18n="stats.myTotal">Your total hits</div></div>
+        <div class="dash-card green"><div class="num" id="m-credits">-</div><div class="lbl" data-i18n="stats.myCredits">Credits remaining</div></div>
       </div>
       <div class="chart" id="chart-me"></div>
       <div class="chart-labels" id="chart-me-labels"></div>
     </section>
   </main>
 
-  <script src="/js/i18n.js?v=74"></script>
-  <script src="/js/app.js?v=74"></script>
-  <script src="/js/console.js?v=74"></script>
+  <script src="/js/i18n.js?v=75"></script>
+  <script src="/js/app.js?v=75"></script>
+  <script src="/js/console.js?v=75"></script>
   <script>
     const el = (id) => document.getElementById(id);
 

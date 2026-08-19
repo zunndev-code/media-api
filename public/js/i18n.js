@@ -158,7 +158,7 @@
       'land.s1': 'STEP 1', 'land.s1t': 'Sign up free', 'land.s1d': 'Instantly get 1000 credits. Another 1000 tomorrow. Every single day.',
       'land.s2': 'STEP 2', 'land.s2t': 'Create an API key', 'land.s2d': 'One click from your dashboard. Keys look like md_... — keep them safe.',
       'land.s3': 'STEP 3', 'land.s3t': 'Send a request', 'land.s3d': 'Pass your key in the X-API-Key header. 1 successful request = 1 credit.',
-      'stats.title': 'Statistics', 'stats.sub': 'How many times bots & apps hit the API every day.',
+      'stats.title': 'Statistics', 'stats.sub': 'How many times bots & apps hit the API every day.', 'stats.today': 'Hits today', 'stats.total': 'Total hits', 'stats.users': 'Users', 'stats.last7': 'Last 7 days', 'stats.chart14': 'Hits last 14 days', 'stats.yourUsage': 'Your usage', 'stats.myToday': 'Your hits today', 'stats.myTotal': 'Your total hits', 'stats.myCredits': 'Credits remaining',
       
       'endpoints.title': 'Endpoints.', 'endpoints.sub': 'Click a category to expand — click a row to copy its path.', 'endpoints.copied': 'Copied!',
       'endpoints.tip': 'All media endpoints: optional X-API-Key header. 1 successful request = 1 credit. Account, key & stats endpoints are not published here — use the dashboard.',
@@ -324,7 +324,7 @@
       'land.s1': 'LANGKAH 1', 'land.s1t': 'Daftar gratis', 'land.s1d': 'Langsung dapat 1000 credit. Besoknya dapat lagi 1000. Tiap hari, gak putus.',
       'land.s2': 'LANGKAH 2', 'land.s2t': 'Buat API key', 'land.s2d': 'Dari Dashboard, buat key satu klik. Bentuknya md_..., simpen baik-baik.',
       'land.s3': 'LANGKAH 3', 'land.s3t': 'Kirim request', 'land.s3d': 'Tempel key di header X-API-Key. 1 request sukses = 1 credit.',
-      'stats.title': 'Statistik', 'stats.sub': 'Berapa kali bot & aplikasi nembak API tiap hari.',
+      'stats.title': 'Statistik', 'stats.sub': 'Berapa kali bot & aplikasi nembak API tiap hari.', 'stats.today': 'Hits hari ini', 'stats.total': 'Total hits', 'stats.users': 'Pengguna', 'stats.last7': '7 hari terakhir', 'stats.chart14': 'Hits 14 hari terakhir', 'stats.yourUsage': 'Pemakaian kamu', 'stats.myToday': 'Hits kamu hari ini', 'stats.myTotal': 'Total hits kamu', 'stats.myCredits': 'Credit tersisa',
       
       'endpoints.title': 'Endpoint.', 'endpoints.sub': 'Klik kategori untuk membuka — klik baris untuk menyalin path-nya.', 'endpoints.copied': 'Tersalin!',
       'endpoints.tip': 'Semua endpoint media: opsional kirim header X-API-Key. 1 request sukses = 1 credit. Endpoint akun, key & statistik tidak dipublikasikan di sini — masuk lewat dashboard.',
