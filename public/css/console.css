@@ -30,6 +30,7 @@ body.console {
   font-family: var(--brand); font-size: 0.92rem; font-weight: 700;
   color: var(--text); text-decoration: none; letter-spacing: 0.01em;
 }
+.side-top .logo-img { height: 28px; width: auto; display: block; }
 .logo-chip {
   width: 32px; height: 32px; border-radius: 9px;
   background: linear-gradient(135deg, #6d5dfc, #8b5cf6);

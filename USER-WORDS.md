@@ -1,0 +1,82 @@
+# Kata-kata User (catatan verbatim)
+
+Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu baris status.
+
+## ATURAN (dari user)
+- **Kalau user minta edit sesuatu, WAJIB cek SEMUA halaman** — pernah ada logo yang belum diubah di halaman lain (dashboard console & admin panel pakai ✧ lama). Selalu audit menyeluruh + deploy + verifikasi Playwright semua halaman.
+
+1. **"eh taro data mereka itu pake di Informasi yang Kami Kumpulkan"**
+   > Ketika kamu mendaftar dan menggunakan Zunndev API, kami mengumpulkan informasi berikut: Informasi Akun (Nama, email, password hash terenkripsi) · Data OAuth (ID GitHub, username, avatar, email publik terverifikasi) · Data Penggunaan (log request API: endpoint, status code, latensi, IP) · Data Pembayaran (info transaksi top-up, tidak simpan kartu)
+   → Status: **DONE** (privacy policy section 1, pakai "Ziplan" bukan "Zunndev API")
+
+2. **"endpoin nya ada ketogry ya ada dowloder dan nanti kita buat lagi oke ini sekraang kalo klik kategory dowloder bakal muncul ke bawqh list nya oke"**
+   → Status: **DONE** (halaman Endpoints: kategori accordion — Downloader LIVE, Music & Lyrics / Image Tools / Text Tools SOON)
+
+3. **"default nya jangan ke buka ding tutup aja semua"**
+   → Status: **DONE** (semua kategori tertutup default)
+
+4. **"ini base url nya ko url web ya"** — kenapa base URL pakai domain web
+   → Status: **DONE** (dijawab: API & web satu server, base URL = ziplan.eu.cc)
+
+5. **"butuh su domain api.doman ga supaya ke situ nembak nya"** — perlu subdomain api?
+   → Status: **DONE** (dijawab: tidak perlu, satu domain lebih aman dari CF challenge)
+
+6. **"gue mau ganti domain btw dan ganti nama web ini bakal vr si sorry nih lu harus edit edit lagi"**
+   → Status: **DONE** (domain → ziplan.eu.cc, nama → Ziplan, semua string diganti)
+
+7. **"ini dns apa aja tadi lupa"**
+   → Status: **DONE** (dijawab: A record @ → 38.47.85.234 + Origin Rule port → 3000)
+
+8. **"zunndev dah ga ada lagi"**
+   → Status: **DONE** (domain lama mati, pindah ke ziplan.eu.cc)
+
+9. **"Add record ziplan.eu.cc points to [IPv4 address] and has its traffic proxied through Cloudflare. A @ Proxied"**
+   → Status: **DONE** (A record dibuat; IP harus 38.47.85.234)
+
+10. **"port bukan 3000 itu ketbrak sama yang udah make"**
+    → Status: **PENDING** (usulan: pindah media-api ke port 3001; belum dikerjakan)
+
+11. **"Rules nya aoa aja yang di iss"**
+    → Status: **DONE** (dijawab: cukup 1 Origin Rule rewrite port 3000)
+
+12. **"oke itu udah ridect lu cek"**
+    → Status: **DONE** (ziplan.eu.cc live, HTTP 200, origin gate diperbarui)
+
+13. **"lajut"**
+    → Status: **DONE** (domain switch + rebrand selesai, v51)
+
+14. **"itu web di dashbord VERUS atau nama role nya sama in kotak in doang taro dan fot nya mirip kaya yang lain kotak halus nanti yang beli ga tau role merek apa"**
+    → Status: **DONE** (badge role dashboard jadi pill kotak berwarna role, v52)
+
+15. **"btw nama web ganti ke seperti nama domain ya itu ziplan doang"**
+    → Status: **DONE** (rebrand semua: title, nav, footer, FAQ, privacy/terms, v53)
+
+16. **"itu login nya logo nya ga sama"**
+    → Status: **DONE** (logo login/register ikon panah lama → ganti brand mark, v54)
+
+17. **"warna bakraunds nya apa kasi code warna nya itu di logo backraunds nya sini kasi gue"**
+    → Status: **DONE** (dijawab: linear-gradient(135deg, #8b82ff → #635bff), glyph #0a0a16)
+
+18. **"logo web ganti ke logo ini. https://postimg.cc/n9V9GWYN"**
+    → Status: **DONE** (logo baru di-self-host /img/logo.png, v55; ukuran diperkecil v56: nav 24px, auth 48px)
+
+19. **"janga asal pasang itu jadi ke gede an"**
+    → Status: **DONE** (semua ukuran logo diperkecil)
+
+20. **"halam an utama besar bet"**
+    → Status: **DONE** (navbar desktop 2 baris kotak-kotak gede → 1 baris ramping 67px, v58)
+
+21. **"di login cuma ada logo doang jangan ada nama"**
+    → Status: **DONE** (login/register: hanya gambar logo, tanpa teks Ziplan, v59)
+
+22. **"aduh lu gimana si taro kata kata gue di md ya"**
+    → Status: **DONE** (file ini dibuat)
+
+23. **"kalo gue suruh edit cek semua halam an soalnya tadi ada logo belum di ubah ke logo"**
+    → Status: **DONE** (aturan permanen ditambahkan di atas; sisa logo ✧ di sidebar console & admin panel diganti gambar logo, v60)
+
+## Catatan masih menggantung
+- Port API 3000 → 3001 (klaim "ketbrak sama yang udah make") — belum dipindah
+- Bullet "Data OAuth" di privacy policy: GitHub login masih "segera" (belum live)
+- Klaim "All endpoints" di kartu VERUS masih belum akurat (semua role akses endpoint sama)
+- Tombol "Continue with Google/GitHub" di login masih label "segera"
