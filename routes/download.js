@@ -47,7 +47,7 @@ function keyRateOk(keyId, max) {
 
 async function resolveKey(req) {
   const value = req.headers['x-api-key'] || req.query.key || req.query.api_key;
-  if (!value) return null;
+  if (!value) return { error: { status: 401, code: 'missing_key', message: 'API key wajib diisi (header X-API-Key).' } };
   const { rows } = await pool.query(
     `SELECT k.id AS key_id, k.user_id, k.active, k.allowed_ips, u.role
      FROM api_keys k JOIN users u ON u.id = k.user_id
