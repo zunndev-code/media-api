@@ -45,12 +45,6 @@ function keyRateOk(keyId, max) {
   return true;
 }
 
-function enqueue(task) {
-  const run = queue.then(task, task);
-  queue = run.catch(() => {});
-  return run;
-}
-
 async function resolveKey(req) {
   const value = req.headers['x-api-key'] || req.query.key || req.query.api_key;
   if (!value) return null;
