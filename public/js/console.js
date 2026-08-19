@@ -72,9 +72,7 @@
       '<header class="topbar">' +
       '<button class="burger" id="burger" aria-label="Menu">' + svg('<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>') + '</button>' +
       '<div><h1 id="p-title">' + t + '</h1><p class="tsub" id="p-sub">' + (TITLES[PAGE] ? tr(title[1]) : '') + '</p></div>' +
-      '<div class="tr">' +
-      '<a class="cred" href="/beli"><span class="zglyph">✧</span><span id="cred-n">-</span></a>' +
-      '</div>' +
+      '<div class="tr"></div>' +
       '</header>' +
       '</div>';
 
@@ -103,17 +101,11 @@
       document.getElementById('u-name').textContent = tr('nav.login');
       document.getElementById('u-email').textContent = tr('nav.register');
       document.getElementById('avatar').textContent = '✧';
-      const cred = document.getElementById('cred-n');
-      if (cred) cred.textContent = tr('nav.register');
       return;
     }
     document.getElementById('u-name').textContent = u.name;
     document.getElementById('u-email').textContent = u.email;
     document.getElementById('avatar').textContent = (u.name || 'U').slice(0, 1).toUpperCase();
-    const cred = document.getElementById('cred-n');
-    if (cred) {
-      cred.textContent = fmtNum(u.credits) + ' · ' + (tr('ov.credits').split(' ')[0] || 'credits');
-    }
   }
 
   /* ===== API helper ===== */
@@ -145,15 +137,14 @@
     const em = document.getElementById('email'); if (em) em.textContent = d.user.email;
     const ur = document.getElementById('urole');
     if (ur) ur.innerHTML = '<span style="color:' + (r.color || '#6d5dfc') + '">' + esc(r.label || d.user.role) + '</span>';
-    const q = document.getElementById('quota');
-    if (q) q.textContent = tr('ov.quota').replace('{n}', fmtNum(r.daily || 0));
+
     const sr = document.getElementById('s-role');
     if (sr) {
       sr.textContent = r.label || d.user.role;
       sr.style.color = r.color || '';
     }
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    set('s-credit', fmtNum(d.user.credits));
+    set('s-credit', fmtNum(d.user.credits) + '/' + fmtNum(r.daily || 0));
     set('s-today', fmtNum(d.stats.today));
     set('s-total', fmtNum(d.stats.total));
     set('s-fail', fmtNum(d.stats.failed));
