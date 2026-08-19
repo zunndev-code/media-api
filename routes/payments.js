@@ -6,6 +6,11 @@ const { activateOrder } = require('../lib/orders');
 
 const router = require('express').Router();
 
+const MAX_PENDING = 3;
+const CREATE_COOLDOWN_MS = 10000;
+const POLL_INTERVAL_MS = 5000;
+const pollCache = new Map();
+
 function fail(res, status, code, message) {
   return res.status(status).json({ status: 'error', error: { code, message } });
 }
@@ -40,6 +45,19 @@ router.post('/orders', auth(true), async (req, res) => {
     return fail(res, 409, 'already_owned', 'Kamu sudah punya role ini.');
   }
   const user = req.user;
+  const { rows: pendingCount } = await pool.query(
+    "SELECT count(*) AS n, max(created_at) AS last FROM orders WHERE user_id = $1 AND status = 'pending'",
+    [user.id]
+  );
+  if (Number(pendingCount[0].n) >= MAX_PENDING) {
+    return fail(res, 429, 'too_many_pending', 'Terlalu banyak pesanan pending. Batalkan yang lama dulu.');
+  }
+  if (pendingCount[0].last) {
+    const since = Date.now() - new Date(pendingCount[0].last).getTime();
+    if (since < CREATE_COOLDOWN_MS) {
+      return fail(res, 429, 'rate_limited', 'Tunggu beberapa detik sebelum buat pesanan baru.');
+    }
+  }
   await pool.query(
     "UPDATE orders SET status = 'cancelled' WHERE user_id = $1 AND role = $2 AND status IN ('pending', 'expired')",
     [user.id, role]
@@ -76,7 +94,9 @@ router.get('/orders/:id', auth(true), async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM orders WHERE id = $1 AND user_id = $2', [id, req.user.id]);
   const order = rows[0];
   if (!order) return fail(res, 404, 'not_found', 'Pesanan tidak ditemukan.');
-  if (order.status === 'pending' && order.trx_id) {
+  const lastCheck = pollCache.get(order.id) || 0;
+  if (order.status === 'pending' && order.trx_id && Date.now() - lastCheck >= POLL_INTERVAL_MS) {
+    pollCache.set(order.id, Date.now());
     try {
       const status = await qris.checkPayment(order.trx_id);
       if (status.status === 'paid') {
