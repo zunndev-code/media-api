@@ -248,8 +248,13 @@ nav .nav-links a.primary:hover { background: var(--green-bright); border: none; 
 }
 .drawer-bg.show { opacity: 1; pointer-events: auto; }
 
+.nav-legals { display: flex; gap: 0.9rem; align-items: center; margin-left: 0.5rem; padding-left: 0.9rem; border-left: 1px solid var(--border); }
+.nav-legals a { color: var(--muted); font-size: 0.78rem; font-weight: 500; text-decoration: none; }
+.nav-legals a:hover { color: var(--green-bright); }
+
 @media (max-width: 767px) {
   nav .nav-links.desktop { display: none; }
+  .nav-legals { display: none; }
   .burger { display: flex; }
 }
 
@@ -1104,7 +1109,15 @@ footer {
   font-size: 0.8rem;
   text-align: center;
   letter-spacing: 0.02em;
+  display: flex;
+  gap: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
+.foot-legals { display: flex; gap: 0.9rem; }
+.foot-legals a { color: var(--muted-2); text-decoration: none; }
+.foot-legals a:hover { color: var(--green-bright); }
 @media (max-width: 700px) {
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   .foot-brand { grid-column: 1 / -1; }

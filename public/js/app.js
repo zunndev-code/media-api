@@ -86,6 +86,8 @@ function buildNav() {
     LOGO_MARK +
     'Zunndev API</a>' +
     '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
+    '<div class="nav-legals"><a href="/privacy" data-i18n="nav.privacy">' + tr('nav.privacy') + '</a>' +
+    '<a href="/terms" data-i18n="nav.terms">' + tr('nav.terms') + '</a></div>' +
     drawerHtml;
 
   const langBtn = document.createElement('button');
@@ -112,22 +114,23 @@ function buildNav() {
 
 function buildFooter() {
   const f = document.querySelector('footer');
-  if (!f || f.dataset.built) return;
-  f.dataset.built = '1';
+  if (!f) return;
   f.innerHTML =
     '<div class="foot-grid">' +
     '<div class="foot-brand">' +
     '<a class="logo" href="/">' +
     LOGO_MARK +
     'Zunndev API</a>' +
-    '<p>API platform buatan anak Indonesia. Mulai dari media downloader, nyusul tools lainnya.</p>' +
+    '<p>' + tr('foot.brand') + '</p>' +
     '</div>' +
-    '<div><h4>Menu</h4><a href="/">Blog</a><a href="/endpoints">Endpoint</a><a href="/#faq">FAQ</a><a href="/stats">Stats</a><a href="/api/docs">API Docs</a></div>' +
-    '<div><h4>Akun</h4><a href="/login">Masuk</a><a href="/register">Daftar gratis</a><a href="/dashboard">Dashboard</a><a href="/beli">Beli Role</a></div>' +
-    '<div><h4>Layanan</h4><a href="/#demo">Media Downloader</a><a href="/#harga">Harga</a><a href="/beli">Upgrade credit</a><a href="/api/docs">Cara pakai</a></div>' +
+    '<div><h4>' + tr('foot.menu') + '</h4><a href="/">' + tr('foot.blog') + '</a><a href="/endpoints">' + tr('foot.ep') + '</a><a href="/#faq">' + tr('foot.faq') + '</a><a href="/stats">' + tr('foot.stats') + '</a><a href="/api/docs">' + tr('foot.docs') + '</a></div>' +
+    '<div><h4>' + tr('foot.acc') + '</h4><a href="/login">' + tr('foot.login') + '</a><a href="/register">' + tr('foot.register') + '</a><a href="/dashboard">' + tr('foot.dash') + '</a><a href="/beli">' + tr('foot.buy') + '</a></div>' +
+    '<div><h4>' + tr('foot.svc') + '</h4><a href="/#demo">' + tr('foot.media') + '</a><a href="/#harga">' + tr('foot.price') + '</a><a href="/beli">' + tr('foot.upgrade') + '</a><a href="/api/docs">' + tr('foot.howto') + '</a></div>' +
     '</div>' +
     '<div class="foot-bottom">' +
-    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API &mdash; v3.1</span>' +
+    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API</span>' +
+    '<span class="foot-legals"><a href="/privacy" data-i18n="nav.privacy">' + tr('nav.privacy') + '</a>' +
+    '<a href="/terms" data-i18n="nav.terms">' + tr('nav.terms') + '</a></span>' +
     '</div>';
 }
 
@@ -726,5 +729,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initBuy();
     initApiList();
     initGlobalStats();
+    buildFooter();
   });
 });

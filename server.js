@@ -99,6 +99,8 @@ const PAGE_ALIASES = {
   endpoints: 'endpoints.html',
   docs: 'docs.html',
   beli: 'buy.html',
+  privacy: 'privacy.html',
+  terms: 'terms.html',
 };
 
 app.get('/:page', (req, res, next) => {
