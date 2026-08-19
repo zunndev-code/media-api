@@ -70,7 +70,7 @@ function buildNav() {
     '<div class="drawer-head">' +
     '<span class="drawer-logo">' +
     LOGO_MARK +
-    'Zunndev API</span>' +
+    'Ziplan</span>' +
     '<button class="burger" id="drawer-close" aria-label="Close">✕</button>' +
     '</div>' +
     '<div class="drawer-body">' +
@@ -79,12 +79,12 @@ function buildNav() {
     '<p class="drawer-label">Akun</p>' +
     '<div class="drawer-auth" id="nav-auth-m"></div>' +
     '</div>' +
-    '<div class="drawer-foot">Zunndev API v39</div>' +
+    '<div class="drawer-foot">Ziplan v39</div>' +
     '</aside>';
   nav.innerHTML =
     '<a class="logo" href="/">' +
     LOGO_MARK +
-    'Zunndev API</a>' +
+    'Ziplan</a>' +
     '<div class="nav-links desktop">' + linksHtml + '<span class="nav-auth" id="nav-auth"></span></div>' +
     '<div class="nav-legals"><a href="/privacy" data-i18n="nav.privacy">' + tr('nav.privacy') + '</a>' +
     '<a href="/terms" data-i18n="nav.terms">' + tr('nav.terms') + '</a></div>' +
@@ -120,7 +120,7 @@ function buildFooter() {
     '<div class="foot-brand">' +
     '<a class="logo" href="/">' +
     LOGO_MARK +
-    'Zunndev API</a>' +
+    'Ziplan</a>' +
     '<p>' + tr('foot.brand') + '</p>' +
     '</div>' +
     '<div><h4>' + tr('foot.menu') + '</h4><a href="/">' + tr('foot.blog') + '</a><a href="/endpoints">' + tr('foot.ep') + '</a><a href="/#faq">' + tr('foot.faq') + '</a><a href="/stats">' + tr('foot.stats') + '</a><a href="/api/docs">' + tr('foot.docs') + '</a></div>' +
@@ -128,7 +128,7 @@ function buildFooter() {
     '<div><h4>' + tr('foot.svc') + '</h4><a href="/#demo">' + tr('foot.media') + '</a><a href="/#harga">' + tr('foot.price') + '</a><a href="/beli">' + tr('foot.upgrade') + '</a><a href="/api/docs">' + tr('foot.howto') + '</a></div>' +
     '</div>' +
     '<div class="foot-bottom">' +
-    '<span>&copy; ' + new Date().getFullYear() + ' Zunndev API</span>' +
+    '<span>&copy; ' + new Date().getFullYear() + ' Ziplan</span>' +
     '<span class="foot-legals"><a href="/privacy" data-i18n="nav.privacy">' + tr('nav.privacy') + '</a>' +
     '<a href="/terms" data-i18n="nav.terms">' + tr('nav.terms') + '</a></span>' +
     '</div>';
@@ -152,7 +152,7 @@ function buildAppShell() {
   shell.innerHTML =
     '<header class="app-top">' +
     '<button class="app-burger" id="app-burger" aria-label="Menu">☰</button>' +
-    '<a class="logo" href="/dashboard">' + LOGO_MARK + 'Zunndev API</a>' +
+    '<a class="logo" href="/dashboard">' + LOGO_MARK + 'Ziplan</a>' +
     '<span class="app-top-title">' + esc(title) + '</span>' +
     '<div class="app-top-right">' +
     '<a class="cred-chip" id="cred-chip" href="/beli"><span class="zglyph">✧</span> <span>—</span></a>' +
@@ -163,7 +163,7 @@ function buildAppShell() {
     '<a href="/beli">Beli Role</a>' +
     '<div class="sep"></div>' +
     '<button class="danger" data-logout="1">Keluar</button>' +
-    '<p style="font-size:0.62rem;color:var(--muted-2);margin:0.4rem 0.7rem 0.2rem">Zunndev API · v30</p>' +
+    '<p style="font-size:0.62rem;color:var(--muted-2);margin:0.4rem 0.7rem 0.2rem">Ziplan · v30</p>' +
     '</div></div>' +
     '</div></header>' +
     '<div class="app-body">' +
@@ -174,7 +174,7 @@ function buildAppShell() {
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + l.icon + '</svg>' +
       l.label + '</a>'
     ).join('') +
-    '<div class="side-foot">© ' + new Date().getFullYear() + ' Zunndev API<br>v28</div>' +
+    '<div class="side-foot">© ' + new Date().getFullYear() + ' Ziplan<br>v28</div>' +
     '</aside>' +
     '<main class="app-main"></main>' +
     '</div>' +

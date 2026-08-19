@@ -1,4 +1,4 @@
-/* Zunndev Console v36 — sidebar kiri, halaman terpisah, i18n */
+/* Ziplan Console v36 — sidebar kiri, halaman terpisah, i18n */
 (() => {
   'use strict';
   if (!document.body.classList.contains('console')) return;
@@ -43,14 +43,14 @@
     if (!pageEl) return;
 
     const title = TITLES[PAGE] || ['nav.dash', ''];
-    const t = TITLES[PAGE] ? tr(title[0]) : 'Zunndev API';
+    const t = TITLES[PAGE] ? tr(title[0]) : 'Ziplan';
 
     const shell = document.createElement('div');
     shell.innerHTML =
       '<aside class="side">' +
       '<div class="side-top"><a class="logo" href="/dashboard">' +
       '<span class="logo-chip">✧</span>' +
-      '<span>Zunndev API</span></a><span class="ver-chip">v36</span></div>' +
+      '<span>Ziplan</span></a><span class="ver-chip">v36</span></div>' +
       '<nav class="side-nav">' +
       '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
       NAV_PRIMARY.map(navItem).join('') +

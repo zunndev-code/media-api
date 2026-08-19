@@ -58,7 +58,7 @@
       '<div class="a-login">' +
       '<div class="a-login-card">' +
       '<div class="mk">✧</div>' +
-      '<h1>Admin <b>Zunndev API</b></h1>' +
+      '<h1>Admin <b>Ziplan</b></h1>' +
       '<p>Panel rahasia — masuk pakai akun admin.</p>' +
       '<div class="err" id="err"></div>' +
       '<input type="email" id="email" placeholder="email admin" autocomplete="username">' +
@@ -93,7 +93,7 @@
     app.innerHTML =
       '<header class="a-head">' +
       '<a class="a-brand" href="#"><span class="mk">✧</span>' +
-      '<span><span class="nm">Admin <b>Zunndev API</b></span><br><span class="sub">Control Panel</span></span></a>' +
+      '<span><span class="nm">Admin <b>Ziplan</b></span><br><span class="sub">Control Panel</span></span></a>' +
       '<div class="a-head-right">' +
       '<span class="a-user">Halo, <b>' + esc(userName) + '</b></span>' +
       '<button class="a-btn" id="logout">Keluar</button>' +
