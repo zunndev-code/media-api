@@ -100,7 +100,7 @@ router.get('/dashboard', auth(true), async (req, res) => {
       [u.id]
     ),
     pool.query(
-      `SELECT count(*) FILTER (WHERE created_at >= date_trunc('week', now()) AND success) AS week_success
+      `SELECT count(*) FILTER (WHERE created_at >= CURRENT_DATE AND success) AS today_success
        FROM hits WHERE user_id = $1`,
       [u.id]
     ),
@@ -125,7 +125,7 @@ router.get('/dashboard', auth(true), async (req, res) => {
       failed: Number(usage[0].failed),
       today: Number(daily[0].today),
       todaySuccess: Number(daily[0].today_success),
-      weekSuccess: Number(week[0].week_success),
+      todaySuccess: Number(week[0].today_success),
     },
     dailyGranted: dailyToday.length ? Number(dailyToday[0].granted) : null,
     history,

@@ -51,16 +51,16 @@ router.post('/register', async (req, res) => {
     [clean, hash, String(name).trim()]
   );
   const user = rows[0];
-  setAuthCookie(req, res, signToken(user.id));
   if (config.RESEND_API_KEY) {
     const code = genCode();
     await pool.query(
       "UPDATE users SET verification_code = $1, verification_expires = now() + interval '10 minutes', verification_sent_at = now() WHERE id = $2",
       [code, user.id]
     );
-    await mail.sendVerification(user.email, code).catch(() => {});
+    mail.sendVerification(user.email, code).catch((e) => console.error('[mail] register:', e.message));
     return ok(res, 201, Object.assign(publicUser(user), { verified: false }));
   }
+  setAuthCookie(req, res, signToken(user.id));
   await grantDaily(user.id, user.role);
   const fresh = await pool.query('SELECT credits FROM users WHERE id = $1', [user.id]);
   user.credits = fresh.rows[0].credits;
@@ -78,6 +78,7 @@ router.post('/verify', async (req, res) => {
     [clean, String(code)]
   );
   if (!rows.length) return fail(res, 400, 'invalid_code', 'Kode salah atau sudah kadaluarsa.');
+  setAuthCookie(req, res, signToken(rows[0].id));
   await grantDaily(rows[0].id, rows[0].role);
   return ok(res, 200, { verified: true });
 });
@@ -100,7 +101,7 @@ router.post('/resend-code', async (req, res) => {
     "UPDATE users SET verification_code = $1, verification_expires = now() + interval '10 minutes', verification_sent_at = now() WHERE id = $2",
     [code, rows[0].id]
   );
-  await mail.sendVerification(rows[0].email, code).catch(() => {});
+  mail.sendVerification(rows[0].email, code).catch((e) => console.error('[mail] resend:', e.message));
   return ok(res, 200, { sent: true });
 });
 
@@ -108,7 +109,7 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) return fail(res, 400, 'invalid_request', 'Email dan password wajib diisi.');
   const { rows } = await pool.query(
-    'SELECT id, email, name, password_hash, role, credits, created_at FROM users WHERE email = $1',
+    'SELECT id, email, name, password_hash, role, credits, is_verified, created_at FROM users WHERE email = $1',
     [String(email).toLowerCase().trim()]
   );
   const user = rows[0];
@@ -117,6 +118,9 @@ router.post('/login', async (req, res) => {
   }
   if (!isScrypt(user.password_hash)) {
     await pool.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hashPassword(String(password)), user.id]);
+  }
+  if (config.RESEND_API_KEY && !user.is_verified) {
+    return fail(res, 403, 'email_not_verified', 'Email belum diverifikasi. Cek inbox atau spam, atau kirim ulang kode.');
   }
   setAuthCookie(req, res, signToken(user.id));
   return ok(res, 200, publicUser(user));

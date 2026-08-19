@@ -49,7 +49,7 @@
     shell.innerHTML =
       '<aside class="side">' +
       '<div class="side-top"><a class="logo" href="/dashboard">' +
-      '<img class="logo-img" src="/img/logo.png?v=91" alt="Ziplan">' +
+      '<img class="logo-img" src="/img/logo.png?v=92" alt="Ziplan">' +
       '<span>Ziplan</span></a><span class="ver-chip">v36</span></div>' +
       '<nav class="side-nav">' +
       '<p class="nav-lbl" data-i18n="nav.lblMain">Menu</p>' +
@@ -144,7 +144,7 @@
       sr.style.color = r.color || '';
     }
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    set('s-credit', '$' + fmtNum(d.stats.weekSuccess || 0) + ' / $' + fmtNum((r.daily || 0) * 7));
+    set('s-credit', '$' + fmtNum(d.stats.todaySuccess || 0) + ' / $' + fmtNum(r.daily || 0));
     set('s-today', fmtNum(d.stats.today));
     set('s-total', fmtNum(d.stats.total));
     set('s-fail', fmtNum(d.stats.failed));

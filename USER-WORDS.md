@@ -114,3 +114,9 @@ Kumpulan permintaan/ucapan user apa adanya, biar tidak hilang. Ditambah satu bar
 - invalid_key/key_disabled TETAP error 401/403 — cuma missing_key yang jadi anon
 - frontend: land.demosub/keyPh/faq.a4/docs.h7p update EN+ID; buy.featDaily pakai r.daily*7
 - SEMUA teks per-hari/1000 → per-minggu/7.000 (i18n + fallback HTML + terms + register + meta)
+
+## 29 — 19 Agu 2026 — REVERT sistem harian + verifikasi hardening (perintah boss, marah-marah)
+- SEMUA angka role balik ke harian: free 1.000, vip 5.000, gars 15.000, vilions 40.000, verus 1.000.000 (sebelumnya salah kuubah 7x mingguan)
+- credits.js: DAY=CURRENT_DATE, amount=daily (bukan *7); stats.js week_success -> today_success; console tile + buy cards + i18n + HTML fallback semua harian
+- VERIFIKASI: register TIDAK set cookie lagi (gak bisa back-autologin); /api/verify baru set cookie; login block 403 email_not_verified + box verifikasi di login.html (vcode/vbtn/vresend); resend tetap tanpa login
+- mail error gak ditelan lagi: console.error [mail] register/resend
