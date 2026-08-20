@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
   const { name, email, password } = req.body || {};
   if (!name || !String(name).trim()) return fail(res, 400, 'invalid_request', 'Nama wajib diisi.');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return fail(res, 400, 'invalid_request', 'Email tidak valid.');
-  if (!password || String(password).length < 6) return fail(res, 400, 'invalid_request', 'Password minimal 6 karakter.');
+  if (!password || String(password).length < 8) return fail(res, 400, 'invalid_request', 'Password minimal 8 karakter.');
   const clean = String(email).toLowerCase().trim();
   const ip = req.headers['x-forwarded-for'] ? String(req.headers['x-forwarded-for']).split(',')[0].trim() : (req.socket && req.socket.remoteAddress) || '';
   if (ip) {
@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
   if (exists.rows.length) return fail(res, 400, 'registration_failed', 'Registrasi gagal. Coba email lain.');
   const hash = hashPassword(String(password));
   const { rows } = await pool.query(
-    'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, credits, created_at',
+    'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, role, credits, created_at, token_version',
     [clean, hash, String(name).trim()]
   );
   const user = rows[0];
@@ -60,7 +60,7 @@ router.post('/register', async (req, res) => {
     mail.sendVerification(user.email, code).catch((e) => console.error('[mail] register:', e.message));
     return ok(res, 201, Object.assign(publicUser(user), { verified: false }));
   }
-  setAuthCookie(req, res, signToken(user.id));
+  setAuthCookie(req, res, signToken(user.id, false, user.token_version));
   await grantDaily(user.id, user.role);
   const fresh = await pool.query('SELECT credits FROM users WHERE id = $1', [user.id]);
   user.credits = fresh.rows[0].credits;
@@ -74,11 +74,11 @@ router.post('/verify', async (req, res) => {
   const { rows } = await pool.query(
     `UPDATE users SET is_verified = true, verification_code = NULL, verification_expires = NULL, verification_sent_at = NULL
      WHERE email = $1 AND verification_code = $2 AND verification_expires > now()
-     RETURNING id, role`,
+     RETURNING id, role, token_version`,
     [clean, String(code)]
   );
   if (!rows.length) return fail(res, 400, 'invalid_code', 'Kode salah atau sudah kadaluarsa.');
-  setAuthCookie(req, res, signToken(rows[0].id));
+  setAuthCookie(req, res, signToken(rows[0].id, false, rows[0].token_version));
   await grantDaily(rows[0].id, rows[0].role);
   return ok(res, 200, { verified: true });
 });
@@ -105,25 +105,84 @@ router.post('/resend-code', async (req, res) => {
   return ok(res, 200, { sent: true });
 });
 
+const BACKOFF = [30, 120, 600, 1800, 3600];
+const failTrack = new Map();
+function failLockSec(email) {
+  const rec = failTrack.get(email);
+  if (!rec || !rec.lockUntil || rec.lockUntil <= Date.now()) return 0;
+  return Math.ceil((rec.lockUntil - Date.now()) / 1000);
+}
+function recordFail(email) {
+  const rec = failTrack.get(email) || { count: 0, lockUntil: 0 };
+  rec.count += 1;
+  if (rec.count >= 5) {
+    rec.lockUntil = Date.now() + BACKOFF[Math.min(rec.count - 5, BACKOFF.length - 1)] * 1000;
+  }
+  failTrack.set(email, rec);
+  if (failTrack.size > 2000) {
+    for (const [k, v] of failTrack) if (v.lockUntil && v.lockUntil < Date.now() - 3600e3) failTrack.delete(k);
+  }
+}
+function clearFail(email) { failTrack.delete(email); }
+
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body || {};
+  const { email, password, remember } = req.body || {};
   if (!email || !password) return fail(res, 400, 'invalid_request', 'Email dan password wajib diisi.');
+  const clean = String(email).toLowerCase().trim();
+  const locked = failLockSec(clean);
+  if (locked > 0) {
+    return fail(res, 429, 'too_many_attempts', 'Terlalu banyak percobaan. Coba lagi dalam ' + locked + ' detik.');
+  }
   const { rows } = await pool.query(
-    'SELECT id, email, name, password_hash, role, credits, is_verified, created_at FROM users WHERE email = $1',
-    [String(email).toLowerCase().trim()]
+    'SELECT id, email, name, password_hash, role, credits, is_verified, created_at, token_version FROM users WHERE email = $1',
+    [clean]
   );
   const user = rows[0];
   if (!user || !user.password_hash || !verifyPassword(String(password), user.password_hash)) {
+    recordFail(clean);
     return fail(res, 401, 'invalid_credentials', 'Email atau password salah.');
   }
+  clearFail(clean);
   if (!isScrypt(user.password_hash)) {
     await pool.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hashPassword(String(password)), user.id]);
   }
   if (config.RESEND_API_KEY && !user.is_verified) {
     return fail(res, 403, 'email_not_verified', 'Email belum diverifikasi. Cek inbox atau spam, atau kirim ulang kode.');
   }
-  setAuthCookie(req, res, signToken(user.id));
+  const rm = remember === true || remember === 'true';
+  setAuthCookie(req, res, signToken(user.id, rm, user.token_version), rm);
   return ok(res, 200, publicUser(user));
+});
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body || {};
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return fail(res, 400, 'invalid_request', 'Email tidak valid.');
+  const clean = String(email).toLowerCase().trim();
+  const { rows } = await pool.query('SELECT id, email FROM users WHERE email = $1 AND is_verified', [clean]);
+  if (rows.length) {
+    const token = crypto.randomBytes(32).toString('hex');
+    await pool.query(
+      "UPDATE users SET reset_token = $1, reset_expires = now() + interval '1 hour' WHERE id = $2",
+      [token, rows[0].id]
+    );
+    const url = 'https://ziplan.eu.cc/reset-password?token=' + token;
+    mail.sendReset(rows[0].email, url).catch((e) => console.error('[mail] forgot:', e.message));
+  }
+  return ok(res, 200, { sent: true });
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body || {};
+  if (!token || !password || String(password).length < 8) {
+    return fail(res, 400, 'invalid_request', 'Password minimal 8 karakter.');
+  }
+  const { rows } = await pool.query(
+    `UPDATE users SET password_hash = $1, reset_token = NULL, reset_expires = NULL, token_version = token_version + 1
+     WHERE reset_token = $2 AND reset_expires > now() RETURNING id`,
+    [hashPassword(String(password)), String(token)]
+  );
+  if (!rows.length) return fail(res, 400, 'invalid_token', 'Tautan reset tidak valid atau sudah kedaluwarsa.');
+  return ok(res, 200, { reset: true });
 });
 
 router.post('/logout', (req, res) => {
