@@ -112,6 +112,7 @@ const PAGE_ALIASES = {
   history: 'history.html',
   login: 'login.html',
   register: 'register.html',
+  'reset-password': 'reset-password.html',
   endpoints: 'endpoints.html',
   docs: 'docs.html',
   beli: 'buy.html',
